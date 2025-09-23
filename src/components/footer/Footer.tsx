@@ -51,7 +51,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom section - edge to edge separator */}
-      <div className="border-t border-black w-screen relative -mx-6 px-6 pt-2">
+      <div className="border-t border-black -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
             © 2024 Linea. All rights reserved.

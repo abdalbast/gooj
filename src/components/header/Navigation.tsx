@@ -122,8 +122,12 @@ const Navigation = () => {
 
         {/* Center logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <a href="/" className="text-2xl font-light tracking-wider text-foreground">
-            LINEA
+          <a href="/" className="block">
+            <img 
+              src="/LINEA.svg" 
+              alt="LINEA" 
+              className="h-6 w-auto"
+            />
           </a>
         </div>
 
