@@ -9,11 +9,11 @@ const Navigation = () => {
       name: "Shop", 
       href: "/shop",
       submenuItems: [
-        "Women's Collection",
-        "Men's Collection", 
-        "Accessories",
-        "Sale Items",
-        "New Arrivals"
+        "Rings",
+        "Necklaces", 
+        "Earrings",
+        "Bracelets",
+        "Watches"
       ],
       images: [
         { src: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=200&fit=crop", alt: "Shop Collection 1" },
