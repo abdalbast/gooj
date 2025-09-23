@@ -136,7 +136,7 @@ const Navigation = () => {
       {/* Full width dropdown */}
       {activeDropdown && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border shadow-lg z-50"
+          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
           onMouseEnter={() => setActiveDropdown(activeDropdown)}
           onMouseLeave={() => setActiveDropdown(null)}
         >
@@ -188,7 +188,7 @@ const Navigation = () => {
       {/* Search overlay */}
       {isSearchOpen && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border shadow-lg z-50"
+          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
         >
           <div className="px-6 py-8">
             <div className="max-w-2xl mx-auto">
@@ -234,7 +234,7 @@ const Navigation = () => {
           />
           
           {/* Off-canvas panel */}
-          <div className="absolute right-0 top-0 h-full w-96 bg-background border-l border-border shadow-xl">
+          <div className="absolute right-0 top-0 h-full w-96 bg-background border-l border-border animate-slide-in-right">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-lg font-light text-foreground">
