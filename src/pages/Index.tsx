@@ -12,9 +12,9 @@ const Index = () => {
       
       <main className="pt-6">
         <FiftyFiftySection />
+        <ProductCarousel />
         <LargeHero />
         <OneThirdTwoThirdsSection />
-        <ProductCarousel />
       </main>
       
       <Footer />
