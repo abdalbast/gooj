@@ -99,7 +99,7 @@ const ProductCarousel = () => {
                        />
                        <div className="absolute inset-0 bg-black/[0.03]"></div>
                        {(product.id === 1 || product.id === 3) && (
-                         <div className="absolute top-2 left-2 bg-white px-2 py-1 text-xs font-medium text-black">
+                         <div className="absolute top-2 left-2 px-2 py-1 text-xs font-medium text-black">
                            NEW
                          </div>
                        )}
