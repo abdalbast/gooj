@@ -3,8 +3,8 @@ import linkBracelet from "@/assets/link-bracelet.png";
 
 const FiftyFiftySection = () => {
   return (
-    <section className="w-full mb-16">
-      <div className="grid grid-cols-1 md:grid-cols-2">
+    <section className="w-full mb-16 px-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="w-full aspect-square mb-6 overflow-hidden">
             <img 
@@ -13,7 +13,7 @@ const FiftyFiftySection = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="px-4">
+          <div className="">
             <h3 className="text-sm font-light text-foreground mb-2">
               Organic Forms
             </h3>
@@ -31,7 +31,7 @@ const FiftyFiftySection = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="px-4">
+          <div className="">
             <h3 className="text-sm font-light text-foreground mb-2">
               Chain Collection
             </h3>
