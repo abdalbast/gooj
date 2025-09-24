@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 const Pagination = () => {
   return (
     <section className="w-full px-6 py-8">
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-start items-center gap-2">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -18,7 +18,7 @@ const Pagination = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            className="min-w-8 h-8 bg-foreground text-background hover:bg-foreground/90 font-light text-sm"
+            className="min-w-8 h-8 hover:bg-transparent underline font-normal text-sm"
           >
             1
           </Button>
