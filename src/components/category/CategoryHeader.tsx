@@ -35,8 +35,8 @@ const CategoryHeader = ({ category, itemCount }: CategoryHeaderProps) => {
           </BreadcrumbList>
         </Breadcrumb>
         
-        <div className="flex justify-between items-end">
-          <h1 className="text-3xl md:text-4xl font-light text-foreground">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-light text-foreground mb-2">
             {category}
           </h1>
           <p className="text-sm font-light text-muted-foreground">

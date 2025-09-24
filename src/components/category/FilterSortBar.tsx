@@ -43,7 +43,7 @@ const FilterSortBar = ({ onFiltersToggle, filtersOpen, onFiltersClose }: FilterS
                   variant="ghost" 
                   size="sm"
                   onClick={onFiltersToggle}
-                  className="gap-2"
+                  className="gap-2 font-light hover:bg-transparent"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                     <path d="M10 3.75a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM17.25 4.5a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM5 3.75a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM4.25 17a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM17.25 17a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM9 10a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1 0-1.5h5.5A.75.75 0 0 1 9 10ZM17.25 10.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM14 10a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM10 16.25a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
@@ -134,12 +134,12 @@ const FilterSortBar = ({ onFiltersToggle, filtersOpen, onFiltersClose }: FilterS
             <SelectTrigger className="w-40 border-none bg-transparent text-sm font-light shadow-none rounded-none">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="shadow-none">
-              <SelectItem value="featured">Featured</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="name">Name A-Z</SelectItem>
+            <SelectContent className="shadow-none border-none rounded-none bg-background">
+              <SelectItem value="featured" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline">Featured</SelectItem>
+              <SelectItem value="price-low" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline">Price: Low to High</SelectItem>
+              <SelectItem value="price-high" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline">Price: High to Low</SelectItem>
+              <SelectItem value="newest" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline">Newest</SelectItem>
+              <SelectItem value="name" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline">Name A-Z</SelectItem>
             </SelectContent>
           </Select>
           </div>
