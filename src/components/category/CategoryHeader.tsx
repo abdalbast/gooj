@@ -15,7 +15,6 @@ interface CategoryHeaderProps {
 const CategoryHeader = ({ category }: CategoryHeaderProps) => {
   return (
     <section className="w-full px-6 mb-8">
-      <div className="max-w-7xl mx-auto">
         <Breadcrumb className="mb-6">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -39,7 +38,6 @@ const CategoryHeader = ({ category }: CategoryHeaderProps) => {
             {category}
           </h1>
         </div>
-      </div>
     </section>
   );
 };

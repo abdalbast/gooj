@@ -110,7 +110,6 @@ const products: Product[] = [
 const ProductGrid = () => {
   return (
     <section className="w-full px-6 mb-16">
-      <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product) => (
             <Card 
@@ -153,7 +152,6 @@ const ProductGrid = () => {
             </Card>
           ))}
         </div>
-      </div>
     </section>
   );
 };
