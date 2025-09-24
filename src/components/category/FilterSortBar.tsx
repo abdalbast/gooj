@@ -120,10 +120,10 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
               </SheetContent>
             </Sheet>
 
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-auto border-none bg-transparent text-sm font-light shadow-none rounded-none pr-1">
-                  <SelectValue />
-                </SelectTrigger>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-auto border-none bg-transparent text-sm font-light shadow-none rounded-none pr-2">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent className="shadow-none border-none rounded-none bg-background">
                 <SelectItem value="featured" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline pl-2 [&>span:first-child]:hidden">Featured</SelectItem>
                 <SelectItem value="price-low" className="hover:bg-transparent hover:underline data-[state=checked]:bg-transparent data-[state=checked]:underline pl-2 [&>span:first-child]:hidden">Price: Low to High</SelectItem>
