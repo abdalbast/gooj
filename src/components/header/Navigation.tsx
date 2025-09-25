@@ -373,15 +373,15 @@ const Navigation = () => {
       
       {/* Favorites Off-canvas overlay */}
       {offCanvasType === 'favorites' && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 h-screen">
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 h-screen"
             onClick={() => setOffCanvasType(null)}
           />
           
           {/* Off-canvas panel */}
-          <div className="absolute right-0 top-0 h-full w-96 bg-background border-l border-border animate-slide-in-right">
+          <div className="absolute right-0 top-0 h-screen w-96 bg-background border-l border-border animate-slide-in-right flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-lg font-light text-foreground">Your Favorites</h2>
