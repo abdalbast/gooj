@@ -264,21 +264,35 @@ const Navigation = () => {
               <div className="flex space-x-6">
                 {navItems
                   .find(item => item.name === activeDropdown)
-                  ?.images.map((image, index) => (
-                  <div key={index} className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden">
-                    <img 
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-90"
-                    />
-                    {(activeDropdown === "Shop" || activeDropdown === "New in" || activeDropdown === "About") && (
-                      <div className="absolute bottom-2 left-2 text-white text-xs font-light flex items-center gap-1">
-                        <span>{image.label}</span>
-                        <ArrowRight size={12} />
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ?.images.map((image, index) => {
+                    // Determine the link destination based on dropdown and image
+                    let linkTo = "/";
+                    if (activeDropdown === "Shop") {
+                      if (image.label === "Rings") linkTo = "/category/rings";
+                      else if (image.label === "Earrings") linkTo = "/category/earrings";
+                    } else if (activeDropdown === "New in") {
+                      if (image.label === "Arcus Bracelet") linkTo = "/product/arcus-bracelet";
+                      else if (image.label === "Span Bracelet") linkTo = "/product/span-bracelet";
+                    } else if (activeDropdown === "About") {
+                      linkTo = "/about/our-story";
+                    }
+                    
+                    return (
+                      <Link key={index} to={linkTo} className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden block">
+                        <img 
+                          src={image.src}
+                          alt={image.alt}
+                          className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+                        />
+                        {(activeDropdown === "Shop" || activeDropdown === "New in" || activeDropdown === "About") && (
+                          <div className="absolute bottom-2 left-2 text-white text-xs font-light flex items-center gap-1">
+                            <span>{image.label}</span>
+                            <ArrowRight size={12} />
+                          </div>
+                        )}
+                      </Link>
+                    );
+                  })}
               </div>
             </div>
           </div>
