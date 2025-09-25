@@ -92,7 +92,7 @@ const Navigation = () => {
   const navItems = [
     { 
       name: "Shop", 
-      href: "/shop",
+      href: "/category/shop",
       submenuItems: [
         "Rings",
         "Necklaces", 
@@ -107,7 +107,7 @@ const Navigation = () => {
     },
     { 
       name: "New in", 
-      href: "/new-in",
+      href: "/category/new-in",
       submenuItems: [
         "This Week's Arrivals",
         "Spring Collection",
@@ -167,12 +167,12 @@ const Navigation = () => {
               onMouseEnter={() => setActiveDropdown(item.name)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <a
-                href={item.href}
+              <Link
+                to={item.href}
                 className="text-nav-foreground hover:text-nav-hover transition-colors duration-200 text-sm font-light py-6 block"
               >
                 {item.name}
-              </a>
+              </Link>
             </div>
           ))}
         </div>
@@ -325,13 +325,13 @@ const Navigation = () => {
             <div className="space-y-6">
               {navItems.map((item, index) => (
                 <div key={item.name}>
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="text-nav-foreground hover:text-nav-hover transition-colors duration-200 text-lg font-light block py-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                    <div className="mt-3 pl-4 space-y-2">
                      {item.submenuItems.map((subItem, subIndex) => (
                        <Link
