@@ -29,7 +29,7 @@ const OurStory = () => {
             />
           </ContentSection>
 
-          <ContentSection title="Our Heritage" className="bg-muted/20">
+          <ContentSection title="Our Heritage">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="space-y-6">
                 <h3 className="text-xl font-light text-foreground">Traditional Craftsmanship</h3>

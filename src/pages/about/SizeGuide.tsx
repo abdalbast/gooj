@@ -81,7 +81,7 @@ const SizeGuide = () => {
           </div>
         </ContentSection>
 
-        <ContentSection title="Bracelet & Necklace Sizing" className="bg-muted/20">
+        <ContentSection title="Bracelet & Necklace Sizing">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <h3 className="text-xl font-light text-foreground">Bracelet Sizes</h3>

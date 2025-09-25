@@ -48,7 +48,7 @@ const StoreLocator = () => {
           <StoreMap />
         </ContentSection>
 
-        <ContentSection title="Our Locations" className="bg-muted/20">
+        <ContentSection title="Our Locations">
           <div className="grid gap-8">
             {stores.map((store, index) => (
               <div key={index} className="bg-background rounded-lg p-8 border border-border">

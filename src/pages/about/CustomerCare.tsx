@@ -44,7 +44,7 @@ const CustomerCare = () => {
           </div>
         </ContentSection>
 
-        <ContentSection title="Frequently Asked Questions" className="bg-muted/20">
+        <ContentSection title="Frequently Asked Questions">
           <Accordion type="single" collapsible className="space-y-4">
             <AccordionItem value="shipping" className="border border-border rounded-lg px-6">
               <AccordionTrigger className="text-left hover:no-underline">
