@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ShoppingBag from "./ShoppingBag";
 import pantheonImage from "@/assets/pantheon.jpg";
 import eclipseImage from "@/assets/eclipse.jpg";
 import haloImage from "@/assets/halo.jpg";
@@ -19,8 +20,9 @@ interface CartItem {
 const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [offCanvasType, setOffCanvasType] = useState<'favorites' | 'cart' | null>(null);
+  const [offCanvasType, setOffCanvasType] = useState<'favorites' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
   
   // Shopping bag state with 3 mock items
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -217,7 +219,7 @@ const Navigation = () => {
           <button 
             className="p-2 text-nav-foreground hover:text-nav-hover transition-colors duration-200 relative"
             aria-label="Shopping bag"
-            onClick={() => setOffCanvasType('cart')}
+            onClick={() => setIsShoppingBagOpen(true)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -357,8 +359,20 @@ const Navigation = () => {
         </div>
       )}
       
-      {/* Off-canvas overlay */}
-      {offCanvasType && (
+      {/* Shopping Bag Component */}
+      <ShoppingBag 
+        isOpen={isShoppingBagOpen}
+        onClose={() => setIsShoppingBagOpen(false)}
+        cartItems={cartItems}
+        updateQuantity={updateQuantity}
+        onViewFavorites={() => {
+          setIsShoppingBagOpen(false);
+          setOffCanvasType('favorites');
+        }}
+      />
+      
+      {/* Favorites Off-canvas overlay */}
+      {offCanvasType === 'favorites' && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div 
@@ -370,9 +384,7 @@ const Navigation = () => {
           <div className="absolute right-0 top-0 h-full w-96 bg-background border-l border-border animate-slide-in-right">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h2 className="text-lg font-light text-foreground">
-                {offCanvasType === 'favorites' ? 'Your Favorites' : 'Shopping Bag'}
-              </h2>
+              <h2 className="text-lg font-light text-foreground">Your Favorites</h2>
               <button
                 onClick={() => setOffCanvasType(null)}
                 className="p-2 text-foreground hover:text-muted-foreground transition-colors"
@@ -384,97 +396,9 @@ const Navigation = () => {
             
             {/* Content */}
             <div className="p-6">
-              {offCanvasType === 'favorites' ? (
-                <div>
-                  <p className="text-muted-foreground text-sm mb-6">
-                    You haven't added any favorites yet. Browse our collection and click the heart icon to save items you love.
-                  </p>
-                </div>
-              ) : (
-                <div className="h-full flex flex-col">
-                  {/* Mobile favorites toggle - only show on mobile */}
-                  <div className="md:hidden mb-6 pb-6 border-b border-border">
-                    <button
-                      onClick={() => setOffCanvasType('favorites')}
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-border rounded-lg text-nav-foreground hover:text-nav-hover hover:border-nav-hover transition-colors duration-200"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                      </svg>
-                      <span className="text-sm font-light">View Favorites</span>
-                    </button>
-                  </div>
-                  
-                  {cartItems.length === 0 ? (
-                    <p className="text-muted-foreground text-sm mb-6">
-                      Your shopping bag is empty. Continue shopping to add items to your bag.
-                    </p>
-                  ) : (
-                    <>
-                      {/* Cart items */}
-                      <div className="flex-1 space-y-6 mb-6">
-                        {cartItems.map((item) => (
-                          <div key={item.id} className="flex gap-4">
-                            <div className="w-20 h-20 bg-muted/10 rounded-lg overflow-hidden">
-                              <img 
-                                src={item.image} 
-                                alt={item.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex justify-between items-start mb-2">
-                                <div>
-                                  <p className="text-sm font-light text-muted-foreground">{item.category}</p>
-                                  <h3 className="text-sm font-medium text-foreground">{item.name}</h3>
-                                </div>
-                                <p className="text-sm font-light text-foreground">{item.price}</p>
-                              </div>
-                              <div className="flex items-center gap-2 mt-3">
-                                <div className="flex items-center border border-border">
-                                  <button 
-                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                    className="p-1.5 hover:bg-muted/50 transition-colors"
-                                    aria-label="Decrease quantity"
-                                  >
-                                    <Minus size={14} />
-                                  </button>
-                                  <span className="px-2 py-1.5 text-sm font-medium min-w-[2.5rem] text-center">
-                                    {item.quantity}
-                                  </span>
-                                  <button 
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                    className="p-1.5 hover:bg-muted/50 transition-colors"
-                                    aria-label="Increase quantity"
-                                  >
-                                    <Plus size={14} />
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* Total and checkout */}
-                      <div className="border-t border-border pt-6 mt-auto">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-sm font-light text-foreground">Total ({totalItems} items)</span>
-                          <span className="text-lg font-medium text-foreground">
-                            €{cartItems.reduce((sum, item) => {
-                              const price = parseFloat(item.price.replace('€', '').replace(',', ''));
-                              return sum + (price * item.quantity);
-                            }, 0).toLocaleString()}
-                          </span>
-                        </div>
-                        <Button asChild className="w-full rounded-none">
-                          <Link to="/checkout">Proceed to Checkout</Link>
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+              <p className="text-muted-foreground text-sm mb-6">
+                You haven't added any favorites yet. Browse our collection and click the heart icon to save items you love.
+              </p>
             </div>
           </div>
         </div>
