@@ -122,7 +122,7 @@ const ProductDescription = () => {
       </div>
 
       {/* Customer Reviews */}
-      <div>
+      <div className="border-b border-border lg:mb-16">
         <Button
           variant="ghost"
           onClick={() => setIsReviewsOpen(!isReviewsOpen)}

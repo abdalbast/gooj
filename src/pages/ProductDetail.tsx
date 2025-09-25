@@ -57,7 +57,7 @@ const ProductDetail = () => {
           </div>
         </section>
         
-        <section className="w-full">
+        <section className="w-full mt-16 lg:mt-24">
           <div className="mb-4 px-6">
             <h2 className="text-sm font-light text-foreground">You might also like</h2>
           </div>
