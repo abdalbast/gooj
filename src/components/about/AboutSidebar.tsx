@@ -10,18 +10,18 @@ const aboutPages = [
 
 const AboutSidebar = () => {
   return (
-    <aside className="hidden md:block w-64 sticky top-6 h-fit px-6">
-      <nav className="space-y-2">
+    <aside className="hidden md:block w-64 sticky top-1/2 -translate-y-1/2 h-fit px-6">
+      <nav className="space-y-1">
         <h3 className="text-lg font-light text-foreground mb-6">About</h3>
         {aboutPages.map((page) => (
           <NavLink
             key={page.path}
             to={page.path}
             className={({ isActive }) =>
-              `block px-4 py-3 text-sm font-light transition-colors rounded-lg ${
+              `block py-2 text-sm font-light transition-all ${
                 isActive
-                  ? 'bg-muted text-primary font-medium'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  ? 'text-primary underline decoration-2 underline-offset-4'
+                  : 'text-muted-foreground hover:text-foreground hover:underline hover:decoration-1 hover:underline-offset-4'
               }`
             }
           >
