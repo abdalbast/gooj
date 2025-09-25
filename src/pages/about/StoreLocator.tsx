@@ -4,6 +4,7 @@ import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import StoreMap from "../../components/about/StoreMap";
 import { Button } from "../../components/ui/button";
+import AboutSidebar from "../../components/about/AboutSidebar";
 
 const StoreLocator = () => {
   const stores = [
@@ -34,7 +35,10 @@ const StoreLocator = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main>
+      <div className="flex">
+        <AboutSidebar />
+        
+        <main className="flex-1">
         <PageHeader 
           title="Store Locator" 
           subtitle="Visit us in person for a personalized jewelry experience"
@@ -131,7 +135,8 @@ const StoreLocator = () => {
             </Button>
           </div>
         </ContentSection>
-      </main>
+        </main>
+      </div>
       
       <Footer />
     </div>

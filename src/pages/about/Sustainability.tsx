@@ -2,13 +2,17 @@ import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
+import AboutSidebar from "../../components/about/AboutSidebar";
 
 const Sustainability = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main>
+      <div className="flex">
+        <AboutSidebar />
+        
+        <main className="flex-1">
         <PageHeader 
           title="Sustainability" 
           subtitle="Creating beautiful jewelry while protecting our planet for future generations"
@@ -94,7 +98,8 @@ const Sustainability = () => {
             </div>
           </div>
         </ContentSection>
-      </main>
+        </main>
+      </div>
       
       <Footer />
     </div>

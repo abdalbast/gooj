@@ -6,13 +6,17 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion";
+import AboutSidebar from "../../components/about/AboutSidebar";
 
 const CustomerCare = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main>
+      <div className="flex">
+        <AboutSidebar />
+        
+        <main className="flex-1">
         <PageHeader 
           title="Customer Care" 
           subtitle="We're here to help you with all your jewelry needs"
@@ -136,7 +140,8 @@ const CustomerCare = () => {
             </form>
           </div>
         </ContentSection>
-      </main>
+        </main>
+      </div>
       
       <Footer />
     </div>

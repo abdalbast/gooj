@@ -3,13 +3,17 @@ import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import { Button } from "../../components/ui/button";
+import AboutSidebar from "../../components/about/AboutSidebar";
 
 const SizeGuide = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main>
+      <div className="flex">
+        <AboutSidebar />
+        
+        <main className="flex-1">
         <PageHeader 
           title="Size Guide" 
           subtitle="Find your perfect fit with our comprehensive sizing guide"
@@ -137,7 +141,8 @@ const SizeGuide = () => {
             </div>
           </div>
         </ContentSection>
-      </main>
+        </main>
+      </div>
       
       <Footer />
     </div>
