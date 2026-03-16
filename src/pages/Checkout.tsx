@@ -50,16 +50,16 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "Pantheon Adapter",
-      price: "£1,850",
+      name: "The Birthday Box",
+      price: "£65",
       quantity: 1,
       image: pantheonImage,
-      size: "USB-C / USB-A"
+      size: "Personalised"
     },
     {
       id: 2,
-      name: "Eclipse Cable", 
-      price: "£1,450",
+      name: "The Anniversary Box", 
+      price: "£85",
       quantity: 1,
       image: eclipseImage
     }

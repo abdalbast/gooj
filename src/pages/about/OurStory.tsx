@@ -18,31 +18,31 @@ const OurStory = () => {
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
           <PageHeader 
             title="Our Story" 
-            subtitle="A journey of passion, craftsmanship, and timeless elegance"
+            subtitle="Making thoughtful gifting easy — so you never have to wing it again"
           />
           
           <ContentSection>
             <ImageTextBlock
               image="/founders.png"
-              imageAlt="Company founders"
-              title="Founded on Passion"
-              content="LINEA Jewelry was born from a shared vision of creating timeless pieces that transcend fleeting trends. Our founders, united by their passion for exceptional craftsmanship and sustainable practices, established the brand with a commitment to creating jewelry that tells a story - your story."
+              imageAlt="The GOOJ team"
+              title="Get Out Of Jail"
+              content="GOOJ was born from a simple, universal problem: buying gifts is stressful. Whether it's a birthday, anniversary, or a 'just because' moment, most men know the feeling of panic-buying something last minute and hoping for the best. We built GOOJ to fix that — curated gift boxes that are thoughtful, personal, and ready to impress."
               imagePosition="left"
             />
           </ContentSection>
 
-          <ContentSection title="Our Heritage">
+          <ContentSection title="Our Approach">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Traditional Craftsmanship</h3>
+                <h3 className="text-xl font-light text-foreground">Tactical Gifting</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Every piece in our collection is meticulously handcrafted by skilled artisans who have honed their craft over generations. We honor traditional techniques while embracing modern innovation, ensuring each piece meets our exacting standards for quality and beauty.
+                  We use situational marketing to meet you exactly where you are — whether it's her birthday next week, Mother's Day is around the corner, or you just want to show you care. Every box is designed for a specific occasion, so you always pick the right one.
                 </p>
               </div>
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Sustainable Future</h3>
+                <h3 className="text-xl font-light text-foreground">The Personal Touch</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We believe luxury and sustainability can coexist beautifully. Our commitment to ethical sourcing, recycled materials, and responsible manufacturing practices ensures that every piece you wear contributes to a more sustainable future.
+                  Every GOOJ box can be personalised. Upload a photo for the keepsake frame, add a handwritten message card, and choose from premium consumables and lasting keepsakes. It's thoughtful gifting without the effort.
                 </p>
               </div>
             </div>
@@ -51,21 +51,21 @@ const OurStory = () => {
           <ContentSection title="Our Values">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Excellence</h3>
+                <h3 className="text-lg font-light text-foreground">Thoughtfulness</h3>
                 <p className="text-muted-foreground">
-                  We pursue perfection in every detail, from the initial design concept to the final polish.
+                  Every item in every box is chosen with care. We obsess over the details so you don't have to.
                 </p>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Authenticity</h3>
+                <h3 className="text-lg font-light text-foreground">Quality</h3>
                 <p className="text-muted-foreground">
-                  Each piece reflects genuine craftsmanship and tells an authentic story of artistry and care.
+                  From the packaging to the products inside, everything meets our standard for premium quality.
                 </p>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Innovation</h3>
+                <h3 className="text-lg font-light text-foreground">Personalisation</h3>
                 <p className="text-muted-foreground">
-                  We continuously evolve our designs and techniques while honoring timeless aesthetic principles.
+                  Photo frames, message cards, and curated selections make every box feel one-of-a-kind.
                 </p>
               </div>
             </div>
