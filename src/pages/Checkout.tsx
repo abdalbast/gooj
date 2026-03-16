@@ -78,7 +78,7 @@ const Checkout = () => {
   };
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('€', '').replace(',', ''));
+    const price = parseFloat(item.price.replace('£', '').replace(',', ''));
     return sum + (price * item.quantity);
   }, 0);
 
