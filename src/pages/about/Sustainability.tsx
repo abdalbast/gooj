@@ -17,21 +17,21 @@ const Sustainability = () => {
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
         <PageHeader 
           title="Sustainability" 
-          subtitle="Creating beautiful jewelry while protecting our planet for future generations"
+          subtitle="Thoughtful gifting that's kind to the planet"
         />
         
-        <ContentSection title="Our Environmental Commitment">
+        <ContentSection title="Our Commitment">
           <div className="grid md:grid-cols-2 gap-12 mb-16">
             <div className="space-y-6">
               <h3 className="text-xl font-light text-foreground">Ethical Sourcing</h3>
               <p className="text-muted-foreground leading-relaxed">
-                We partner only with suppliers who share our commitment to ethical practices. Every gemstone and precious metal in our collection is sourced responsibly, with full transparency in our supply chain.
+                We partner with suppliers who share our values. Every product in our gift boxes is sourced from responsible brands with transparent supply chains, ensuring quality and ethics go hand in hand.
               </p>
             </div>
             <div className="space-y-6">
-              <h3 className="text-xl font-light text-foreground">Recycled Materials</h3>
+              <h3 className="text-xl font-light text-foreground">Sustainable Packaging</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Over 80% of our precious metals come from recycled sources, reducing the environmental impact of mining while maintaining the highest quality standards for our jewelry.
+                Our boxes are crafted from recycled and recyclable materials. We've eliminated single-use plastics from our packaging, replacing them with biodegradable alternatives that still deliver a premium unboxing experience.
               </p>
             </div>
           </div>
@@ -41,61 +41,38 @@ const Sustainability = () => {
             <div className="grid md:grid-cols-3 gap-8">
               <div>
                 <div className="text-3xl font-light text-primary mb-2">100%</div>
-                <p className="text-sm text-muted-foreground">Carbon neutral operations by 2025</p>
-              </div>
-              <div>
-                <div className="text-3xl font-light text-primary mb-2">90%</div>
-                <p className="text-sm text-muted-foreground">Recycled packaging materials</p>
+                <p className="text-sm text-muted-foreground">Recyclable packaging by 2026</p>
               </div>
               <div>
                 <div className="text-3xl font-light text-primary mb-2">Zero</div>
-                <p className="text-sm text-muted-foreground">Waste to landfill policy</p>
+                <p className="text-sm text-muted-foreground">Single-use plastic in our boxes</p>
+              </div>
+              <div>
+                <div className="text-3xl font-light text-primary mb-2">50%</div>
+                <p className="text-sm text-muted-foreground">Carbon offset on all deliveries</p>
               </div>
             </div>
           </div>
         </ContentSection>
 
-        <ContentSection title="Circular Economy">
+        <ContentSection title="Responsible Gifting">
           <div className="space-y-8">
             <p className="text-lg text-muted-foreground leading-relaxed">
-              We believe in the power of circular design - creating jewelry that can be treasured, repaired, and eventually recycled into new pieces.
+              We believe gifting should feel good — for the person giving, the person receiving, and the planet.
             </p>
             
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Lifetime Care</h3>
+                <h3 className="text-lg font-light text-foreground">Quality Over Quantity</h3>
                 <p className="text-muted-foreground">
-                  Every piece comes with our lifetime care promise, including professional cleaning, repairs, and resizing services.
+                  Every item is chosen for its quality and longevity. We'd rather include one beautiful keepsake than fill a box with throwaway items.
                 </p>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Take-Back Program</h3>
+                <h3 className="text-lg font-light text-foreground">Local & Independent</h3>
                 <p className="text-muted-foreground">
-                  When you're ready for something new, we'll take back your LINEA jewelry to be recycled into future pieces.
+                  We prioritise UK-based and independent brands, supporting small businesses while reducing our carbon footprint.
                 </p>
-              </div>
-            </div>
-          </div>
-        </ContentSection>
-
-        <ContentSection title="Certifications & Partnerships">
-          <div className="space-y-8">
-            <p className="text-muted-foreground leading-relaxed">
-              Our commitment to sustainability is verified through partnerships with leading organizations and certifications that hold us accountable to the highest standards.
-            </p>
-            
-            <div className="grid md:grid-cols-4 gap-8 items-center">
-              <div className="h-16 w-32 bg-muted/10 rounded-lg flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">RJC Certified</span>
-              </div>
-              <div className="h-16 w-32 bg-muted/10 rounded-lg flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">B Corp</span>
-              </div>
-              <div className="h-16 w-32 bg-muted/10 rounded-lg flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">SCS Certified</span>
-              </div>
-              <div className="h-16 w-32 bg-muted/10 rounded-lg flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">Fair Trade</span>
               </div>
             </div>
           </div>

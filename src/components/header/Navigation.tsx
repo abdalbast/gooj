@@ -24,31 +24,30 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
   
-  // Shopping bag state with 3 mock items
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
-      name: "Pantheon",
-      price: "£2,250",
+      name: "The Birthday Box",
+      price: "£65",
       image: pantheonImage,
       quantity: 1,
-      category: "Cables"
+      category: "Gift Boxes"
     },
     {
       id: 2,
-      name: "Eclipse",
-      price: "£2,550", 
+      name: "The Anniversary Box",
+      price: "£85", 
       image: eclipseImage,
       quantity: 1,
-      category: "Adapters"
+      category: "Gift Boxes"
     },
     {
       id: 3,
-      name: "Halo",
-      price: "£1,550",
+      name: "The Just Because Box",
+      price: "£45",
       image: haloImage, 
       quantity: 1,
-      category: "Cables"
+      category: "Gift Boxes"
     }
   ]);
 
@@ -66,7 +65,6 @@ const Navigation = () => {
     }
   };
   
-  // Preload dropdown images for faster display
   useEffect(() => {
     const imagesToPreload = [
       "/rings-collection.png",
@@ -83,12 +81,12 @@ const Navigation = () => {
   }, []);
 
   const popularSearches = [
-    "Gold Rings",
-    "Silver Necklaces", 
-    "Pearl Earrings",
-    "Designer Bracelets",
-    "Wedding Rings",
-    "Vintage Collection"
+    "Birthday Gift",
+    "Anniversary Box", 
+    "Gift for Mum",
+    "Personalised Box",
+    "Luxury Gift Set",
+    "Last Minute Gift"
   ];
   
   const navItems = [
@@ -96,30 +94,30 @@ const Navigation = () => {
       name: "Shop", 
       href: "/category/shop",
       submenuItems: [
-        "Rings",
-        "Necklaces", 
-        "Earrings",
-        "Bracelets",
-        "Watches"
+        "For Her Birthday",
+        "For Mum", 
+        "For Partner",
+        "Anniversary",
+        "Just Because"
       ],
       images: [
-        { src: "/rings-collection.png", alt: "Rings Collection", label: "Rings" },
-        { src: "/earrings-collection.png", alt: "Earrings Collection", label: "Earrings" }
+        { src: "/rings-collection.png", alt: "Birthday Gift Box", label: "Birthday Boxes" },
+        { src: "/earrings-collection.png", alt: "Anniversary Gift Box", label: "Anniversary Boxes" }
       ]
     },
     { 
       name: "New in", 
       href: "/category/new-in",
       submenuItems: [
-        "This Week's Arrivals",
-        "Spring Collection",
-        "Featured Designers",
+        "This Week's Boxes",
+        "Seasonal Collection",
         "Limited Edition",
-        "Pre-Orders"
+        "Personalised",
+        "Best Sellers"
       ],
       images: [
-        { src: "/arcus-bracelet.png", alt: "Arcus Bracelet", label: "Arcus Bracelet" },
-        { src: "/span-bracelet.png", alt: "Span Bracelet", label: "Span Bracelet" }
+        { src: "/arcus-bracelet.png", alt: "New Gift Box", label: "Spring Collection" },
+        { src: "/span-bracelet.png", alt: "Limited Edition Box", label: "Limited Edition" }
       ]
     },
     { 
@@ -133,7 +131,7 @@ const Navigation = () => {
         "Store Locator"
       ],
       images: [
-        { src: "/founders.png", alt: "Company Founders", label: "Read our story" }
+        { src: "/founders.png", alt: "The GOOJ Story", label: "Read our story" }
       ]
     }
   ];
@@ -147,7 +145,6 @@ const Navigation = () => {
       }}
     >
       <div className="flex items-center justify-between h-16 px-6">
-        {/* Mobile hamburger button */}
         <button
           className="lg:hidden p-2 mt-0.5 text-nav-foreground hover:text-nav-hover transition-colors duration-200"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -166,7 +163,6 @@ const Navigation = () => {
           </div>
         </button>
 
-        {/* Left navigation - Hidden on tablets and mobile */}
         <div className="hidden lg:flex space-x-8">
           {navItems.map((item) => (
             <div
@@ -185,14 +181,12 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* Center logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
           <Link to="/" className="block">
             <span className="text-xl font-light tracking-wider">GOOJ</span>
           </Link>
         </div>
 
-        {/* Right icons */}
         <div className="flex items-center space-x-2">
           <button 
             className="p-2 text-nav-foreground hover:text-nav-hover transition-colors duration-200"
@@ -229,7 +223,6 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* Full width dropdown */}
       {activeDropdown && (
         <div 
           className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
@@ -238,7 +231,6 @@ const Navigation = () => {
         >
           <div className="px-6 py-8">
             <div className="flex justify-between w-full">
-              {/* Left side - Menu items */}
               <div className="flex-1">
                 <ul className="space-y-2">
                    {navItems
@@ -246,7 +238,7 @@ const Navigation = () => {
                      ?.submenuItems.map((subItem, index) => (
                       <li key={index}>
                         <Link 
-                          to={activeDropdown === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase()}`}
+                          to={activeDropdown === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
                           className="text-nav-foreground hover:text-nav-hover transition-colors duration-200 text-sm font-light block py-2"
                         >
                           {subItem}
@@ -256,19 +248,15 @@ const Navigation = () => {
                 </ul>
               </div>
 
-              {/* Right side - Images */}
               <div className="flex space-x-6">
                 {navItems
                   .find(item => item.name === activeDropdown)
                   ?.images.map((image, index) => {
-                    // Determine the link destination based on dropdown and image
                     let linkTo = "/";
                     if (activeDropdown === "Shop") {
-                      if (image.label === "Rings") linkTo = "/category/rings";
-                      else if (image.label === "Earrings") linkTo = "/category/earrings";
+                      linkTo = "/category/shop";
                     } else if (activeDropdown === "New in") {
-                      if (image.label === "Arcus Bracelet") linkTo = "/product/arcus-bracelet";
-                      else if (image.label === "Span Bracelet") linkTo = "/product/span-bracelet";
+                      linkTo = "/category/new-in";
                     } else if (activeDropdown === "About") {
                       linkTo = "/about/our-story";
                     }
@@ -295,14 +283,12 @@ const Navigation = () => {
         </div>
       )}
 
-      {/* Search overlay */}
       {isSearchOpen && (
         <div 
           className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
         >
           <div className="px-6 py-8">
             <div className="max-w-2xl mx-auto">
-              {/* Search input */}
               <div className="relative mb-8">
                 <div className="flex items-center border-b border-border pb-2">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-nav-foreground mr-3">
@@ -310,14 +296,13 @@ const Navigation = () => {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Search for jewelry..."
+                    placeholder="Search for gift boxes..."
                     className="flex-1 bg-transparent text-nav-foreground placeholder:text-nav-foreground/60 outline-none text-lg"
                     autoFocus
                   />
                 </div>
               </div>
 
-              {/* Popular searches */}
               <div>
                 <h3 className="text-nav-foreground text-sm font-light mb-4">Popular Searches</h3>
                 <div className="flex flex-wrap gap-3">
@@ -336,12 +321,11 @@ const Navigation = () => {
         </div>
       )}
 
-      {/* Mobile navigation menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50">
           <div className="px-6 py-8">
             <div className="space-y-6">
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <div key={item.name}>
                   <Link
                     to={item.href}
@@ -354,7 +338,7 @@ const Navigation = () => {
                      {item.submenuItems.map((subItem, subIndex) => (
                        <Link
                          key={subIndex}
-                         to={item.name === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase()}`}
+                         to={item.name === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
                          className="text-nav-foreground/70 hover:text-nav-hover text-sm font-light block py-1"
                          onClick={() => setIsMobileMenuOpen(false)}
                        >
@@ -369,7 +353,6 @@ const Navigation = () => {
         </div>
       )}
       
-      {/* Shopping Bag Component */}
       <ShoppingBag 
         isOpen={isShoppingBagOpen}
         onClose={() => setIsShoppingBagOpen(false)}
@@ -381,18 +364,14 @@ const Navigation = () => {
         }}
       />
       
-      {/* Favorites Off-canvas overlay */}
       {offCanvasType === 'favorites' && (
         <div className="fixed inset-0 z-50 h-screen">
-          {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/50 h-screen"
             onClick={() => setOffCanvasType(null)}
           />
           
-          {/* Off-canvas panel */}
           <div className="absolute right-0 top-0 h-screen w-96 bg-background border-l border-border animate-slide-in-right flex flex-col">
-            {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-lg font-light text-foreground">Your Favorites</h2>
               <button
@@ -404,10 +383,9 @@ const Navigation = () => {
               </button>
             </div>
             
-            {/* Content */}
             <div className="p-6">
               <p className="text-muted-foreground text-sm mb-6">
-                You haven't added any favorites yet. Browse our collection and click the heart icon to save items you love.
+                You haven't added any favorites yet. Browse our gift boxes and click the heart icon to save ones you love.
               </p>
             </div>
           </div>
