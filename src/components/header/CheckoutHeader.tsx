@@ -17,7 +17,7 @@ const CheckoutHeader = () => {
 
           {/* Center - Logo - Absolutely positioned to ensure perfect centering */}
           <Link to="/" className="absolute left-1/2 transform -translate-x-1/2">
-            <span className="text-xl font-light tracking-wider">GOOJ IT</span>
+            <span className="text-xl font-light tracking-wider">GOOJ</span>
           </Link>
 
           {/* Right side - Support */}

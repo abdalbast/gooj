@@ -188,7 +188,7 @@ const Navigation = () => {
         {/* Center logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
           <Link to="/" className="block">
-            <span className="text-xl font-light tracking-wider">GOOJ IT</span>
+            <span className="text-xl font-light tracking-wider">GOOJ</span>
           </Link>
         </div>
 
