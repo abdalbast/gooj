@@ -5,7 +5,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
           {/* Brand - Left side */}
           <div>
-            <h3 className="text-xl font-light mb-4">GOOJ IT</h3>
+            <h3 className="text-xl font-light mb-4">GOOJ</h3>
             <p className="text-sm font-light text-black/70 leading-relaxed max-w-md mb-6">
               Tech accessories for the modern individual
             </p>
@@ -68,7 +68,7 @@ const Footer = () => {
       <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2024 GOOJ IT. All rights reserved.
+            © 2024 GOOJ. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a href="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">
