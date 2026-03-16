@@ -29,26 +29,26 @@ const Navigation = () => {
     {
       id: 1,
       name: "Pantheon",
-      price: "€2,850",
+      price: "£2,250",
       image: pantheonImage,
       quantity: 1,
-      category: "Earrings"
+      category: "Cables"
     },
     {
       id: 2,
       name: "Eclipse",
-      price: "€3,200", 
+      price: "£2,550", 
       image: eclipseImage,
       quantity: 1,
-      category: "Bracelets"
+      category: "Adapters"
     },
     {
       id: 3,
       name: "Halo",
-      price: "€1,950",
+      price: "£1,550",
       image: haloImage, 
       quantity: 1,
-      category: "Earrings"
+      category: "Cables"
     }
   ]);
 
@@ -188,11 +188,7 @@ const Navigation = () => {
         {/* Center logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
           <Link to="/" className="block">
-            <img 
-              src="/LINEA-1.svg" 
-              alt="LINEA" 
-              className="h-6 w-auto"
-            />
+            <span className="text-xl font-light tracking-wider">GOOJ IT</span>
           </Link>
         </div>
 

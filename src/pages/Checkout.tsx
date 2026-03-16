@@ -50,16 +50,16 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "Pantheon Ring",
-      price: "€2,450",
+      name: "Pantheon Adapter",
+      price: "£1,850",
       quantity: 1,
       image: pantheonImage,
-      size: "54 EU / 7 US"
+      size: "USB-C / USB-A"
     },
     {
       id: 2,
-      name: "Eclipse Earrings", 
-      price: "€1,850",
+      name: "Eclipse Cable", 
+      price: "£1,450",
       quantity: 1,
       image: eclipseImage
     }
@@ -78,7 +78,7 @@ const Checkout = () => {
   };
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('€', '').replace(',', ''));
+    const price = parseFloat(item.price.replace('£', '').replace(',', ''));
     return sum + (price * item.quantity);
   }, 0);
 
@@ -220,7 +220,7 @@ const Checkout = () => {
                 <div className="border-t border-muted-foreground/20 mt-4 pt-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">€{subtotal.toLocaleString()}</span>
+                    <span className="text-foreground">£{subtotal.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
