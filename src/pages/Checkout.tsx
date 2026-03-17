@@ -54,14 +54,22 @@ const Checkout = () => {
       price: "£65",
       quantity: 1,
       image: pantheonImage,
-      size: "Personalised"
+      size: "Personalised",
+      hasPhoto: true,
+      hasMessage: true,
+      message: "Happy Birthday! Wishing you the most wonderful day...",
+      handwrittenNote: true,
     },
     {
       id: 2,
       name: "The Anniversary Box", 
       price: "£85",
       quantity: 1,
-      image: eclipseImage
+      image: eclipseImage,
+      hasPhoto: false,
+      hasMessage: false,
+      message: "",
+      handwrittenNote: false,
     }
   ]);
 
