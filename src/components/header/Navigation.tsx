@@ -24,6 +24,20 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
   
+  // Lock body scroll when any overlay is open
+  const isAnyOverlayOpen = activeDropdown !== null || isSearchOpen || isMobileMenuOpen || isShoppingBagOpen || offCanvasType !== null;
+  
+  useEffect(() => {
+    if (isAnyOverlayOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isAnyOverlayOpen]);
+
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -223,9 +237,17 @@ const Navigation = () => {
         </div>
       </div>
 
+      {/* Dropdown backdrop */}
       {activeDropdown && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
+          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          onClick={() => setActiveDropdown(null)}
+        />
+      )}
+
+      {activeDropdown && (
+        <div 
+          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in"
           onMouseEnter={() => setActiveDropdown(activeDropdown)}
           onMouseLeave={() => setActiveDropdown(null)}
         >
@@ -283,9 +305,17 @@ const Navigation = () => {
         </div>
       )}
 
+      {/* Search backdrop */}
       {isSearchOpen && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
+          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          onClick={() => setIsSearchOpen(false)}
+        />
+      )}
+
+      {isSearchOpen && (
+        <div 
+          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in"
         >
           <div className="px-6 py-8">
             <div className="max-w-2xl mx-auto">
@@ -321,8 +351,16 @@ const Navigation = () => {
         </div>
       )}
 
+      {/* Mobile menu backdrop */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50">
+        <div 
+          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in">
           <div className="px-6 py-8">
             <div className="space-y-6">
               {navItems.map((item) => (
@@ -367,7 +405,7 @@ const Navigation = () => {
       {offCanvasType === 'favorites' && (
         <div className="fixed inset-0 z-50 h-screen">
           <div 
-            className="absolute inset-0 bg-black/50 h-screen"
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm h-screen transition-opacity duration-300"
             onClick={() => setOffCanvasType(null)}
           />
           
