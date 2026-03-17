@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Minus, Plus, CreditCard, Check } from "lucide-react";
+import { Minus, Plus, CreditCard, Check, ImageIcon, MessageSquare, PenLine } from "lucide-react";
 import CheckoutHeader from "../components/header/CheckoutHeader";
 import Footer from "../components/footer/Footer";
 import { Button } from "@/components/ui/button";
@@ -54,14 +54,22 @@ const Checkout = () => {
       price: "£65",
       quantity: 1,
       image: pantheonImage,
-      size: "Personalised"
+      size: "Personalised",
+      hasPhoto: true,
+      hasMessage: true,
+      message: "Happy Birthday! Wishing you the most wonderful day...",
+      handwrittenNote: true,
     },
     {
       id: 2,
       name: "The Anniversary Box", 
       price: "£85",
       quantity: 1,
-      image: eclipseImage
+      image: eclipseImage,
+      hasPhoto: false,
+      hasMessage: false,
+      message: "",
+      handwrittenNote: false,
     }
   ]);
 
@@ -155,6 +163,25 @@ const Checkout = () => {
                         <h3 className="font-light text-foreground">{item.name}</h3>
                         {item.size && (
                           <p className="text-sm text-muted-foreground">Size: {item.size}</p>
+                        )}
+                        {(item.hasPhoto || item.hasMessage || item.handwrittenNote) && (
+                          <div className="mt-1 space-y-0.5">
+                            {item.hasPhoto && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <ImageIcon className="h-3 w-3" /> Photo included
+                              </p>
+                            )}
+                            {item.hasMessage && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <MessageSquare className="h-3 w-3" /> {item.message?.slice(0, 40)}...
+                              </p>
+                            )}
+                            {item.handwrittenNote && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <PenLine className="h-3 w-3" /> Handwritten card
+                              </p>
+                            )}
+                          </div>
                         )}
                         
                         {/* Quantity controls */}
