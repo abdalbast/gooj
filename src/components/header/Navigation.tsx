@@ -24,6 +24,23 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
   
+  // Lock body scroll when any overlay is open
+  const isAnyOverlayOpen = activeDropdown !== null || isSearchOpen || isMobileMenuOpen || isShoppingBagOpen || offCanvasType !== null;
+  
+  useEffect(() => {
+    if (isAnyOverlayOpen) {
+      document.body.style.overflow = 'hidden';
+      document.getElementById('main-content')?.classList.add('blur-active');
+    } else {
+      document.body.style.overflow = '';
+      document.getElementById('main-content')?.classList.remove('blur-active');
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.getElementById('main-content')?.classList.remove('blur-active');
+    };
+  }, [isAnyOverlayOpen]);
+
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
