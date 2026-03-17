@@ -164,6 +164,25 @@ const Checkout = () => {
                         {item.size && (
                           <p className="text-sm text-muted-foreground">Size: {item.size}</p>
                         )}
+                        {(item.hasPhoto || item.hasMessage || item.handwrittenNote) && (
+                          <div className="mt-1 space-y-0.5">
+                            {item.hasPhoto && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <ImageIcon className="h-3 w-3" /> Photo included
+                              </p>
+                            )}
+                            {item.hasMessage && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <MessageSquare className="h-3 w-3" /> {item.message?.slice(0, 40)}...
+                              </p>
+                            )}
+                            {item.handwrittenNote && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <PenLine className="h-3 w-3" /> Handwritten card
+                              </p>
+                            )}
+                          </div>
+                        )}
                         
                         {/* Quantity controls */}
                         <div className="flex items-center gap-2 mt-2">
