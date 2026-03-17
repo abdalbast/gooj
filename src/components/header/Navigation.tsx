@@ -408,7 +408,7 @@ const Navigation = () => {
       {offCanvasType === 'favorites' && (
         <div className="fixed inset-0 z-50 h-screen">
           <div 
-            className="absolute inset-0 bg-black/50 h-screen"
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm h-screen transition-opacity duration-300"
             onClick={() => setOffCanvasType(null)}
           />
           
