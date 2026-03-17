@@ -10,12 +10,25 @@ import {
   BreadcrumbSeparator 
 } from "@/components/ui/breadcrumb";
 import { Minus, Plus } from "lucide-react";
+import GiftPersonalisation from "./GiftPersonalisation";
 
 const ProductInfo = () => {
   const [quantity, setQuantity] = useState(1);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [handwrittenNote, setHandwrittenNote] = useState(false);
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
+
+  const handlePhotoChange = (file: File | null) => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhoto(file);
+    setPhotoPreview(file ? URL.createObjectURL(file) : null);
+  };
 
   return (
     <div className="space-y-6">
@@ -77,6 +90,17 @@ const ProductInfo = () => {
           <p className="text-sm font-light text-muted-foreground italic">"A modern interpretation of classical architecture, these earrings bridge timeless elegance with contemporary minimalism."</p>
         </div>
       </div>
+
+      {/* Personalisation */}
+      <GiftPersonalisation
+        photo={photo}
+        photoPreview={photoPreview}
+        message={message}
+        handwrittenNote={handwrittenNote}
+        onPhotoChange={handlePhotoChange}
+        onMessageChange={setMessage}
+        onHandwrittenNoteChange={setHandwrittenNote}
+      />
 
       {/* Quantity and Add to Cart */}
       <div className="space-y-4">
