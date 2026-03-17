@@ -30,14 +30,11 @@ const Navigation = () => {
   useEffect(() => {
     if (isAnyOverlayOpen) {
       document.body.style.overflow = 'hidden';
-      document.getElementById('main-content')?.classList.add('blur-active');
     } else {
       document.body.style.overflow = '';
-      document.getElementById('main-content')?.classList.remove('blur-active');
     }
     return () => {
       document.body.style.overflow = '';
-      document.getElementById('main-content')?.classList.remove('blur-active');
     };
   }, [isAnyOverlayOpen]);
 
