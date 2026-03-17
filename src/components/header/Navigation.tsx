@@ -240,9 +240,17 @@ const Navigation = () => {
         </div>
       </div>
 
+      {/* Dropdown backdrop */}
       {activeDropdown && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50"
+          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          onClick={() => setActiveDropdown(null)}
+        />
+      )}
+
+      {activeDropdown && (
+        <div 
+          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in"
           onMouseEnter={() => setActiveDropdown(activeDropdown)}
           onMouseLeave={() => setActiveDropdown(null)}
         >
