@@ -354,8 +354,16 @@ const Navigation = () => {
         </div>
       )}
 
+      {/* Mobile menu backdrop */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50">
+        <div 
+          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in">
           <div className="px-6 py-8">
             <div className="space-y-6">
               {navItems.map((item) => (
