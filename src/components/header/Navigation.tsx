@@ -240,28 +240,28 @@ const Navigation = () => {
       {/* Dropdown backdrop */}
       {activeDropdown && (
         <div 
-          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-300"
           onClick={() => setActiveDropdown(null)}
         />
       )}
 
       {activeDropdown && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in"
+          className="absolute top-full left-0 right-0 bg-white/90 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
           onMouseEnter={() => setActiveDropdown(activeDropdown)}
           onMouseLeave={() => setActiveDropdown(null)}
         >
-          <div className="px-6 py-8">
+          <div className="px-6 py-8 max-w-7xl mx-auto">
             <div className="flex justify-between w-full">
               <div className="flex-1">
                 <ul className="space-y-2">
                    {navItems
                      .find(item => item.name === activeDropdown)
                      ?.submenuItems.map((subItem, index) => (
-                      <li key={index}>
+                      <li key={index} className="transform transition-all duration-300 delay-[50ms] translate-y-0 opacity-100 starting:-translate-y-2 starting:opacity-0">
                         <Link 
                           to={activeDropdown === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="text-nav-foreground hover:text-nav-hover transition-colors duration-200 text-sm font-light block py-2"
+                          className="text-gray-600 hover:text-black transition-colors duration-200 text-[15px] font-medium block py-2"
                         >
                           {subItem}
                         </Link>
@@ -284,11 +284,11 @@ const Navigation = () => {
                     }
                     
                     return (
-                      <Link key={index} to={linkTo} className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden block">
+                      <Link key={index} to={linkTo} className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden block rounded-2xl transform transition-all duration-500 delay-100 translate-y-0 opacity-100 starting:translate-y-4 starting:opacity-0 bg-gray-100">
                         <img 
                           src={image.src}
                           alt={image.alt}
-                          className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
                         />
                         {(activeDropdown === "Shop" || activeDropdown === "New in" || activeDropdown === "About") && (
                           <div className="absolute bottom-2 left-2 text-white text-xs font-light flex items-center gap-1">
@@ -308,38 +308,38 @@ const Navigation = () => {
       {/* Search backdrop */}
       {isSearchOpen && (
         <div 
-          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-300"
           onClick={() => setIsSearchOpen(false)}
         />
       )}
 
       {isSearchOpen && (
         <div 
-          className="absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in"
+          className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
         >
-          <div className="px-6 py-8">
+          <div className="px-6 py-10">
             <div className="max-w-2xl mx-auto">
-              <div className="relative mb-8">
-                <div className="flex items-center border-b border-border pb-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-nav-foreground mr-3">
+              <div className="relative mb-10 transform transition-all duration-300 delay-75 translate-y-0 opacity-100 starting:-translate-y-4 starting:opacity-0">
+                <div className="flex items-center border-b border-gray-200 pb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-gray-400 mr-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                   </svg>
-                  <input
-                    type="text"
-                    placeholder="Search for gift boxes..."
-                    className="flex-1 bg-transparent text-nav-foreground placeholder:text-nav-foreground/60 outline-none text-lg"
-                    autoFocus
-                  />
+                    <input
+                      type="text"
+                      placeholder="Search for gift boxes..."
+                      className="flex-1 bg-transparent text-gray-900 placeholder:text-gray-400 outline-none text-2xl font-light"
+                      autoFocus
+                    />
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-nav-foreground text-sm font-light mb-4">Popular Searches</h3>
-                <div className="flex flex-wrap gap-3">
+              <div className="transform transition-all duration-300 delay-150 translate-y-0 opacity-100 starting:translate-y-4 starting:opacity-0">
+                <h3 className="text-gray-500 text-sm font-medium mb-4 uppercase tracking-wider">Popular Searches</h3>
+                <div className="flex flex-wrap gap-2">
                   {popularSearches.map((search, index) => (
                     <button
                       key={index}
-                      className="text-nav-foreground hover:text-nav-hover text-sm font-light py-2 px-4 border border-border rounded-full transition-colors duration-200 hover:border-nav-hover"
+                      className="text-gray-800 bg-gray-100 hover:bg-gray-200 text-[15px] font-medium py-2.5 px-5 rounded-full transition-colors duration-200"
                     >
                       {search}
                     </button>
@@ -354,14 +354,14 @@ const Navigation = () => {
       {/* Mobile menu backdrop */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50 animate-fade-in">
-          <div className="px-6 py-8">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="px-6 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
             <div className="space-y-6">
               {navItems.map((item) => (
                 <div key={item.name}>
