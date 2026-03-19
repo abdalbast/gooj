@@ -37,12 +37,6 @@ const Checkout = () => {
     country: ""
   });
   const [shippingOption, setShippingOption] = useState("standard");
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    cardholderName: ""
-  });
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
   
