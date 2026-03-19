@@ -116,9 +116,6 @@ const Checkout = () => {
     setBillingDetails(prev => ({ ...prev, [field]: value }));
   };
 
-  const handlePaymentDetailsChange = (field: string, value: string) => {
-    setPaymentDetails(prev => ({ ...prev, [field]: value }));
-  };
 
   const handleCompleteOrder = async () => {
     setIsProcessing(true);
