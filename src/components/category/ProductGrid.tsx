@@ -19,178 +19,31 @@ interface Product {
   isNew?: boolean;
 }
 
-// Extended product list for category page
 const products: Product[] = [
-  {
-    id: 1,
-    name: "Pantheon",
-    category: "Earrings",
-    price: "€2,850",
-    image: pantheonImage,
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Eclipse",
-    category: "Bracelets",
-    price: "€3,200",
-    image: eclipseImage,
-  },
-  {
-    id: 3,
-    name: "Halo",
-    category: "Earrings",
-    price: "€1,950",
-    image: haloImage,
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Oblique",
-    category: "Earrings",
-    price: "€1,650",
-    image: obliqueImage,
-  },
-  {
-    id: 5,
-    name: "Lintel",
-    category: "Earrings",
-    price: "€2,250",
-    image: lintelImage,
-  },
-  {
-    id: 6,
-    name: "Shadowline",
-    category: "Bracelets",
-    price: "€3,950",
-    image: shadowlineImage,
-  },
-  {
-    id: 7,
-    name: "Meridian",
-    category: "Earrings",
-    price: "€2,450",
-    image: pantheonImage,
-  },
-  {
-    id: 8,
-    name: "Vertex",
-    category: "Bracelets",
-    price: "€2,800",
-    image: eclipseImage,
-  },
-  {
-    id: 9,
-    name: "Apex",
-    category: "Earrings",
-    price: "€1,550",
-    image: haloImage,
-  },
-  {
-    id: 10,
-    name: "Zenith",
-    category: "Earrings",
-    price: "€1,850",
-    image: obliqueImage,
-  },
-  {
-    id: 11,
-    name: "Prism",
-    category: "Earrings",
-    price: "€2,050",
-    image: lintelImage,
-  },
-  {
-    id: 12,
-    name: "Radiant",
-    category: "Bracelets",
-    price: "€3,650",
-    image: shadowlineImage,
-  },
-  {
-    id: 13,
-    name: "Stellar",
-    category: "Earrings",
-    price: "€2,150",
-    image: pantheonImage,
-  },
-  {
-    id: 14,
-    name: "Cosmos",
-    category: "Bracelets",
-    price: "€2,950",
-    image: eclipseImage,
-  },
-  {
-    id: 15,
-    name: "Aurora",
-    category: "Earrings",
-    price: "€1,750",
-    image: haloImage,
-  },
-  {
-    id: 16,
-    name: "Nebula",
-    category: "Earrings",
-    price: "€1,850",
-    image: obliqueImage,
-  },
-  {
-    id: 17,
-    name: "Orbit",
-    category: "Earrings",
-    price: "€2,350",
-    image: lintelImage,
-  },
-  {
-    id: 18,
-    name: "Galaxy",
-    category: "Bracelets",
-    price: "€3,450",
-    image: shadowlineImage,
-  },
-  {
-    id: 19,
-    name: "Lunar",
-    category: "Earrings",
-    price: "€2,050",
-    image: pantheonImage,
-  },
-  {
-    id: 20,
-    name: "Solar",
-    category: "Bracelets",
-    price: "€3,150",
-    image: eclipseImage,
-  },
-  {
-    id: 21,
-    name: "Astral",
-    category: "Earrings",
-    price: "€1,650",
-    image: haloImage,
-  },
-  {
-    id: 22,
-    name: "Cosmic",
-    category: "Earrings",
-    price: "€1,950",
-    image: obliqueImage,
-  },
-  {
-    id: 23,
-    name: "Celestial",
-    category: "Earrings",
-    price: "€2,250",
-    image: lintelImage,
-  },
-  {
-    id: 24,
-    name: "Ethereal",
-    category: "Bracelets",
-    price: "€3,750",
-    image: shadowlineImage,
-  },
+  { id: 1, name: "The Birthday Box", category: "Gift Boxes", price: "£65", image: pantheonImage, isNew: true },
+  { id: 2, name: "The Anniversary Box", category: "Gift Boxes", price: "£85", image: eclipseImage },
+  { id: 3, name: "The Mum Box", category: "Gift Boxes", price: "£55", image: haloImage, isNew: true },
+  { id: 4, name: "The Just Because Box", category: "Gift Boxes", price: "£45", image: obliqueImage },
+  { id: 5, name: "The Luxury Box", category: "Luxury Boxes", price: "£120", image: lintelImage },
+  { id: 6, name: "The Partner Box", category: "Gift Boxes", price: "£75", image: shadowlineImage },
+  { id: 7, name: "The Pamper Box", category: "Gift Boxes", price: "£58", image: pantheonImage },
+  { id: 8, name: "The Date Night Box", category: "Luxury Boxes", price: "£95", image: eclipseImage },
+  { id: 9, name: "The Thank You Box", category: "Gift Boxes", price: "£42", image: haloImage },
+  { id: 10, name: "The New Mum Box", category: "Gift Boxes", price: "£68", image: obliqueImage },
+  { id: 11, name: "The Wellness Box", category: "Gift Boxes", price: "£52", image: lintelImage },
+  { id: 12, name: "The Christmas Box", category: "Luxury Boxes", price: "£110", image: shadowlineImage },
+  { id: 13, name: "The Valentine's Box", category: "Gift Boxes", price: "£72", image: pantheonImage },
+  { id: 14, name: "The Engagement Box", category: "Luxury Boxes", price: "£98", image: eclipseImage },
+  { id: 15, name: "The Self-Care Box", category: "Gift Boxes", price: "£48", image: haloImage },
+  { id: 16, name: "The Bridesmaid Box", category: "Gift Boxes", price: "£55", image: obliqueImage },
+  { id: 17, name: "The Graduation Box", category: "Gift Boxes", price: "£62", image: lintelImage },
+  { id: 18, name: "The Corporate Box", category: "Luxury Boxes", price: "£105", image: shadowlineImage },
+  { id: 19, name: "The Get Well Box", category: "Gift Boxes", price: "£50", image: pantheonImage },
+  { id: 20, name: "The New Home Box", category: "Gift Boxes", price: "£78", image: eclipseImage },
+  { id: 21, name: "The Sister Box", category: "Gift Boxes", price: "£52", image: haloImage },
+  { id: 22, name: "The Best Friend Box", category: "Gift Boxes", price: "£58", image: obliqueImage },
+  { id: 23, name: "The Seasonal Box", category: "Gift Boxes", price: "£65", image: lintelImage },
+  { id: 24, name: "The Ultimate Box", category: "Luxury Boxes", price: "£150", image: shadowlineImage },
 ];
 
 const ProductGrid = () => {
@@ -210,7 +63,7 @@ const ProductGrid = () => {
                       className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-0"
                     />
                     <img
-                      src={product.category === "Earrings" ? organicEarring : linkBracelet}
+                      src={product.id % 2 === 0 ? organicEarring : linkBracelet}
                       alt={`${product.name} lifestyle`}
                       className="absolute inset-0 w-full h-full object-cover transition-all duration-300 opacity-0 group-hover:opacity-100"
                     />
