@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
@@ -27,22 +29,22 @@ const Footer = () => {
             <div>
               <h4 className="text-sm font-normal mb-4">Shop</h4>
               <ul className="space-y-2">
-                <li><a href="/category/new-in" className="text-sm font-light text-black/70 hover:text-black transition-colors">New In</a></li>
-                <li><a href="/category/for-her-birthday" className="text-sm font-light text-black/70 hover:text-black transition-colors">For Her Birthday</a></li>
-                <li><a href="/category/for-mum" className="text-sm font-light text-black/70 hover:text-black transition-colors">For Mum</a></li>
-                <li><a href="/category/anniversary" className="text-sm font-light text-black/70 hover:text-black transition-colors">Anniversary</a></li>
-                <li><a href="/category/just-because" className="text-sm font-light text-black/70 hover:text-black transition-colors">Just Because</a></li>
+                <li><Link to="/category/new-in" className="text-sm font-light text-black/70 hover:text-black transition-colors">New In</Link></li>
+                <li><Link to="/category/for-her-birthday" className="text-sm font-light text-black/70 hover:text-black transition-colors">For Her Birthday</Link></li>
+                <li><Link to="/category/for-mum" className="text-sm font-light text-black/70 hover:text-black transition-colors">For Mum</Link></li>
+                <li><Link to="/category/anniversary" className="text-sm font-light text-black/70 hover:text-black transition-colors">Anniversary</Link></li>
+                <li><Link to="/category/just-because" className="text-sm font-light text-black/70 hover:text-black transition-colors">Just Because</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-sm font-normal mb-4">Support</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Personalisation</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Delivery Info</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Returns</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">FAQs</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Contact</a></li>
+                <li><Link to="/about/gift-guide" className="text-sm font-light text-black/70 hover:text-black transition-colors">Gift Guide</Link></li>
+                <li><Link to="/about/customer-care" className="text-sm font-light text-black/70 hover:text-black transition-colors">Customer Care</Link></li>
+                <li><Link to="/reminders" className="text-sm font-light text-black/70 hover:text-black transition-colors">Date Reminders</Link></li>
+                <li><Link to="/about/customer-care" className="text-sm font-light text-black/70 hover:text-black transition-colors">Delivery Info</Link></li>
+                <li><Link to="/about/customer-care" className="text-sm font-light text-black/70 hover:text-black transition-colors">Returns</Link></li>
               </ul>
             </div>
 
@@ -64,12 +66,8 @@ const Footer = () => {
             © 2025 GOOJ. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <a href="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">
-              Privacy Policy
-            </a>
-            <a href="/terms-of-service" className="text-sm font-light text-black hover:text-black/70 transition-colors">
-              Terms of Service
-            </a>
+            <Link to="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-sm font-light text-black hover:text-black/70 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

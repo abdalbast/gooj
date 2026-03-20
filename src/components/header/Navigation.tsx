@@ -140,7 +140,7 @@ const Navigation = () => {
       submenuItems: [
         "Our Story",
         "Sustainability",
-        "Size Guide",
+        "Gift Guide",
         "Customer Care",
         "Store Locator"
       ],

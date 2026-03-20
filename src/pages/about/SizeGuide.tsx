@@ -5,7 +5,7 @@ import ContentSection from "../../components/about/ContentSection";
 import { Button } from "../../components/ui/button";
 import AboutSidebar from "../../components/about/AboutSidebar";
 
-const SizeGuide = () => {
+const GiftGuide = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -17,128 +17,103 @@ const SizeGuide = () => {
         
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
         <PageHeader 
-          title="Size Guide" 
-          subtitle="Find your perfect fit with our comprehensive sizing guide"
+          title="Gift Guide" 
+          subtitle="Not sure which box to choose? We've got you covered."
         />
         
-        <ContentSection title="Ring Sizing">
-          <div className="space-y-8">
-            <div className="bg-muted/10 rounded-lg p-8">
-              <h3 className="text-xl font-light text-foreground mb-6">How to Measure Your Ring Size</h3>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <h4 className="font-medium text-foreground">Method 1: Using a Ring You Own</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                    <li>Take a ring that fits comfortably on your desired finger</li>
-                    <li>Place it on a ruler and measure the inner diameter in millimeters</li>
-                    <li>Use our size chart below to find your size</li>
-                  </ol>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="font-medium text-foreground">Method 2: Using String or Paper</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                    <li>Wrap string or paper around your finger where the ring will sit</li>
-                    <li>Mark where the material overlaps</li>
-                    <li>Measure the length in millimeters</li>
-                    <li>Divide by 3.14 to get the diameter</li>
-                  </ol>
-                </div>
-              </div>
+        <ContentSection title="Choose by Occasion">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-muted/10 rounded-lg p-8 space-y-4">
+              <h3 className="text-xl font-light text-foreground">Birthday</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Go with The Birthday Box (£65) for a solid, no-fuss option. If you want to go all out, The Luxury Box (£120) will make a real statement.
+              </p>
+              <Button variant="outline" className="rounded-none" asChild>
+                <a href="/category/for-her-birthday">Shop Birthday Boxes</a>
+              </Button>
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-border">
-                <thead>
-                  <tr className="bg-muted/20">
-                    <th className="border border-border p-3 text-left font-light">US Size</th>
-                    <th className="border border-border p-3 text-left font-light">UK Size</th>
-                    <th className="border border-border p-3 text-left font-light">EU Size</th>
-                    <th className="border border-border p-3 text-left font-light">Diameter (mm)</th>
-                    <th className="border border-border p-3 text-left font-light">Circumference (mm)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { us: "5", uk: "J", eu: "49", diameter: "15.6", circumference: "49.0" },
-                    { us: "5.5", uk: "K", eu: "50", diameter: "16.0", circumference: "50.2" },
-                    { us: "6", uk: "L", eu: "51", diameter: "16.4", circumference: "51.5" },
-                    { us: "6.5", uk: "M", eu: "52", diameter: "16.8", circumference: "52.8" },
-                    { us: "7", uk: "N", eu: "54", diameter: "17.2", circumference: "54.0" },
-                    { us: "7.5", uk: "O", eu: "55", diameter: "17.6", circumference: "55.3" },
-                    { us: "8", uk: "P", eu: "56", diameter: "18.0", circumference: "56.5" },
-                    { us: "8.5", uk: "Q", eu: "57", diameter: "18.4", circumference: "57.8" },
-                    { us: "9", uk: "R", eu: "59", diameter: "18.8", circumference: "59.1" }
-                  ].map((size, index) => (
-                    <tr key={index} className="hover:bg-muted/10">
-                      <td className="border border-border p-3">{size.us}</td>
-                      <td className="border border-border p-3">{size.uk}</td>
-                      <td className="border border-border p-3">{size.eu}</td>
-                      <td className="border border-border p-3">{size.diameter}</td>
-                      <td className="border border-border p-3">{size.circumference}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="bg-muted/10 rounded-lg p-8 space-y-4">
+              <h3 className="text-xl font-light text-foreground">Anniversary</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                The Anniversary Box (£85) strikes the right balance between romantic and practical. Add a photo for the frame insert to make it personal.
+              </p>
+              <Button variant="outline" className="rounded-none" asChild>
+                <a href="/category/anniversary">Shop Anniversary Boxes</a>
+              </Button>
+            </div>
+            <div className="bg-muted/10 rounded-lg p-8 space-y-4">
+              <h3 className="text-xl font-light text-foreground">For Mum</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                The Mum Box (£55) is packed with pampering treats she'll actually use. Works for Mother's Day, her birthday, or just to say thanks.
+              </p>
+              <Button variant="outline" className="rounded-none" asChild>
+                <a href="/category/for-mum">Shop Mum Boxes</a>
+              </Button>
+            </div>
+            <div className="bg-muted/10 rounded-lg p-8 space-y-4">
+              <h3 className="text-xl font-light text-foreground">Just Because</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                No occasion? No problem. The Just Because Box (£45) is a compact, thoughtful option for when you want to show you care — without overthinking it.
+              </p>
+              <Button variant="outline" className="rounded-none" asChild>
+                <a href="/category/just-because">Shop Just Because Boxes</a>
+              </Button>
             </div>
           </div>
         </ContentSection>
 
-        <ContentSection title="Bracelet & Necklace Sizing">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="space-y-6">
-              <h3 className="text-xl font-light text-foreground">Bracelet Sizes</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Small</span>
-                  <span className="text-foreground">6.5" - 7"</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Medium</span>
-                  <span className="text-foreground">7" - 7.5"</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Large</span>
-                  <span className="text-foreground">7.5" - 8"</span>
-                </div>
-              </div>
+        <ContentSection title="How It Works">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="space-y-3">
+              <div className="text-2xl font-light text-foreground">1</div>
+              <h4 className="text-lg font-light text-foreground">Pick a Box</h4>
+              <p className="text-muted-foreground text-sm">Choose by occasion, budget, or just go with your gut. Every box is curated with quality items she'll love.</p>
             </div>
-            
-            <div className="space-y-6">
-              <h3 className="text-xl font-light text-foreground">Necklace Lengths</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Choker</span>
-                  <span className="text-foreground">14" - 16"</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Princess</span>
-                  <span className="text-foreground">17" - 19"</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Matinee</span>
-                  <span className="text-foreground">20" - 24"</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border">
-                  <span className="text-muted-foreground">Opera</span>
-                  <span className="text-foreground">28" - 36"</span>
-                </div>
-              </div>
+            <div className="space-y-3">
+              <div className="text-2xl font-light text-foreground">2</div>
+              <h4 className="text-lg font-light text-foreground">Personalise It</h4>
+              <p className="text-muted-foreground text-sm">Upload a photo for the frame insert and write a personal message. We'll include a handwritten card — free of charge.</p>
+            </div>
+            <div className="space-y-3">
+              <div className="text-2xl font-light text-foreground">3</div>
+              <h4 className="text-lg font-light text-foreground">We Deliver</h4>
+              <p className="text-muted-foreground text-sm">Sit back while we handle the rest. Every box arrives gift-ready with premium packaging. Next day delivery available.</p>
             </div>
           </div>
         </ContentSection>
 
-        <ContentSection title="Need Help?">
+        <ContentSection title="Budget Guide">
+          <div className="space-y-4">
+            <div className="flex justify-between py-3 border-b border-border">
+              <span className="text-foreground font-light">Under £50</span>
+              <span className="text-muted-foreground text-sm">The Just Because Box, The Thank You Box</span>
+            </div>
+            <div className="flex justify-between py-3 border-b border-border">
+              <span className="text-foreground font-light">£50 – £75</span>
+              <span className="text-muted-foreground text-sm">The Birthday Box, The Mum Box, The Partner Box</span>
+            </div>
+            <div className="flex justify-between py-3 border-b border-border">
+              <span className="text-foreground font-light">£75 – £100</span>
+              <span className="text-muted-foreground text-sm">The Anniversary Box, The Date Night Box</span>
+            </div>
+            <div className="flex justify-between py-3 border-b border-border">
+              <span className="text-foreground font-light">£100+</span>
+              <span className="text-muted-foreground text-sm">The Luxury Box, The Ultimate Box</span>
+            </div>
+          </div>
+        </ContentSection>
+
+        <ContentSection title="Still Not Sure?">
           <div className="space-y-6">
             <p className="text-muted-foreground">
-              Still unsure about sizing? Our jewelry consultants are here to help you find the perfect fit. 
-              Download our printable size guide or schedule a virtual consultation.
+              Drop us a message and we'll help you pick the perfect box. Or set up a date reminder so you never miss an important occasion again.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="outline" className="rounded-none">
-                Download PDF Guide
+              <Button variant="outline" className="rounded-none" asChild>
+                <a href="/about/customer-care">Contact Us</a>
               </Button>
-              <Button className="rounded-none">
-                Schedule Consultation
+              <Button className="rounded-none" asChild>
+                <a href="/reminders">Set Up Date Reminders</a>
               </Button>
             </div>
           </div>
@@ -151,4 +126,4 @@ const SizeGuide = () => {
   );
 };
 
-export default SizeGuide;
+export default GiftGuide;
