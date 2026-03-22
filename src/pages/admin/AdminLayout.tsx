@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, Tag, FileText, ShoppingCart, Menu, X } from "lucide-react";
+import { LayoutDashboard, Package, Tag, FileText, ShoppingCart, Users, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,7 @@ const adminLinks = [
   { name: "Promotions", path: "/admin/promotions", icon: Tag },
   { name: "Content", path: "/admin/content", icon: FileText },
   { name: "Orders", path: "/admin/orders", icon: ShoppingCart },
+  { name: "Customers", path: "/admin/customers", icon: Users },
 ];
 
 const AdminLayout = () => {

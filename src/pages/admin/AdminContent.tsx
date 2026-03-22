@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContentBlock {
   id: string;
@@ -21,20 +22,32 @@ const initialContent: ContentBlock[] = [
 ];
 
 const AdminContent = () => {
+  const { toast } = useToast();
   const [content, setContent] = useState<ContentBlock[]>(initialContent);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ContentBlock | null>(null);
   const [form, setForm] = useState({ title: "", body: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const openEdit = (c: ContentBlock) => {
     setEditing(c);
     setForm({ title: c.title, body: c.body });
+    setErrors({});
     setDialogOpen(true);
   };
 
+  const validate = () => {
+    const errs: Record<string, string> = {};
+    if (!form.title.trim()) errs.title = "Title is required";
+    if (!form.body.trim()) errs.body = "Body text is required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const handleSave = () => {
-    if (!editing) return;
+    if (!editing || !validate()) return;
     setContent(cs => cs.map(c => c.id === editing.id ? { ...c, title: form.title, body: form.body } : c));
+    toast({ title: "Content updated", description: `${editing.section} has been saved.` });
     setDialogOpen(false);
   };
 
@@ -64,8 +77,14 @@ const AdminContent = () => {
             <DialogTitle className="font-light">Edit {editing?.section}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-4">
-            <Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Title" className="rounded-none" />
-            <Textarea value={form.body} onChange={e => setForm({...form, body: e.target.value})} placeholder="Body text" className="rounded-none min-h-[120px]" />
+            <div>
+              <Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Title *" className="rounded-none" />
+              {errors.title && <p className="text-xs text-destructive mt-1">{errors.title}</p>}
+            </div>
+            <div>
+              <Textarea value={form.body} onChange={e => setForm({...form, body: e.target.value})} placeholder="Body text *" className="rounded-none min-h-[120px]" />
+              {errors.body && <p className="text-xs text-destructive mt-1">{errors.body}</p>}
+            </div>
             <Button onClick={handleSave} className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90">Save Changes</Button>
           </div>
         </DialogContent>

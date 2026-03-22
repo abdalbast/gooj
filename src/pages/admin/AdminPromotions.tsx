@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 interface Promotion {
   id: string;
@@ -18,42 +20,80 @@ const initialPromotions: Promotion[] = [
   { id: "1", code: "GOOJIT20", discount: "20%", type: "Percentage", expiresAt: "2026-04-30", active: true },
   { id: "2", code: "FREEDELIVERY", discount: "Free Delivery", type: "Shipping", expiresAt: "2026-06-30", active: true },
   { id: "3", code: "SPRING10", discount: "£10 off", type: "Fixed", expiresAt: "2026-03-31", active: false },
+  { id: "4", code: "WELCOME15", discount: "15%", type: "Percentage", expiresAt: "2026-12-31", active: true },
+  { id: "5", code: "MUM5", discount: "£5 off", type: "Fixed", expiresAt: "2026-03-30", active: false },
 ];
 
 const AdminPromotions = () => {
+  const { toast } = useToast();
   const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPromo, setEditingPromo] = useState<Promotion | null>(null);
   const [form, setForm] = useState({ code: "", discount: "", type: "Percentage", expiresAt: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return promotions.filter(p => {
+      const matchesSearch = p.code.toLowerCase().includes(q);
+      const matchesStatus = statusFilter === "all" || (statusFilter === "active" ? p.active : !p.active);
+      return matchesSearch && matchesStatus;
+    });
+  }, [search, statusFilter, promotions]);
 
   const openAdd = () => {
     setEditingPromo(null);
     setForm({ code: "", discount: "", type: "Percentage", expiresAt: "" });
+    setErrors({});
     setDialogOpen(true);
   };
 
   const openEdit = (p: Promotion) => {
     setEditingPromo(p);
     setForm({ code: p.code, discount: p.discount, type: p.type, expiresAt: p.expiresAt });
+    setErrors({});
     setDialogOpen(true);
   };
 
+  const validate = () => {
+    const errs: Record<string, string> = {};
+    if (!form.code.trim()) errs.code = "Promo code is required";
+    else if (/\s/.test(form.code)) errs.code = "Code cannot contain spaces";
+    else if (form.code !== form.code.toUpperCase()) errs.code = "Code must be uppercase";
+    if (!form.discount.trim()) errs.discount = "Discount is required";
+    if (!form.expiresAt) errs.expiresAt = "Expiry date is required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const handleSave = () => {
-    if (!form.code || !form.discount) return;
+    if (!validate()) return;
     if (editingPromo) {
       setPromotions(ps => ps.map(p => p.id === editingPromo.id ? { ...p, ...form, active: p.active } : p));
+      toast({ title: "Promotion updated", description: `${form.code} has been saved.` });
     } else {
       setPromotions(ps => [...ps, { id: Date.now().toString(), ...form, active: true }]);
+      toast({ title: "Promotion created", description: `${form.code} is now active.` });
     }
     setDialogOpen(false);
   };
 
   const toggleActive = (id: string) => {
-    setPromotions(ps => ps.map(p => p.id === id ? { ...p, active: !p.active } : p));
+    setPromotions(ps => ps.map(p => {
+      if (p.id === id) {
+        const updated = { ...p, active: !p.active };
+        toast({ title: updated.active ? "Promotion activated" : "Promotion deactivated", description: p.code });
+        return updated;
+      }
+      return p;
+    }));
   };
 
-  const handleDelete = (id: string) => {
-    setPromotions(ps => ps.filter(p => p.id !== id));
+  const handleDelete = (p: Promotion) => {
+    setPromotions(ps => ps.filter(pr => pr.id !== p.id));
+    toast({ title: "Promotion deleted", description: `${p.code} has been removed.` });
   };
 
   return (
@@ -71,14 +111,40 @@ const AdminPromotions = () => {
               <DialogTitle className="font-light">{editingPromo ? "Edit Promotion" : "New Promotion"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
-              <Input value={form.code} onChange={e => setForm({...form, code: e.target.value.toUpperCase()})} placeholder="Discount code" className="rounded-none" />
-              <Input value={form.discount} onChange={e => setForm({...form, discount: e.target.value})} placeholder="Discount (e.g. 20% or £10 off)" className="rounded-none" />
+              <div>
+                <Input value={form.code} onChange={e => setForm({...form, code: e.target.value.toUpperCase().replace(/\s/g, "")})} placeholder="Discount code *" className="rounded-none font-mono" />
+                {errors.code && <p className="text-xs text-destructive mt-1">{errors.code}</p>}
+              </div>
+              <div>
+                <Input value={form.discount} onChange={e => setForm({...form, discount: e.target.value})} placeholder="Discount (e.g. 20% or £10 off) *" className="rounded-none" />
+                {errors.discount && <p className="text-xs text-destructive mt-1">{errors.discount}</p>}
+              </div>
               <Input value={form.type} onChange={e => setForm({...form, type: e.target.value})} placeholder="Type (Percentage, Fixed, Shipping)" className="rounded-none" />
-              <Input type="date" value={form.expiresAt} onChange={e => setForm({...form, expiresAt: e.target.value})} className="rounded-none" />
+              <div>
+                <Input type="date" value={form.expiresAt} onChange={e => setForm({...form, expiresAt: e.target.value})} className="rounded-none" />
+                {errors.expiresAt && <p className="text-xs text-destructive mt-1">{errors.expiresAt}</p>}
+              </div>
               <Button onClick={handleSave} className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90">Save</Button>
             </div>
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by code..." className="rounded-none pl-9" />
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="rounded-none w-[140px]">
+            <SelectValue placeholder="All" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="border border-border overflow-x-auto">
@@ -93,7 +159,7 @@ const AdminPromotions = () => {
             </tr>
           </thead>
           <tbody>
-            {promotions.map(p => (
+            {filtered.map(p => (
               <tr key={p.id} className="border-b border-border last:border-0 hover:bg-muted/10">
                 <td className="p-3 text-sm font-mono">{p.code}</td>
                 <td className="p-3 text-sm font-light">{p.discount}</td>
@@ -117,7 +183,7 @@ const AdminPromotions = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(p.id)}>Delete</AlertDialogAction>
+                          <AlertDialogAction onClick={() => handleDelete(p)}>Delete</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -125,6 +191,9 @@ const AdminPromotions = () => {
                 </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={5} className="p-6 text-center text-sm text-muted-foreground">No promotions found.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
