@@ -9,6 +9,7 @@ const adminLinks = [
   { name: "Promotions", path: "/admin/promotions", icon: Tag },
   { name: "Content", path: "/admin/content", icon: FileText },
   { name: "Orders", path: "/admin/orders", icon: ShoppingCart },
+  { name: "Customers", path: "/admin/customers", icon: Users },
 ];
 
 const AdminLayout = () => {
