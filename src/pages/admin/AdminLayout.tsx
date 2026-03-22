@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, Tag, FileText, ShoppingCart, Menu, X } from "lucide-react";
+import { LayoutDashboard, Package, Tag, FileText, ShoppingCart, Users, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
