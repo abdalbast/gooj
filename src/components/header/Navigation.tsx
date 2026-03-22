@@ -202,6 +202,12 @@ const Navigation = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          <Link
+            to="/admin"
+            className="hidden lg:inline-flex items-center rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-nav-foreground transition-colors duration-200 hover:border-black/20 hover:text-nav-hover"
+          >
+            Admin
+          </Link>
           <button 
             className="p-2 text-nav-foreground hover:text-nav-hover transition-colors duration-200"
             aria-label="Search"
@@ -383,9 +389,19 @@ const Navigation = () => {
                          {subItem}
                        </Link>
                      ))}
-                   </div>
+                  </div>
                 </div>
               ))}
+
+              <div className="border-t border-black/5 pt-6">
+                <Link
+                  to="/admin"
+                  className="text-nav-foreground hover:text-nav-hover transition-colors duration-200 text-lg font-light block py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              </div>
             </div>
           </div>
         </div>

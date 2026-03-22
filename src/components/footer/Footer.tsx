@@ -54,6 +54,7 @@ const Footer = () => {
                 <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
                 <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">TikTok</a></li>
                 <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
+                <li><Link to="/admin" className="text-sm font-light text-black/70 hover:text-black transition-colors">Admin Panel</Link></li>
               </ul>
             </div>
           </div>
