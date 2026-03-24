@@ -22,6 +22,10 @@ interface Product {
   image: string;
 }
 
+interface ProductCarouselProps {
+  id?: string;
+}
+
 const products: Product[] = [
   {
     id: 1,
@@ -67,9 +71,9 @@ const products: Product[] = [
   },
 ];
 
-const ProductCarousel = () => {
+const ProductCarousel = ({ id }: ProductCarouselProps) => {
   return (
-    <section className="w-full mb-16 px-6">
+    <section id={id} className="w-full mb-16 px-6 scroll-mt-24">
       <Carousel
           opts={{
             align: "start",

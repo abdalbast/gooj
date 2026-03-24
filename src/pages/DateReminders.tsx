@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Plus, Pencil, Trash2, Gift } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface Reminder {
 const OCCASIONS = ["Birthday", "Anniversary", "Mother's Day", "Valentine's Day", "Christmas", "Just Because", "Other"];
 
 const DateReminders = () => {
+  const { hash } = useLocation();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -34,6 +36,12 @@ const DateReminders = () => {
     const saved = localStorage.getItem("gooj-reminders");
     if (saved) setReminders(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    if (hash === "#add-date") {
+      setIsAdding(true);
+    }
+  }, [hash]);
 
   const saveReminders = (updated: Reminder[]) => {
     setReminders(updated);
@@ -90,52 +98,54 @@ const DateReminders = () => {
           </p>
         </div>
 
-        {!isAdding && (
-          <Button onClick={() => setIsAdding(true)} className="mb-8 rounded-none bg-foreground text-background hover:bg-foreground/90">
-            <Plus className="h-4 w-4 mr-2" /> Add a Date
-          </Button>
-        )}
+        <section id="add-date" className="scroll-mt-24">
+          {!isAdding && (
+            <Button onClick={() => setIsAdding(true)} className="mb-8 rounded-none bg-foreground text-background hover:bg-foreground/90">
+              <Plus className="h-4 w-4 mr-2" /> Add a Date
+            </Button>
+          )}
 
-        {isAdding && (
-          <div className="border border-border p-6 mb-8 space-y-4">
-            <h3 className="text-lg font-light text-foreground">{editingId ? "Edit Reminder" : "New Reminder"}</h3>
-            <div className="space-y-2">
-              <label className="text-sm font-light text-foreground">Recipient Name</label>
-              <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Sarah" className="rounded-none" />
+          {isAdding && (
+            <div className="border border-border p-6 mb-8 space-y-4">
+              <h3 className="text-lg font-light text-foreground">{editingId ? "Edit Reminder" : "New Reminder"}</h3>
+              <div className="space-y-2">
+                <label className="text-sm font-light text-foreground">Recipient Name</label>
+                <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Sarah" className="rounded-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-light text-foreground">Date</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none", !date && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus className="p-3 pointer-events-auto" />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-light text-foreground">Occasion</label>
+                <Select value={occasion} onValueChange={setOccasion}>
+                  <SelectTrigger className="rounded-none"><SelectValue placeholder="Select occasion" /></SelectTrigger>
+                  <SelectContent>
+                    {OCCASIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-light text-foreground">Notes (optional)</label>
+                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. She likes candles and chocolate" className="rounded-none" />
+              </div>
+              <div className="flex gap-3">
+                <Button onClick={handleSave} className="rounded-none bg-foreground text-background hover:bg-foreground/90">Save</Button>
+                <Button variant="outline" onClick={resetForm} className="rounded-none">Cancel</Button>
+              </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-light text-foreground">Date</label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none", !date && "text-muted-foreground")}>
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={date} onSelect={setDate} initialFocus className="p-3 pointer-events-auto" />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-light text-foreground">Occasion</label>
-              <Select value={occasion} onValueChange={setOccasion}>
-                <SelectTrigger className="rounded-none"><SelectValue placeholder="Select occasion" /></SelectTrigger>
-                <SelectContent>
-                  {OCCASIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-light text-foreground">Notes (optional)</label>
-              <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. She likes candles and chocolate" className="rounded-none" />
-            </div>
-            <div className="flex gap-3">
-              <Button onClick={handleSave} className="rounded-none bg-foreground text-background hover:bg-foreground/90">Save</Button>
-              <Button variant="outline" onClick={resetForm} className="rounded-none">Cancel</Button>
-            </div>
-          </div>
-        )}
+          )}
+        </section>
 
         {sortedReminders.length === 0 && !isAdding ? (
           <div className="text-center py-16 space-y-4">

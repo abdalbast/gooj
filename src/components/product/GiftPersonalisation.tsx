@@ -1,8 +1,10 @@
-import { useRef } from "react";
-import { ImagePlus, X, PenLine } from "lucide-react";
+import { useRef, useState } from "react";
+import { Crop, ImagePlus, RefreshCcw, X, PenLine } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import ProductPhotoCropDialog from "./ProductPhotoCropDialog";
 
 interface GiftPersonalisationProps {
   photo: File | null;
@@ -24,12 +26,15 @@ const GiftPersonalisation = ({
   onHandwrittenNoteChange,
 }: GiftPersonalisationProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
+  const [isCropOpen, setIsCropOpen] = useState(false);
   const maxChars = 200;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onPhotoChange(file);
+      setPendingPhoto(file);
+      setIsCropOpen(true);
     }
   };
 
@@ -37,6 +42,25 @@ const GiftPersonalisation = ({
     onPhotoChange(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const openFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleCropApply = (file: File) => {
+    onPhotoChange(file);
+    setPendingPhoto(null);
+  };
+
+  const handleCropOpenChange = (open: boolean) => {
+    setIsCropOpen(open);
+    if (!open) {
+      setPendingPhoto(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -58,27 +82,53 @@ const GiftPersonalisation = ({
           className="hidden"
         />
         {photoPreview ? (
-          <div className="relative w-24 h-24">
-            <img
-              src={photoPreview}
-              alt="Uploaded photo"
-              className="w-full h-full object-cover border border-border"
-            />
-            <button
-              onClick={removePhoto}
-              className="absolute -top-2 -right-2 w-5 h-5 bg-foreground text-background rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
-            >
-              <X className="h-3 w-3" />
-            </button>
+          <div className="flex items-start gap-4">
+            <div className="relative h-24 w-24 shrink-0">
+              <img
+                src={photoPreview}
+                alt="Uploaded photo"
+                className="h-full w-full border border-border object-cover"
+              />
+              <button
+                type="button"
+                onClick={removePhoto}
+                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-80"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs font-light text-muted-foreground">
+                Your photo is cropped to fit the square frame insert.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" className="rounded-none" onClick={() => {
+                  setPendingPhoto(photo);
+                  setIsCropOpen(true);
+                }} disabled={!photo}>
+                  <Crop className="mr-2 h-4 w-4" />
+                  Re-crop
+                </Button>
+                <Button type="button" variant="ghost" className="rounded-none" onClick={openFilePicker}>
+                  <RefreshCcw className="mr-2 h-4 w-4" />
+                  Replace photo
+                </Button>
+              </div>
+            </div>
           </div>
         ) : (
           <button
-            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            onClick={openFilePicker}
             className="w-full border border-dashed border-border py-6 flex flex-col items-center gap-2 hover:border-foreground/50 transition-colors"
           >
             <ImagePlus className="h-5 w-5 text-muted-foreground" />
             <span className="text-xs font-light text-muted-foreground">
               JPG, PNG or WEBP
+            </span>
+            <span className="text-xs font-light text-muted-foreground/80">
+              Upload, crop, and position your photo
             </span>
           </button>
         )}
@@ -113,6 +163,13 @@ const GiftPersonalisation = ({
           Include a handwritten card (free)
         </Label>
       </div>
+
+      <ProductPhotoCropDialog
+        file={pendingPhoto}
+        open={isCropOpen}
+        onOpenChange={handleCropOpenChange}
+        onApply={handleCropApply}
+      />
     </div>
   );
 };

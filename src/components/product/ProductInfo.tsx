@@ -81,15 +81,17 @@ const ProductInfo = () => {
         </div>
       </div>
 
-      <GiftPersonalisation
-        photo={photo}
-        photoPreview={photoPreview}
-        message={message}
-        handwrittenNote={handwrittenNote}
-        onPhotoChange={handlePhotoChange}
-        onMessageChange={setMessage}
-        onHandwrittenNoteChange={setHandwrittenNote}
-      />
+      <div id="personalisation" className="scroll-mt-24">
+        <GiftPersonalisation
+          photo={photo}
+          photoPreview={photoPreview}
+          message={message}
+          handwrittenNote={handwrittenNote}
+          onPhotoChange={handlePhotoChange}
+          onMessageChange={setMessage}
+          onHandwrittenNoteChange={setHandwrittenNote}
+        />
+      </div>
 
       <div className="space-y-4">
         <div className="flex items-center gap-4">
