@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import heroPoster from "@/assets/hero-poster.jpg";
-import heroVideoOne from "@/assets/hero-video-1.mp4";
-import heroVideoTwo from "@/assets/hero-video-2.mp4";
+import heroVideo from "@/assets/hero-video-1.mp4";
 
-const heroVideos = [heroVideoOne, heroVideoTwo];
-const DISSOLVE_DURATION_MS = 500;
 const CTA_ROTATE_MS = 6000;
 
 const heroCtas = [
@@ -33,14 +30,12 @@ const heroCtas = [
 ];
 
 const LargeHero = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [incomingIndex, setIncomingIndex] = useState<number | null>(null);
   const [activeCtaIndex, setActiveCtaIndex] = useState(0);
   const [preferStaticMedia, setPreferStaticMedia] = useState(() => import.meta.env.DEV);
-  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-  const transitionTimeoutRef = useRef<number | null>(null);
-  const isTransitioningRef = useRef(false);
+  const [isInViewport, setIsInViewport] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -70,83 +65,47 @@ const LargeHero = () => {
   }, []);
 
   useEffect(() => {
-    if (preferStaticMedia) {
+    if (preferStaticMedia || typeof window === "undefined") {
       return;
     }
 
-    const activeVideo = videoRefs.current[activeIndex];
-    const playActiveVideo = activeVideo?.play();
+    const section = sectionRef.current;
+    if (!section) {
+      return;
+    }
 
-    playActiveVideo?.catch(() => {
-      // Autoplay can be blocked in some environments even when muted.
-    });
-
-    const handleEnded = () => {
-      if (isTransitioningRef.current) {
-        return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsInViewport(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "240px 0px",
+        threshold: 0.15,
       }
+    );
 
-      const nextIndex = (activeIndex + 1) % heroVideos.length;
-      isTransitioningRef.current = true;
-      setIncomingIndex(nextIndex);
-      setIsTransitioning(true);
-    };
-
-    activeVideo?.addEventListener("ended", handleEnded);
+    observer.observe(section);
 
     return () => {
-      activeVideo?.removeEventListener("ended", handleEnded);
-
-      if (transitionTimeoutRef.current !== null) {
-        window.clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
+      observer.disconnect();
     };
-  }, [activeIndex, preferStaticMedia]);
+  }, [preferStaticMedia]);
 
   useEffect(() => {
-    if (preferStaticMedia) {
+    if (preferStaticMedia || !isInViewport) {
       return;
     }
 
-    if (incomingIndex === null) {
-      return;
-    }
+    const video = videoRef.current;
+    const playVideo = video?.play();
 
-    const activeVideo = videoRefs.current[activeIndex];
-    const incomingVideo = videoRefs.current[incomingIndex];
-
-    if (!incomingVideo) {
-      return;
-    }
-
-    incomingVideo.currentTime = 0;
-    const playIncomingVideo = incomingVideo.play();
-
-    playIncomingVideo?.catch(() => {
-      // Keep the current frame visible if the next video cannot autoplay.
+    playVideo?.catch(() => {
+      setPreferStaticMedia(true);
     });
-
-    transitionTimeoutRef.current = window.setTimeout(() => {
-      activeVideo?.pause();
-
-      if (activeVideo) {
-        activeVideo.currentTime = 0;
-      }
-
-      setActiveIndex(incomingIndex);
-      setIncomingIndex(null);
-      setIsTransitioning(false);
-      isTransitioningRef.current = false;
-    }, DISSOLVE_DURATION_MS);
-
-    return () => {
-      if (transitionTimeoutRef.current !== null) {
-        window.clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
-    };
-  }, [activeIndex, incomingIndex, preferStaticMedia]);
+  }, [isInViewport, preferStaticMedia]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -158,7 +117,7 @@ const LargeHero = () => {
     };
   }, []);
 
-  const visibleVideoIndexes = incomingIndex === null ? [activeIndex] : [activeIndex, incomingIndex];
+  const shouldRenderVideo = !preferStaticMedia && isInViewport;
 
   return (
     <section className="w-full mb-16 px-6">
@@ -170,42 +129,38 @@ const LargeHero = () => {
           }
         `}
       </style>
-      <div className="relative mb-3 overflow-hidden bg-[#f6f1eb] aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]">
-        {preferStaticMedia ? (
-          <img
-            src={heroPoster}
-            alt="GOOJ curated gift boxes"
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          visibleVideoIndexes.map((index) => {
-            const videoSrc = heroVideos[index];
-            const isActive = index === activeIndex;
-            const isIncoming = incomingIndex === index;
-
-            return (
-              <video
-                key={videoSrc}
-                ref={(element) => {
-                  videoRefs.current[index] = element;
-                }}
-                muted
-                playsInline
-                preload={isActive ? "auto" : "metadata"}
-                poster={heroPoster}
-                aria-hidden={!isActive && !isIncoming}
-                aria-label="GOOJ curated gift boxes"
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
-                  isActive || isIncoming ? "opacity-100" : "opacity-0"
-                } ${isTransitioning && isActive ? "opacity-0" : ""}`}
-              >
-                <source src={videoSrc} type="video/mp4" />
-              </video>
-            );
-          })
-        )}
+      <div
+        ref={sectionRef}
+        className="relative mb-3 overflow-hidden bg-[#f6f1eb] aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]"
+      >
+        <img
+          src={heroPoster}
+          alt="GOOJ curated gift boxes"
+          loading="eager"
+          decoding="async"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
+            shouldRenderVideo && isVideoReady ? "opacity-0" : "opacity-100"
+          }`}
+        />
+        {shouldRenderVideo ? (
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            autoPlay
+            loop
+            preload="none"
+            poster={heroPoster}
+            aria-label="GOOJ curated gift boxes"
+            onCanPlay={() => setIsVideoReady(true)}
+            onError={() => setPreferStaticMedia(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
+              isVideoReady ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/18 to-black/5" />
         <div className="absolute inset-x-0 bottom-0 z-10 grid px-6 pb-6 text-white sm:left-auto sm:right-8 sm:inset-x-auto sm:w-[19rem] sm:px-0 sm:pb-8 lg:right-10 lg:w-[18.5rem] lg:pb-10 xl:right-12 xl:w-[19.5rem] xl:pb-12">
           {heroCtas.map((cta, index) => {
