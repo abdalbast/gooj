@@ -1,6 +1,7 @@
 import { X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { formatGBPTwoDecimals, parseGBPValue } from "@/lib/commerce";
 
 interface CartItem {
   id: number;
@@ -23,7 +24,7 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('£', '').replace(',', ''));
+    const price = parseGBPValue(item.price);
     return sum + (price * item.quantity);
   }, 0);
 
@@ -134,7 +135,7 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
               <div className="border-t border-black/5 pt-4 space-y-4">
                 <div className="flex justify-between items-center text-[15px]">
                   <span className="text-gray-900 font-medium">Subtotal</span>
-                  <span className="text-gray-900 font-medium">£{subtotal.toFixed(2)}</span>
+                  <span className="text-gray-900 font-medium">{formatGBPTwoDecimals(subtotal)}</span>
                 </div>
                 
                 <div className="space-y-2 pt-1">

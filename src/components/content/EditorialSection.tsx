@@ -21,7 +21,13 @@ const EditorialSection = () => {
         
         <div className="order-first md:order-last">
           <div className="w-full aspect-square overflow-hidden">
-            <img src={founders} alt="The GOOJ team curating gift boxes" className="w-full h-full object-cover" />
+            <img
+              src={founders}
+              alt="The GOOJ team curating gift boxes"
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>

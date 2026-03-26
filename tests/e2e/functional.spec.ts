@@ -1,0 +1,75 @@
+import { expect, test } from "@playwright/test";
+import { expectNoRuntimeErrors, trackRuntimeErrors } from "./helpers/runtime";
+
+test("home page renders primary CTAs without runtime errors", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("link", { name: /Explore personalised gift boxes/i }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "GOOJ" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /The Birthday Box/i }).first()).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});
+
+test("product detail bag flow reaches checkout", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/product/1");
+
+  await expect(page.getByRole("heading", { level: 1, name: "The Birthday Box" })).toBeVisible();
+  await page.getByRole("button", { name: "Add to Bag" }).click();
+  await page.getByRole("button", { name: "Shopping bag" }).click();
+  await expect(page.getByRole("heading", { name: "Bag" })).toBeVisible();
+  await page.getByRole("link", { name: "Check Out" }).click();
+  await expect(page).toHaveURL(/\/checkout$/);
+  await expect(page.getByRole("heading", { name: "Shipping Options" })).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});
+
+test("checkout uses canonical GBP shipping labels and totals", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/checkout");
+
+  await expect(page.getByText("Free • 3-5 business days")).toBeVisible();
+  await expect(page.getByText("£15 • 1-2 business days")).toBeVisible();
+  await expect(page.getByText("£35 • Next business day")).toBeVisible();
+
+  const completeOrderButton = page.getByRole("button", { name: /Complete Order/i });
+  await expect(completeOrderButton).toHaveText("Complete Order • £150");
+
+  await page.getByLabel("Express Shipping").check();
+  await expect(completeOrderButton).toHaveText("Complete Order • £165");
+
+  await page.getByLabel("Overnight Delivery").check();
+  await expect(completeOrderButton).toHaveText("Complete Order • £185");
+
+  expectNoRuntimeErrors(runtime);
+});
+
+test("date reminders deep link opens the add form", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/reminders#add-date");
+
+  await expect(page.getByRole("heading", { name: "New Reminder" })).toBeVisible();
+  await expect(page.getByPlaceholder("e.g. Sarah")).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});
+
+test("admin dashboard loads without runtime errors", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/admin");
+
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByText("Revenue (Last 7 Days)")).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});

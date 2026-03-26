@@ -12,6 +12,8 @@ const FiftyFiftySection = () => {
               <img 
                 src={earringsCollection} 
                 alt="Curated birthday gift box" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -32,6 +34,8 @@ const FiftyFiftySection = () => {
               <img 
                 src={linkBracelet} 
                 alt="Luxury unboxing experience" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>

@@ -54,13 +54,6 @@ const ProductDetail = () => {
           </div>
           <ProductCarousel />
         </section>
-        
-        <section className="w-full">
-          <div className="mb-4 px-6">
-            <h2 className="text-sm font-light text-foreground">More Gift Boxes</h2>
-          </div>
-          <ProductCarousel />
-        </section>
       </main>
       
       <Footer />

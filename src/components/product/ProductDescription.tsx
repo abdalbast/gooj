@@ -4,6 +4,10 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ReviewProduct from "./ReviewProduct";
 import { getProduct } from "@/lib/productData";
+import {
+  formatShippingPrice,
+  SHIPPING_OPTIONS,
+} from "@/lib/commerce";
 
 const CustomStar = ({ filled, className }: { filled: boolean; className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-3 h-3 ${filled ? 'text-foreground' : 'text-muted-foreground/30'} ${className}`}>
@@ -68,9 +72,10 @@ const ProductDescription = () => {
         {isDeliveryOpen && (
           <div className="pb-6 space-y-4">
             <ul className="space-y-2">
-              <li className="text-sm font-light text-muted-foreground">• Free UK delivery on orders over £50</li>
-              <li className="text-sm font-light text-muted-foreground">• Standard delivery: 2–4 working days</li>
-              <li className="text-sm font-light text-muted-foreground">• Next day delivery available (order before 2pm)</li>
+              <li className="text-sm font-light text-muted-foreground">• {formatShippingPrice("standard")} UK standard delivery</li>
+              <li className="text-sm font-light text-muted-foreground">• Standard delivery: {SHIPPING_OPTIONS.standard.deliveryWindow}</li>
+              <li className="text-sm font-light text-muted-foreground">• Express delivery: {formatShippingPrice("express")} ({SHIPPING_OPTIONS.express.deliveryWindow})</li>
+              <li className="text-sm font-light text-muted-foreground">• Overnight delivery: {formatShippingPrice("overnight")} ({SHIPPING_OPTIONS.overnight.deliveryWindow})</li>
               <li className="text-sm font-light text-muted-foreground">• 14-day returns on non-personalised items</li>
               <li className="text-sm font-light text-muted-foreground">• Personalised items are non-refundable</li>
             </ul>

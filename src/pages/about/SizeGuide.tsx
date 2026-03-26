@@ -77,7 +77,7 @@ const GiftGuide = () => {
             <div className="space-y-3">
               <div className="text-2xl font-light text-foreground">3</div>
               <h4 className="text-lg font-light text-foreground">We Deliver</h4>
-              <p className="text-muted-foreground text-sm">Sit back while we handle the rest. Every box arrives gift-ready with premium packaging. Next day delivery available.</p>
+              <p className="text-muted-foreground text-sm">Sit back while we handle the rest. Every box arrives gift-ready with premium packaging. Express and overnight delivery available.</p>
             </div>
           </div>
         </ContentSection>

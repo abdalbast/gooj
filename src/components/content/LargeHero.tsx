@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-image.png";
+import heroPoster from "@/assets/hero-poster.jpg";
 import heroVideoOne from "@/assets/hero-video-1.mp4";
 import heroVideoTwo from "@/assets/hero-video-2.mp4";
 
@@ -35,15 +35,46 @@ const heroCtas = [
 const LargeHero = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [incomingIndex, setIncomingIndex] = useState<number | null>(null);
   const [activeCtaIndex, setActiveCtaIndex] = useState(0);
+  const [preferStaticMedia, setPreferStaticMedia] = useState(() => import.meta.env.DEV);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const transitionTimeoutRef = useRef<number | null>(null);
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isEmbeddedPreview = window.self !== window.top;
+    const isElectronShell = userAgent.includes("electron") || userAgent.includes("cursor");
+
+    const updatePreference = (reduceMotion: boolean) => {
+      setPreferStaticMedia(import.meta.env.DEV || reduceMotion || isEmbeddedPreview || isElectronShell);
+    };
+
+    updatePreference(motionQuery.matches);
+
+    const handleMotionChange = (event: MediaQueryListEvent) => {
+      updatePreference(event.matches);
+    };
+
+    motionQuery.addEventListener("change", handleMotionChange);
+
+    return () => {
+      motionQuery.removeEventListener("change", handleMotionChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (preferStaticMedia) {
+      return;
+    }
+
     const activeVideo = videoRefs.current[activeIndex];
-    const nextIndex = (activeIndex + 1) % heroVideos.length;
-    const nextVideo = videoRefs.current[nextIndex];
     const playActiveVideo = activeVideo?.play();
 
     playActiveVideo?.catch(() => {
@@ -55,30 +86,10 @@ const LargeHero = () => {
         return;
       }
 
+      const nextIndex = (activeIndex + 1) % heroVideos.length;
       isTransitioningRef.current = true;
+      setIncomingIndex(nextIndex);
       setIsTransitioning(true);
-
-      if (nextVideo) {
-        nextVideo.currentTime = 0;
-      }
-
-      const playNextVideo = nextVideo?.play();
-
-      playNextVideo?.catch(() => {
-        // Keep the current frame visible if the next video cannot autoplay.
-      });
-
-      transitionTimeoutRef.current = window.setTimeout(() => {
-        activeVideo?.pause();
-
-        if (activeVideo) {
-          activeVideo.currentTime = 0;
-        }
-
-        setActiveIndex(nextIndex);
-        setIsTransitioning(false);
-        isTransitioningRef.current = false;
-      }, DISSOLVE_DURATION_MS);
     };
 
     activeVideo?.addEventListener("ended", handleEnded);
@@ -91,7 +102,51 @@ const LargeHero = () => {
         transitionTimeoutRef.current = null;
       }
     };
-  }, [activeIndex]);
+  }, [activeIndex, preferStaticMedia]);
+
+  useEffect(() => {
+    if (preferStaticMedia) {
+      return;
+    }
+
+    if (incomingIndex === null) {
+      return;
+    }
+
+    const activeVideo = videoRefs.current[activeIndex];
+    const incomingVideo = videoRefs.current[incomingIndex];
+
+    if (!incomingVideo) {
+      return;
+    }
+
+    incomingVideo.currentTime = 0;
+    const playIncomingVideo = incomingVideo.play();
+
+    playIncomingVideo?.catch(() => {
+      // Keep the current frame visible if the next video cannot autoplay.
+    });
+
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      activeVideo?.pause();
+
+      if (activeVideo) {
+        activeVideo.currentTime = 0;
+      }
+
+      setActiveIndex(incomingIndex);
+      setIncomingIndex(null);
+      setIsTransitioning(false);
+      isTransitioningRef.current = false;
+    }, DISSOLVE_DURATION_MS);
+
+    return () => {
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, [activeIndex, incomingIndex, preferStaticMedia]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -103,7 +158,7 @@ const LargeHero = () => {
     };
   }, []);
 
-  const nextIndex = (activeIndex + 1) % heroVideos.length;
+  const visibleVideoIndexes = incomingIndex === null ? [activeIndex] : [activeIndex, incomingIndex];
 
   return (
     <section className="w-full mb-16 px-6">
@@ -116,30 +171,41 @@ const LargeHero = () => {
         `}
       </style>
       <div className="relative mb-3 overflow-hidden bg-[#f6f1eb] aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]">
-        {heroVideos.map((videoSrc, index) => {
-          const isActive = index === activeIndex;
-          const isIncoming = isTransitioning && index === nextIndex;
+        {preferStaticMedia ? (
+          <img
+            src={heroPoster}
+            alt="GOOJ curated gift boxes"
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          visibleVideoIndexes.map((index) => {
+            const videoSrc = heroVideos[index];
+            const isActive = index === activeIndex;
+            const isIncoming = incomingIndex === index;
 
-          return (
-            <video
-              key={videoSrc}
-              ref={(element) => {
-                videoRefs.current[index] = element;
-              }}
-              muted
-              playsInline
-              preload="auto"
-              poster={heroImage}
-              aria-hidden={!isActive && !isIncoming}
-              aria-label="GOOJ curated gift boxes"
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
-                isActive || isIncoming ? "opacity-100" : "opacity-0"
-              } ${isTransitioning && isActive ? "opacity-0" : ""}`}
-            >
-              <source src={videoSrc} type="video/mp4" />
-            </video>
-          );
-        })}
+            return (
+              <video
+                key={videoSrc}
+                ref={(element) => {
+                  videoRefs.current[index] = element;
+                }}
+                muted
+                playsInline
+                preload={isActive ? "auto" : "metadata"}
+                poster={heroPoster}
+                aria-hidden={!isActive && !isIncoming}
+                aria-label="GOOJ curated gift boxes"
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
+                  isActive || isIncoming ? "opacity-100" : "opacity-0"
+                } ${isTransitioning && isActive ? "opacity-0" : ""}`}
+              >
+                <source src={videoSrc} type="video/mp4" />
+              </video>
+            );
+          })
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/18 to-black/5" />
         <div className="absolute inset-x-0 bottom-0 z-10 grid px-6 pb-6 text-white sm:left-auto sm:right-8 sm:inset-x-auto sm:w-[19rem] sm:px-0 sm:pb-8 lg:right-10 lg:w-[18.5rem] lg:pb-10 xl:right-12 xl:w-[19.5rem] xl:pb-12">
           {heroCtas.map((cta, index) => {
@@ -151,7 +217,8 @@ const LargeHero = () => {
                 to={cta.to}
                 aria-hidden={!isActive}
                 tabIndex={isActive ? 0 : -1}
-                className={`col-start-1 row-start-1 block transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
+                style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                className={`col-start-1 row-start-1 block transition-[opacity,transform,filter] duration-700 will-change-transform ${
                   isActive
                     ? "pointer-events-auto translate-x-0 opacity-100 blur-0"
                     : "pointer-events-none translate-x-5 opacity-0 blur-[2px]"

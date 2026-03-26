@@ -18,6 +18,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { SHOPPER_PRICE_RANGES } from "@/lib/commerce";
 
 interface FilterSortBarProps {
   filtersOpen: boolean;
@@ -29,7 +30,6 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
   const [sortBy, setSortBy] = useState("featured");
 
   const categories = ["Earrings", "Bracelets", "Rings", "Necklaces"];
-  const priceRanges = ["Under €1,000", "€1,000 - €2,000", "€2,000 - €3,000", "Over €3,000"];
   const materials = ["Gold", "Silver", "Rose Gold", "Platinum"];
 
   return (
@@ -78,7 +78,7 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
                   <div>
                     <h3 className="text-sm font-light mb-4 text-foreground">Price</h3>
                     <div className="space-y-3">
-                      {priceRanges.map((range) => (
+                      {SHOPPER_PRICE_RANGES.map((range) => (
                         <div key={range} className="flex items-center space-x-3">
                           <Checkbox id={range} className="border-border data-[state=checked]:bg-foreground data-[state=checked]:border-foreground" />
                           <Label htmlFor={range} className="text-sm font-light text-foreground cursor-pointer">

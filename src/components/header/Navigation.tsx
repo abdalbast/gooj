@@ -17,6 +17,60 @@ interface CartItem {
   category: string;
 }
 
+const popularSearches = [
+  "Birthday Gift",
+  "Anniversary Box",
+  "Gift for Mum",
+  "Personalised Box",
+  "Luxury Gift Set",
+  "Last Minute Gift",
+];
+
+const navItems = [
+  {
+    name: "Shop",
+    href: "/category/shop",
+    submenuItems: [
+      "For Her Birthday",
+      "For Mum",
+      "For Partner",
+      "Anniversary",
+      "Just Because",
+    ],
+    images: [
+      { src: "/rings-collection.png", alt: "Birthday Gift Box", label: "Birthday Boxes" },
+      { src: "/earrings-collection.png", alt: "Anniversary Gift Box", label: "Anniversary Boxes" },
+    ],
+  },
+  {
+    name: "New in",
+    href: "/category/new-in",
+    submenuItems: [
+      "This Week's Boxes",
+      "Seasonal Collection",
+      "Limited Edition",
+      "Personalised",
+      "Best Sellers",
+    ],
+    images: [
+      { src: "/arcus-bracelet.png", alt: "New Gift Box", label: "Spring Collection" },
+      { src: "/span-bracelet.png", alt: "Limited Edition Box", label: "Limited Edition" },
+    ],
+  },
+  {
+    name: "About",
+    href: "/about/our-story",
+    submenuItems: [
+      "Our Story",
+      "Sustainability",
+      "Gift Guide",
+      "Customer Care",
+      "Store Locator",
+    ],
+    images: [{ src: "/founders.png", alt: "The GOOJ Story", label: "Read our story" }],
+  },
+] as const;
+
 const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -80,75 +134,21 @@ const Navigation = () => {
   };
   
   useEffect(() => {
-    const imagesToPreload = [
-      "/rings-collection.png",
-      "/earrings-collection.png", 
-      "/arcus-bracelet.png",
-      "/span-bracelet.png",
-      "/founders.png"
-    ];
-    
-    imagesToPreload.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-
-  const popularSearches = [
-    "Birthday Gift",
-    "Anniversary Box", 
-    "Gift for Mum",
-    "Personalised Box",
-    "Luxury Gift Set",
-    "Last Minute Gift"
-  ];
-  
-  const navItems = [
-    { 
-      name: "Shop", 
-      href: "/category/shop",
-      submenuItems: [
-        "For Her Birthday",
-        "For Mum", 
-        "For Partner",
-        "Anniversary",
-        "Just Because"
-      ],
-      images: [
-        { src: "/rings-collection.png", alt: "Birthday Gift Box", label: "Birthday Boxes" },
-        { src: "/earrings-collection.png", alt: "Anniversary Gift Box", label: "Anniversary Boxes" }
-      ]
-    },
-    { 
-      name: "New in", 
-      href: "/category/new-in",
-      submenuItems: [
-        "This Week's Boxes",
-        "Seasonal Collection",
-        "Limited Edition",
-        "Personalised",
-        "Best Sellers"
-      ],
-      images: [
-        { src: "/arcus-bracelet.png", alt: "New Gift Box", label: "Spring Collection" },
-        { src: "/span-bracelet.png", alt: "Limited Edition Box", label: "Limited Edition" }
-      ]
-    },
-    { 
-      name: "About", 
-      href: "/about/our-story",
-      submenuItems: [
-        "Our Story",
-        "Sustainability",
-        "Gift Guide",
-        "Customer Care",
-        "Store Locator"
-      ],
-      images: [
-        { src: "/founders.png", alt: "The GOOJ Story", label: "Read our story" }
-      ]
+    if (!activeDropdown) {
+      return;
     }
-  ];
+
+    const activeItem = navItems.find((item) => item.name === activeDropdown);
+
+    if (!activeItem) {
+      return;
+    }
+
+    activeItem.images.forEach((image) => {
+      const img = new Image();
+      img.src = image.src;
+    });
+  }, [activeDropdown]);
 
   return (
     <nav 
@@ -264,7 +264,11 @@ const Navigation = () => {
                    {navItems
                      .find(item => item.name === activeDropdown)
                      ?.submenuItems.map((subItem, index) => (
-                      <li key={index} className="transform transition-all duration-300 delay-[50ms] translate-y-0 opacity-100 starting:-translate-y-2 starting:opacity-0">
+                      <li
+                        key={index}
+                        style={{ transitionDelay: "50ms" }}
+                        className="transform transition-all duration-300 translate-y-0 opacity-100 starting:-translate-y-2 starting:opacity-0"
+                      >
                         <Link 
                           to={activeDropdown === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, '-')}` : `/category/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
                           className="text-gray-600 hover:text-black transition-colors duration-200 text-[15px] font-medium block py-2"

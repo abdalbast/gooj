@@ -7,8 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import pantheonImage from "@/assets/pantheon.jpg";
-import eclipseImage from "@/assets/eclipse.jpg";
+import pantheonImage from "@/assets/pantheon-thumb.jpg";
+import eclipseImage from "@/assets/eclipse-thumb.jpg";
+import {
+  formatGBP,
+  formatShippingOptionSummary,
+  formatShippingPrice,
+  parseGBPValue,
+  SHIPPING_OPTIONS,
+  SHIPPING_OPTION_ORDER,
+  type ShippingOptionId,
+} from "@/lib/commerce";
 
 const Checkout = () => {
   const [showDiscountInput, setShowDiscountInput] = useState(false);
@@ -36,7 +45,7 @@ const Checkout = () => {
     postalCode: "",
     country: ""
   });
-  const [shippingOption, setShippingOption] = useState("standard");
+  const [shippingOption, setShippingOption] = useState<ShippingOptionId>("standard");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
   
@@ -80,22 +89,11 @@ const Checkout = () => {
   };
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('£', '').replace(',', ''));
+    const price = parseGBPValue(item.price);
     return sum + (price * item.quantity);
   }, 0);
 
-  const getShippingCost = () => {
-    switch (shippingOption) {
-      case "express":
-        return 15;
-      case "overnight":
-        return 35;
-      default:
-        return 0; // Standard shipping is free
-    }
-  };
-  
-  const shipping = getShippingCost();
+  const shipping = SHIPPING_OPTIONS[shippingOption].price;
   const total = subtotal + shipping;
 
   const handleDiscountSubmit = () => {
@@ -147,6 +145,8 @@ const Checkout = () => {
                         <img 
                           src={item.image} 
                           alt={item.name}
+                          loading="eager"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -238,7 +238,7 @@ const Checkout = () => {
                 <div className="border-t border-muted-foreground/20 mt-4 pt-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">£{subtotal.toLocaleString()}</span>
+                    <span className="text-foreground">{formatGBP(subtotal)}</span>
                   </div>
                 </div>
               </div>
@@ -522,41 +522,22 @@ const Checkout = () => {
                 onValueChange={setShippingOption}
                 className="space-y-4"
               >
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="standard" id="standard" />
-                    <Label htmlFor="standard" className="font-light text-foreground">
-                      Standard Shipping
-                    </Label>
+                {SHIPPING_OPTION_ORDER.map((optionId) => (
+                  <div
+                    key={optionId}
+                    className="flex items-center justify-between rounded-none border border-muted-foreground/20 p-4"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <RadioGroupItem value={optionId} id={optionId} />
+                      <Label htmlFor={optionId} className="font-light text-foreground">
+                        {SHIPPING_OPTIONS[optionId].label}
+                      </Label>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatShippingOptionSummary(optionId)}
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Free • 3-5 business days
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="express" id="express" />
-                    <Label htmlFor="express" className="font-light text-foreground">
-                      Express Shipping
-                    </Label>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    €15 • 1-2 business days
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="overnight" id="overnight" />
-                    <Label htmlFor="overnight" className="font-light text-foreground">
-                      Overnight Delivery
-                    </Label>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    €35 • Next business day
-                  </div>
-                </div>
+                ))}
               </RadioGroup>
             </div>
 
@@ -577,17 +558,15 @@ const Checkout = () => {
                   <div className="bg-muted/10 p-6 rounded-none border border-muted-foreground/20 space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Subtotal</span>
-                      <span className="text-foreground">£{subtotal.toLocaleString()}</span>
+                      <span className="text-foreground">{formatGBP(subtotal)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Shipping</span>
-                      <span className="text-foreground">
-                        {shipping === 0 ? "Free" : `£${shipping}`}
-                      </span>
+                      <span className="text-foreground">{formatShippingPrice(shippingOption)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
                       <span className="text-foreground">Total</span>
-                      <span className="text-foreground">£{total.toLocaleString()}</span>
+                      <span className="text-foreground">{formatGBP(total)}</span>
                     </div>
                   </div>
 
@@ -596,7 +575,7 @@ const Checkout = () => {
                     disabled={isProcessing}
                     className="w-full rounded-none h-12 text-base"
                   >
-                    {isProcessing ? "Processing..." : `Complete Order • £${total.toLocaleString()}`}
+                    {isProcessing ? "Processing..." : `Complete Order • ${formatGBP(total)}`}
                   </Button>
                 </div>
               ) : (

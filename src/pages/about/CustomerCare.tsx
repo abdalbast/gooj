@@ -7,6 +7,10 @@ import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion";
 import AboutSidebar from "../../components/about/AboutSidebar";
+import {
+  formatShippingPrice,
+  SHIPPING_OPTIONS,
+} from "@/lib/commerce";
 
 const CustomerCare = () => {
   return (
@@ -63,7 +67,7 @@ const CustomerCare = () => {
             <AccordionItem value="delivery" className="border border-border rounded-lg px-6">
               <AccordionTrigger className="text-left hover:no-underline">What are your delivery options?</AccordionTrigger>
               <AccordionContent className="text-muted-foreground">
-                We offer free UK standard delivery (2–4 working days) on orders over £50. Next day delivery is available for £5.95 if ordered before 2pm. All boxes are carefully packaged to arrive in perfect condition.
+                We offer free UK standard delivery ({SHIPPING_OPTIONS.standard.deliveryWindow}). Express delivery is available for {formatShippingPrice("express")}, and overnight delivery is available for {formatShippingPrice("overnight")}. All boxes are carefully packaged to arrive in perfect condition.
               </AccordionContent>
             </AccordionItem>
 

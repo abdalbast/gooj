@@ -12,6 +12,8 @@ const OneThirdTwoThirdsSection = () => {
               <img 
                 src={organicEarring} 
                 alt="Personalised gift box with photo frame and message" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -32,6 +34,8 @@ const OneThirdTwoThirdsSection = () => {
               <img 
                 src={circularCollection} 
                 alt="Keepsake gift box collection" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
