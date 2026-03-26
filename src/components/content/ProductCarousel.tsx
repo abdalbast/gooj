@@ -3,14 +3,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import pantheonImage from "@/assets/pantheon.jpg";
-import eclipseImage from "@/assets/eclipse.jpg";
-import haloImage from "@/assets/halo.jpg";
-import obliqueImage from "@/assets/oblique.jpg";
-import lintelImage from "@/assets/lintel.jpg";
-import shadowlineImage from "@/assets/shadowline.jpg";
-import organicEarring from "@/assets/organic-earring.png";
-import linkBracelet from "@/assets/link-bracelet.png";
+import pantheonImage from "@/assets/pantheon.webp";
+import eclipseImage from "@/assets/eclipse.webp";
+import haloImage from "@/assets/halo.webp";
+import obliqueImage from "@/assets/oblique.webp";
+import lintelImage from "@/assets/lintel.webp";
+import shadowlineImage from "@/assets/shadowline.webp";
+import organicEarring from "@/assets/organic-earring.webp";
+import linkBracelet from "@/assets/link-bracelet.webp";
 import ProductCard, { type ProductCardProduct } from "@/components/product/ProductCard";
 
 interface ProductCarouselProps {

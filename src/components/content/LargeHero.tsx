@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import heroPoster from "@/assets/hero-poster.jpg";
-import heroVideo from "@/assets/hero-video-1.mp4";
+import heroPoster from "@/assets/hero-poster.webp";
+import heroVideoWebm from "@/assets/hero-video-1.webm";
 
 const CTA_ROTATE_MS = 6000;
 
@@ -31,7 +31,7 @@ const heroCtas = [
 
 const LargeHero = () => {
   const [activeCtaIndex, setActiveCtaIndex] = useState(0);
-  const [preferStaticMedia, setPreferStaticMedia] = useState(() => import.meta.env.DEV);
+  const [preferStaticMedia, setPreferStaticMedia] = useState(false);
   const [isInViewport, setIsInViewport] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const sectionRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +48,7 @@ const LargeHero = () => {
     const isElectronShell = userAgent.includes("electron") || userAgent.includes("cursor");
 
     const updatePreference = (reduceMotion: boolean) => {
-      setPreferStaticMedia(import.meta.env.DEV || reduceMotion || isEmbeddedPreview || isElectronShell);
+      setPreferStaticMedia(reduceMotion || isEmbeddedPreview || isElectronShell);
     };
 
     updatePreference(motionQuery.matches);
@@ -158,7 +158,7 @@ const LargeHero = () => {
               isVideoReady ? "opacity-100" : "opacity-0"
             }`}
           >
-            <source src={heroVideo} type="video/mp4" />
+            <source src={heroVideoWebm} type="video/webm" />
           </video>
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/18 to-black/5" />

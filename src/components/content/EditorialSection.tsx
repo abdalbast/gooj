@@ -1,4 +1,4 @@
-import founders from "@/assets/founders.png";
+import founders from "@/assets/founders.webp";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 

@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { buildVersionedUrl } from "@/lib/versionSync";
 import ShoppingBag from "./ShoppingBag";
-import pantheonImage from "@/assets/pantheon.jpg";
-import eclipseImage from "@/assets/eclipse.jpg";
-import haloImage from "@/assets/halo.jpg";
+import pantheonImage from "@/assets/pantheon.webp";
+import eclipseImage from "@/assets/eclipse.webp";
+import haloImage from "@/assets/halo.webp";
 
 interface CartItem {
   id: number;
@@ -38,8 +39,16 @@ const navItems = [
       "Just Because",
     ],
     images: [
-      { src: "/rings-collection.png", alt: "Birthday Gift Box", label: "Birthday Boxes" },
-      { src: "/earrings-collection.png", alt: "Anniversary Gift Box", label: "Anniversary Boxes" },
+      {
+        src: buildVersionedUrl("/rings-collection.webp"),
+        alt: "Birthday Gift Box",
+        label: "Birthday Boxes",
+      },
+      {
+        src: buildVersionedUrl("/earrings-collection.webp"),
+        alt: "Anniversary Gift Box",
+        label: "Anniversary Boxes",
+      },
     ],
   },
   {
@@ -53,8 +62,16 @@ const navItems = [
       "Best Sellers",
     ],
     images: [
-      { src: "/arcus-bracelet.png", alt: "New Gift Box", label: "Spring Collection" },
-      { src: "/span-bracelet.png", alt: "Limited Edition Box", label: "Limited Edition" },
+      {
+        src: buildVersionedUrl("/arcus-bracelet.webp"),
+        alt: "New Gift Box",
+        label: "Spring Collection",
+      },
+      {
+        src: buildVersionedUrl("/span-bracelet.webp"),
+        alt: "Limited Edition Box",
+        label: "Limited Edition",
+      },
     ],
   },
   {
@@ -67,7 +84,13 @@ const navItems = [
       "Customer Care",
       "Store Locator",
     ],
-    images: [{ src: "/founders.png", alt: "The GOOJ Story", label: "Read our story" }],
+    images: [
+      {
+        src: buildVersionedUrl("/founders.webp"),
+        alt: "The GOOJ Story",
+        label: "Read our story",
+      },
+    ],
   },
 ] as const;
 

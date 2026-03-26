@@ -1,5 +1,5 @@
-import earringsCollection from "@/assets/earrings-collection.png";
-import linkBracelet from "@/assets/link-bracelet.png";
+import earringsCollection from "@/assets/earrings-collection.webp";
+import linkBracelet from "@/assets/link-bracelet.webp";
 import { Link } from "react-router-dom";
 
 const FiftyFiftySection = () => {

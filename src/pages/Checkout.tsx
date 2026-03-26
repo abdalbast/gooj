@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import pantheonImage from "@/assets/pantheon-thumb.jpg";
-import eclipseImage from "@/assets/eclipse-thumb.jpg";
+import pantheonImage from "@/assets/pantheon-thumb.webp";
+import eclipseImage from "@/assets/eclipse-thumb.webp";
 import {
   formatGBP,
   formatShippingOptionSummary,

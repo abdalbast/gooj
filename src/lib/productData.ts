@@ -1,9 +1,9 @@
-import pantheonImage from "@/assets/pantheon.jpg";
-import eclipseImage from "@/assets/eclipse.jpg";
-import haloImage from "@/assets/halo.jpg";
-import obliqueImage from "@/assets/oblique.jpg";
-import lintelImage from "@/assets/lintel.jpg";
-import shadowlineImage from "@/assets/shadowline.jpg";
+import pantheonImage from "@/assets/pantheon.webp";
+import eclipseImage from "@/assets/eclipse.webp";
+import haloImage from "@/assets/halo.webp";
+import obliqueImage from "@/assets/oblique.webp";
+import lintelImage from "@/assets/lintel.webp";
+import shadowlineImage from "@/assets/shadowline.webp";
 
 export interface ProductData {
   id: number;

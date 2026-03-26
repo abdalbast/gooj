@@ -4,6 +4,7 @@ import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import ImageTextBlock from "../../components/about/ImageTextBlock";
 import AboutSidebar from "../../components/about/AboutSidebar";
+import { buildVersionedUrl } from "@/lib/versionSync";
 
 const OurStory = () => {
   return (
@@ -23,7 +24,7 @@ const OurStory = () => {
           
           <ContentSection>
             <ImageTextBlock
-              image="/founders.png"
+              image={buildVersionedUrl("/founders.webp")}
               imageAlt="The GOOJ team"
               title="Get Out Of Jail"
               content="GOOJ was born from a simple, universal problem: buying gifts is stressful. Whether it's a birthday, anniversary, or a 'just because' moment, most men know the feeling of panic-buying something last minute and hoping for the best. We built GOOJ to fix that — curated gift boxes that are thoughtful, personal, and ready to impress."

@@ -19,6 +19,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) => {
   const [showHoverImage, setShowHoverImage] = useState(false);
+  const loadingPriority = eager ? { fetchpriority: "high" as const } : undefined;
 
   const revealHoverImage = () => {
     if (hoverImage) {
@@ -42,7 +43,7 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
               alt={product.name}
               loading={eager ? "eager" : "lazy"}
               decoding="async"
-              fetchPriority={eager ? "high" : undefined}
+              {...loadingPriority}
               className={`h-full w-full object-cover transition-all duration-300 ${
                 showHoverImage ? "group-hover:opacity-0 group-focus-within:opacity-0" : ""
               }`}

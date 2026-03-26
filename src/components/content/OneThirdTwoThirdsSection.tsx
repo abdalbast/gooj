@@ -1,5 +1,5 @@
-import circularCollection from "@/assets/circular-collection.png";
-import organicEarring from "@/assets/organic-earring.png";
+import circularCollection from "@/assets/circular-collection.webp";
+import organicEarring from "@/assets/organic-earring.webp";
 import { Link } from "react-router-dom";
 
 const OneThirdTwoThirdsSection = () => {
