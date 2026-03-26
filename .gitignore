@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.lovable/
+dist-preview/
+bun.lock*
 playwright-report
 test-results
 
@@ -25,3 +28,5 @@ test-results
 *.sln
 *.sw?
 .cursor/dev-logs/
+.vercel
+.env*.local
