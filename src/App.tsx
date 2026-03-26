@@ -1,8 +1,6 @@
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -27,50 +25,46 @@ const AdminContent = lazy(() => import("./pages/admin/AdminContent"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminCustomers = lazy(() => import("./pages/admin/AdminCustomers"));
 
-const queryClient = new QueryClient();
 const routeFallback = <div className="min-h-screen bg-background" aria-hidden="true" />;
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter
-        future={{
-          v7_relativeSplatPath: true,
-          v7_startTransition: true,
-        }}
-      >
-        <ScrollToTop />
-        <Suspense fallback={routeFallback}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/category/:category" element={<Category />} />
-            <Route path="/product/:productId" element={<ProductDetail />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/about/our-story" element={<OurStory />} />
-            <Route path="/about/sustainability" element={<Sustainability />} />
-            <Route path="/about/gift-guide" element={<GiftGuide />} />
-            <Route path="/about/customer-care" element={<CustomerCare />} />
-            <Route path="/about/store-locator" element={<StoreLocator />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/reminders" element={<DateReminders />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="promotions" element={<AdminPromotions />} />
-              <Route path="content" element={<AdminContent />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="customers" element={<AdminCustomers />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <Toaster />
+    <BrowserRouter
+      future={{
+        v7_relativeSplatPath: true,
+        v7_startTransition: true,
+      }}
+    >
+      <ScrollToTop />
+      <Suspense fallback={routeFallback}>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/category/:category" element={<Category />} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/about/our-story" element={<OurStory />} />
+          <Route path="/about/sustainability" element={<Sustainability />} />
+          <Route path="/about/gift-guide" element={<GiftGuide />} />
+          <Route path="/about/customer-care" element={<CustomerCare />} />
+          <Route path="/about/store-locator" element={<StoreLocator />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/reminders" element={<DateReminders />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="promotions" element={<AdminPromotions />} />
+            <Route path="content" element={<AdminContent />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="customers" element={<AdminCustomers />} />
+          </Route>
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  </TooltipProvider>
 );
 
 export default App;

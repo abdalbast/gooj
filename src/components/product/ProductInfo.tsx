@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -25,6 +25,14 @@ const ProductInfo = () => {
     setPhoto(file);
     setPhotoPreview(file ? URL.createObjectURL(file) : null);
   };
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
 
   return (
     <div className="space-y-6">
@@ -97,11 +105,23 @@ const ProductInfo = () => {
         <div className="flex items-center gap-4">
           <span className="text-sm font-light text-foreground">Quantity</span>
           <div className="flex items-center border border-border">
-            <Button variant="ghost" size="sm" onClick={decrementQuantity} className="h-10 w-10 p-0 hover:bg-transparent hover:opacity-50 rounded-none border-none">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={decrementQuantity}
+              aria-label="Decrease quantity"
+              className="h-11 w-11 p-0 hover:bg-transparent hover:opacity-50 rounded-none border-none"
+            >
               <Minus className="h-4 w-4" />
             </Button>
-            <span className="h-10 flex items-center px-4 text-sm font-light min-w-12 justify-center border-l border-r border-border">{quantity}</span>
-            <Button variant="ghost" size="sm" onClick={incrementQuantity} className="h-10 w-10 p-0 hover:bg-transparent hover:opacity-50 rounded-none border-none">
+            <span className="h-11 flex items-center px-4 text-sm font-light min-w-12 justify-center border-l border-r border-border">{quantity}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={incrementQuantity}
+              aria-label="Increase quantity"
+              className="h-11 w-11 p-0 hover:bg-transparent hover:opacity-50 rounded-none border-none"
+            >
               <Plus className="h-4 w-4" />
             </Button>
           </div>

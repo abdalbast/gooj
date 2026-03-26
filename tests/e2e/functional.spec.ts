@@ -31,6 +31,29 @@ test("product detail bag flow reaches checkout", async ({ page }) => {
   expectNoRuntimeErrors(runtime);
 });
 
+test("product image zoom opens from keyboard and restores focus on close", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/product/1");
+
+  const zoomTrigger = page.getByRole("button", { name: /open product view 1 fullscreen/i });
+  await zoomTrigger.focus();
+  await expect(zoomTrigger).toBeFocused();
+
+  await page.keyboard.press("Enter");
+
+  const imageDialog = page.getByRole("dialog", { name: "Product image gallery" });
+  await expect(imageDialog).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close image gallery" })).toBeFocused();
+
+  await page.keyboard.press("Escape");
+
+  await expect(imageDialog).toBeHidden();
+  await expect(zoomTrigger).toBeFocused();
+
+  expectNoRuntimeErrors(runtime);
+});
+
 test("checkout uses canonical GBP shipping labels and totals", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
 

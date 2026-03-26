@@ -108,6 +108,10 @@ const LargeHero = () => {
   }, [isInViewport, preferStaticMedia]);
 
   useEffect(() => {
+    if (preferStaticMedia) {
+      return;
+    }
+
     const intervalId = window.setInterval(() => {
       setActiveCtaIndex((currentIndex) => (currentIndex + 1) % heroCtas.length);
     }, CTA_ROTATE_MS);
@@ -115,7 +119,7 @@ const LargeHero = () => {
     return () => {
       window.clearInterval(intervalId);
     };
-  }, []);
+  }, [preferStaticMedia]);
 
   const shouldRenderVideo = !preferStaticMedia && isInViewport;
 
@@ -138,6 +142,8 @@ const LargeHero = () => {
           alt="GOOJ curated gift boxes"
           loading="eager"
           decoding="async"
+          fetchPriority="high"
+          sizes="100vw"
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
             shouldRenderVideo && isVideoReady ? "opacity-0" : "opacity-100"
           }`}

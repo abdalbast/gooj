@@ -109,14 +109,14 @@ const DateReminders = () => {
             <div className="border border-border p-6 mb-8 space-y-4">
               <h3 className="text-lg font-light text-foreground">{editingId ? "Edit Reminder" : "New Reminder"}</h3>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Recipient Name</label>
-                <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Sarah" className="rounded-none" />
+                <label htmlFor="reminder-name" className="text-sm font-light text-foreground">Recipient Name</label>
+                <Input id="reminder-name" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Sarah" className="rounded-none" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Date</label>
+                <label htmlFor="reminder-date" className="text-sm font-light text-foreground">Date</label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none", !date && "text-muted-foreground")}>
+                    <Button id="reminder-date" variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none min-h-11", !date && "text-muted-foreground")}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {date ? format(date, "PPP") : "Pick a date"}
                     </Button>
@@ -127,21 +127,21 @@ const DateReminders = () => {
                 </Popover>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Occasion</label>
+                <label htmlFor="reminder-occasion" className="text-sm font-light text-foreground">Occasion</label>
                 <Select value={occasion} onValueChange={setOccasion}>
-                  <SelectTrigger className="rounded-none"><SelectValue placeholder="Select occasion" /></SelectTrigger>
+                  <SelectTrigger id="reminder-occasion" className="rounded-none min-h-11"><SelectValue placeholder="Select occasion" /></SelectTrigger>
                   <SelectContent>
                     {OCCASIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Notes (optional)</label>
-                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. She likes candles and chocolate" className="rounded-none" />
+                <label htmlFor="reminder-notes" className="text-sm font-light text-foreground">Notes (optional)</label>
+                <Textarea id="reminder-notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. She likes candles and chocolate" className="rounded-none" />
               </div>
               <div className="flex gap-3">
-                <Button onClick={handleSave} className="rounded-none bg-foreground text-background hover:bg-foreground/90">Save</Button>
-                <Button variant="outline" onClick={resetForm} className="rounded-none">Cancel</Button>
+                <Button onClick={handleSave} className="rounded-none bg-foreground text-background hover:bg-foreground/90 min-h-11">Save</Button>
+                <Button variant="outline" onClick={resetForm} className="rounded-none min-h-11">Cancel</Button>
               </div>
             </div>
           )}
@@ -166,11 +166,11 @@ const DateReminders = () => {
                     <p className="text-sm text-muted-foreground font-light mt-1">{format(d, "d MMMM")}</p>
                     {r.notes && <p className="text-xs text-muted-foreground/70 mt-1 truncate">{r.notes}</p>}
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="sm" onClick={() => handleEdit(r)} className="h-8 w-8 p-0">
+                  <div className="flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+                    <Button variant="ghost" size="sm" onClick={() => handleEdit(r)} className="h-11 w-11 p-0 md:h-8 md:w-8" aria-label={`Edit reminder for ${r.name}`}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleDelete(r.id)} className="h-8 w-8 p-0 text-destructive">
+                    <Button variant="ghost" size="sm" onClick={() => handleDelete(r.id)} className="h-11 w-11 p-0 text-destructive md:h-8 md:w-8" aria-label={`Delete reminder for ${r.name}`}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>

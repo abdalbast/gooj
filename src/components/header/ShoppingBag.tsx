@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -17,10 +18,22 @@ interface ShoppingBagProps {
   onClose: () => void;
   cartItems: CartItem[];
   updateQuantity: (id: number, newQuantity: number) => void;
+  panelId: string;
+  titleId: string;
+  initialFocusRef?: RefObject<HTMLButtonElement | null>;
   onViewFavorites?: () => void;
 }
 
-const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorites }: ShoppingBagProps) => {
+const ShoppingBag = ({
+  isOpen,
+  onClose,
+  cartItems,
+  updateQuantity,
+  panelId,
+  titleId,
+  initialFocusRef,
+  onViewFavorites,
+}: ShoppingBagProps) => {
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((sum, item) => {
@@ -31,22 +44,44 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
   return (
     <>
       {/* Invisible backdrop to capture clicks outside the popover */}
-      <div 
+      <div
+        aria-hidden="true"
         className="fixed inset-0 z-40"
         onClick={onClose}
       />
-      
+
       {/* Apple-style popover */}
-      <div className="absolute top-full right-6 w-[22rem] mt-2 bg-white/85 backdrop-blur-2xl border border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 animate-in fade-in slide-in-from-top-4 duration-300 flex flex-col overflow-hidden custom-scrollbar max-h-[calc(100vh-100px)]">
-        
+      <div
+        id={panelId}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="absolute top-full right-6 mt-2 w-[min(22rem,calc(100vw-3rem))] bg-white/85 backdrop-blur-2xl border border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 animate-in fade-in slide-in-from-top-4 duration-300 flex flex-col overflow-hidden custom-scrollbar max-h-[calc(100vh-100px)]"
+      >
         {/* Content */}
         <div className="flex-1 flex flex-col p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 id={titleId} className="text-xl font-medium text-gray-900">
+              Bag
+            </h3>
+            <button
+              ref={initialFocusRef}
+              type="button"
+              onClick={onClose}
+              className="flex h-11 w-11 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+              aria-label="Close bag"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
           {/* Mobile favorites toggle - only show on mobile */}
           {onViewFavorites && (
             <div className="md:hidden pb-4 mb-4 border-b border-black/5">
               <button
+                type="button"
                 onClick={onViewFavorites}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-50/50 rounded-xl text-gray-800 hover:bg-gray-100/50 transition-colors duration-200"
+                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gray-50/50 px-4 py-2.5 text-gray-800 transition-colors duration-200 hover:bg-gray-100/50"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
@@ -74,19 +109,17 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
             </div>
           ) : (
             <>
-              {/* Bag summary header */}
-              <div className="mb-4">
-                <h3 className="text-xl font-medium text-gray-900">Bag</h3>
-              </div>
-
               {/* Cart items */}
               <div className="overflow-y-auto space-y-4 mb-5 max-h-[50vh] pr-1">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-4 group">
                     <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                      <img 
-                        src={item.image} 
+                      <img
+                        src={item.image}
                         alt={item.name}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="64px"
                         className="w-full h-full object-cover mix-blend-multiply"
                       />
                     </div>
@@ -101,9 +134,10 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
                       
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-3">
-                          <button 
+                          <button
+                            type="button"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                            className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 sm:h-8 sm:w-8"
                             aria-label="Decrease quantity"
                           >
                             <Minus size={12} strokeWidth={2.5} />
@@ -111,17 +145,20 @@ const ShoppingBag = ({ isOpen, onClose, cartItems, updateQuantity, onViewFavorit
                           <span className="text-[15px] font-medium w-3 text-center">
                             {item.quantity}
                           </span>
-                          <button 
+                          <button
+                            type="button"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                            className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 sm:h-8 sm:w-8"
                             aria-label="Increase quantity"
                           >
                             <Plus size={12} strokeWidth={2.5} />
                           </button>
                         </div>
                         <button
+                          type="button"
                           onClick={() => updateQuantity(item.id, 0)}
-                          className="text-[13px] text-blue-600 hover:text-blue-700 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-[13px] text-blue-600 hover:text-blue-700 font-medium opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                          aria-label={`Remove ${item.name}`}
                         >
                           Remove
                         </button>

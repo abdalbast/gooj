@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-test("build artifacts stay within route budget ceilings @perf", async ({}, testInfo) => {
+test("build artifacts stay within route budget ceilings @perf", async ({ page: _page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "Bundle budgets are only enforced on desktop Chromium.");
 
   const assetsDir = join(process.cwd(), "dist", "assets");

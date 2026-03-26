@@ -181,7 +181,8 @@ const Checkout = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
+                            aria-label={`Decrease quantity for ${item.name}`}
+                            className="h-11 w-11 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -192,7 +193,8 @@ const Checkout = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
+                            aria-label={`Increase quantity for ${item.name}`}
+                            className="h-11 w-11 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Plus className="h-3 w-3" />
                           </Button>

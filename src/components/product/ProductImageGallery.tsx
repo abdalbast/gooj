@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type KeyboardEvent, useEffect, useState } from "react";
 import ImageZoom from "./ImageZoom";
 import pantheonImage from "@/assets/pantheon.webp";
 import eclipseImage from "@/assets/eclipse.webp";
@@ -68,6 +68,15 @@ const ProductImageGallery = () => {
     setIsZoomOpen(true);
   };
 
+  const handleMediaKeyDown = (event: KeyboardEvent<HTMLDivElement>, index: number) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+    handleMediaClick(index);
+  };
+
   return (
     <div className="w-full">
       <div className="relative">
@@ -80,13 +89,22 @@ const ProductImageGallery = () => {
             {productMedia.map((media, index) => (
               <CarouselItem key={media.src} className="pl-0">
                 <div
-                  className="group aspect-square w-full overflow-hidden bg-muted/20"
+                  className="group aspect-square w-full overflow-hidden bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   onClick={() => handleMediaClick(index)}
+                  onKeyDown={(event) => handleMediaKeyDown(event, index)}
+                  role={media.type === "image" ? "button" : undefined}
+                  tabIndex={media.type === "image" ? 0 : -1}
+                  aria-haspopup={media.type === "image" ? "dialog" : undefined}
+                  aria-label={media.type === "image" ? `Open ${media.alt} fullscreen` : undefined}
                 >
                   {media.type === "image" ? (
                     <img
                       src={media.src}
                       alt={media.alt}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
                       className="h-full w-full cursor-zoom-in object-cover transition-transform duration-300 group-hover:scale-105 select-none"
                     />
                   ) : (
@@ -117,10 +135,14 @@ const ProductImageGallery = () => {
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to ${media.type} ${index + 1}`}
               aria-current={index === currentImageIndex}
-              className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                index === currentImageIndex ? "bg-foreground" : "bg-muted"
-              }`}
-            />
+              className="flex h-11 w-11 items-center justify-center"
+            >
+              <span
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                  index === currentImageIndex ? "bg-foreground" : "bg-muted"
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

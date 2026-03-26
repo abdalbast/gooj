@@ -1,6 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  useBodyScrollLock,
+  useEscapeKey,
+  useFocusRestore,
+  useInitialFocus,
+} from "@/hooks/use-overlay-accessibility";
 
 interface ImageZoomProps {
   images: string[];
@@ -11,24 +17,13 @@ interface ImageZoomProps {
 
 const ImageZoom = ({ images, initialIndex, isOpen, onClose }: ImageZoomProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dialogTitleId = useId();
 
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscKey);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscKey);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, onClose]);
+  useBodyScrollLock(isOpen);
+  useEscapeKey(isOpen, onClose);
+  useFocusRestore(isOpen);
+  useInitialFocus(isOpen, closeButtonRef);
 
   // Scroll to the selected image when modal opens
   useEffect(() => {
@@ -43,19 +38,29 @@ const ImageZoom = ({ images, initialIndex, isOpen, onClose }: ImageZoomProps) =>
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={dialogTitleId}
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm animate-fade-in"
+    >
+      <h2 id={dialogTitleId} className="sr-only">
+        Product image gallery
+      </h2>
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0" 
         onClick={onClose}
       />
       
       {/* Close button */}
       <Button
+        ref={closeButtonRef}
         variant="ghost"
         size="sm"
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 hover:bg-transparent text-black border-none p-2"
+        className="absolute top-6 right-6 z-10 flex h-11 w-11 items-center justify-center border-none p-0 text-black hover:bg-transparent"
+        aria-label="Close image gallery"
       >
         <X className="h-8 w-8" />
       </Button>
@@ -68,6 +73,9 @@ const ImageZoom = ({ images, initialIndex, isOpen, onClose }: ImageZoomProps) =>
               <img
                 src={image}
                 alt={`Product view ${index + 1}`}
+                loading={index === initialIndex ? "eager" : "lazy"}
+                decoding="async"
+                sizes="100vw"
                 className="w-full max-w-none object-cover animate-scale-in"
               />
             </div>

@@ -87,14 +87,20 @@ const GiftPersonalisation = ({
               <img
                 src={photoPreview}
                 alt="Uploaded photo"
+                loading="eager"
+                decoding="async"
+                sizes="96px"
                 className="h-full w-full border border-border object-cover"
               />
               <button
                 type="button"
                 onClick={removePhoto}
-                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-80"
+                className="absolute -top-2 -right-2 flex h-11 w-11 items-center justify-center rounded-full bg-transparent text-background transition-opacity hover:opacity-80"
+                aria-label="Remove uploaded photo"
               >
-                <X className="h-3 w-3" />
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground">
+                  <X className="h-3 w-3" />
+                </span>
               </button>
             </div>
 

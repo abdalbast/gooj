@@ -43,6 +43,7 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
               alt={product.name}
               loading={eager ? "eager" : "lazy"}
               decoding="async"
+              sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               {...loadingPriority}
               className={`h-full w-full object-cover transition-all duration-300 ${
                 showHoverImage ? "group-hover:opacity-0 group-focus-within:opacity-0" : ""
@@ -54,6 +55,7 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
                 alt={`${product.name} lifestyle`}
                 loading="lazy"
                 decoding="async"
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                 className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
               />
             ) : null}
