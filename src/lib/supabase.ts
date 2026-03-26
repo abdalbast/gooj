@@ -1,6 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./supabase.types";
 
-let supabaseClient: SupabaseClient | null = null;
+let supabaseClient: SupabaseClient<Database> | null = null;
 
 const getSupabaseConfig = () => ({
   url: import.meta.env.VITE_SUPABASE_URL,
@@ -10,6 +11,14 @@ const getSupabaseConfig = () => ({
 export const hasSupabaseConfig = () => {
   const { url, publishableKey } = getSupabaseConfig();
   return Boolean(url && publishableKey);
+};
+
+export const maybeGetSupabaseClient = () => {
+  if (!hasSupabaseConfig()) {
+    return null;
+  }
+
+  return getSupabaseClient();
 };
 
 export const getSupabaseClient = () => {
@@ -25,7 +34,13 @@ export const getSupabaseClient = () => {
     );
   }
 
-  supabaseClient = createClient(url, publishableKey);
+  supabaseClient = createClient<Database>(url, publishableKey, {
+    auth: {
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      persistSession: true,
+    },
+  });
 
   return supabaseClient;
 };

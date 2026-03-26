@@ -75,24 +75,30 @@ test("checkout uses canonical GBP shipping labels and totals", async ({ page }) 
   expectNoRuntimeErrors(runtime);
 });
 
-test("date reminders deep link opens the add form", async ({ page }) => {
+test("date reminders route renders Supabase auth or setup state without runtime errors", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
 
   await page.goto("/reminders#add-date");
 
-  await expect(page.getByRole("heading", { name: "New Reminder" })).toBeVisible();
-  await expect(page.getByPlaceholder("e.g. Sarah")).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: /Sign In To Save Reminders|Supabase Configuration Required/i,
+    }),
+  ).toBeVisible();
 
   expectNoRuntimeErrors(runtime);
 });
 
-test("admin dashboard loads without runtime errors", async ({ page }) => {
+test("admin route renders auth or setup state without runtime errors", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
 
   await page.goto("/admin");
 
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByText("Revenue (Last 7 Days)")).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: /Admin Sign In|Supabase Configuration Required/i,
+    }),
+  ).toBeVisible();
 
   expectNoRuntimeErrors(runtime);
 });

@@ -1,91 +1,191 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-
-interface ContentBlock {
-  id: string;
-  section: string;
-  title: string;
-  body: string;
-}
-
-const initialContent: ContentBlock[] = [
-  { id: "1", section: "Hero", title: "Gooj It!", body: "Thoughtful Made Easy. Curated gift boxes for every occasion." },
-  { id: "2", section: "About Section", title: "Born From a Simple Idea", body: "Men want to give thoughtful gifts but don't always know where to start. GOOJ takes the guesswork out of gifting." },
-  { id: "3", section: "Feature 1", title: "Curated with Care", body: "Every box is hand-selected to balance keepsake items with luxurious consumables." },
-  { id: "4", section: "Feature 2", title: "The Unboxing Experience", body: "Premium packaging that makes the moment of opening as special as the gift itself." },
-  { id: "5", section: "CTA", title: "Never Miss a Moment", body: "Set up date reminders and we'll make sure you're always the thoughtful one." },
-];
+import {
+  getSupabaseErrorMessage,
+  listAdminContentBlocks,
+  updateAdminContentBlock,
+  type AdminContentBlockRecord,
+} from "@/lib/supabaseData";
 
 const AdminContent = () => {
   const { toast } = useToast();
-  const [content, setContent] = useState<ContentBlock[]>(initialContent);
+  const [content, setContent] = useState<AdminContentBlockRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [pageError, setPageError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editing, setEditing] = useState<ContentBlock | null>(null);
-  const [form, setForm] = useState({ title: "", body: "" });
+  const [editing, setEditing] = useState<AdminContentBlockRecord | null>(null);
+  const [form, setForm] = useState({ body: "", title: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
 
-  const openEdit = (c: ContentBlock) => {
-    setEditing(c);
-    setForm({ title: c.title, body: c.body });
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setPageError(null);
+
+    void listAdminContentBlocks()
+      .then((rows) => {
+        if (!active) {
+          return;
+        }
+
+        setContent(rows);
+      })
+      .catch((error) => {
+        if (!active) {
+          return;
+        }
+
+        setPageError(getSupabaseErrorMessage(error, "Could not load content blocks."));
+      })
+      .finally(() => {
+        if (!active) {
+          return;
+        }
+
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const openEdit = (block: AdminContentBlockRecord) => {
+    setEditing(block);
+    setForm({ body: block.body, title: block.title });
     setErrors({});
     setDialogOpen(true);
   };
 
   const validate = () => {
-    const errs: Record<string, string> = {};
-    if (!form.title.trim()) errs.title = "Title is required";
-    if (!form.body.trim()) errs.body = "Body text is required";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    const nextErrors: Record<string, string> = {};
+
+    if (!form.title.trim()) {
+      nextErrors.title = "Title is required";
+    }
+
+    if (!form.body.trim()) {
+      nextErrors.body = "Body text is required";
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (!editing || !validate()) return;
-    setContent(cs => cs.map(c => c.id === editing.id ? { ...c, title: form.title, body: form.body } : c));
-    toast({ title: "Content updated", description: `${editing.section} has been saved.` });
-    setDialogOpen(false);
+  const handleSave = async () => {
+    if (!editing || !validate()) {
+      return;
+    }
+
+    setSaving(true);
+    setPageError(null);
+
+    try {
+      const savedBlock = await updateAdminContentBlock(editing.id, form);
+      setContent((current) =>
+        current.map((block) => (block.id === editing.id ? savedBlock : block)),
+      );
+      toast({
+        description: `${savedBlock.section} has been synced to Supabase.`,
+        title: "Content updated",
+      });
+      setDialogOpen(false);
+      setEditing(null);
+    } catch (error) {
+      const message = getSupabaseErrorMessage(error, "Could not save the content block.");
+      setPageError(message);
+      toast({
+        description: message,
+        title: "Save failed",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-light text-foreground">Content Management</h1>
-      <p className="text-sm text-muted-foreground font-light">Edit homepage and marketing content. Changes will be reflected on the live site.</p>
-
-      <div className="space-y-4">
-        {content.map(c => (
-          <div key={c.id} className="border border-border p-5 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-0.5">{c.section}</span>
-              <Button variant="ghost" size="sm" onClick={() => openEdit(c)} className="h-8 w-8 p-0">
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-            <h3 className="text-sm font-medium text-foreground">{c.title}</h3>
-            <p className="text-sm font-light text-muted-foreground">{c.body}</p>
-          </div>
-        ))}
+      <div className="space-y-2">
+        <h1 className="text-2xl font-light text-foreground">Content Management</h1>
+        <p className="text-sm text-muted-foreground font-light">
+          Edit homepage and marketing copy stored in Supabase.
+        </p>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {pageError && (
+        <Alert variant="destructive">
+          <AlertTitle>Content query failed</AlertTitle>
+          <AlertDescription>{pageError}</AlertDescription>
+        </Alert>
+      )}
+
+      {loading ? (
+        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
+          Loading content blocks from Supabase...
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {content.map((block) => (
+            <div className="border border-border p-5 space-y-2" key={block.id}>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-0.5">
+                  {block.section}
+                </span>
+                <Button className="h-8 w-8 p-0" onClick={() => openEdit(block)} size="sm" variant="ghost">
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <h2 className="text-sm font-medium text-foreground">{block.title}</h2>
+              <p className="text-sm font-light text-muted-foreground">{block.body}</p>
+            </div>
+          ))}
+          {content.length === 0 && (
+            <div className="border border-border p-6 text-sm text-muted-foreground">
+              No content blocks found in Supabase.
+            </div>
+          )}
+        </div>
+      )}
+
+      <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-light">Edit {editing?.section}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
-              <Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Title *" className="rounded-none" />
+              <Input
+                className="rounded-none"
+                onChange={(event) => setForm({ ...form, title: event.target.value })}
+                placeholder="Title *"
+                value={form.title}
+              />
               {errors.title && <p className="text-xs text-destructive mt-1">{errors.title}</p>}
             </div>
             <div>
-              <Textarea value={form.body} onChange={e => setForm({...form, body: e.target.value})} placeholder="Body text *" className="rounded-none min-h-[120px]" />
+              <Textarea
+                className="rounded-none min-h-[120px]"
+                onChange={(event) => setForm({ ...form, body: event.target.value })}
+                placeholder="Body text *"
+                value={form.body}
+              />
               {errors.body && <p className="text-xs text-destructive mt-1">{errors.body}</p>}
             </div>
-            <Button onClick={handleSave} className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90">Save Changes</Button>
+            <Button
+              className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90"
+              disabled={saving}
+              onClick={handleSave}
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

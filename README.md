@@ -67,6 +67,29 @@ Required variables:
 
 These values should come from your Supabase project's Connect dialog or API settings.
 
+### Bootstrap The Database
+
+Run the SQL bootstrap in your Supabase SQL editor:
+
+```sh
+open supabase/bootstrap.sql
+```
+
+That script creates:
+
+- Supabase-backed `reminders`
+- Supabase auth-aware `admin_users`
+- Admin data tables for products, promotions, content, customers, and orders
+- RLS policies for customer reminders and admin-only reads/writes
+- Sample admin data so the dashboard is populated immediately
+
+### Auth Flow
+
+- Customer reminders use Supabase email magic links.
+- `/admin` also uses Supabase magic links, but access is allowed only for users present in `public.admin_users`.
+- After you create an admin user in Supabase Auth, insert that user into `public.admin_users` using the example SQL at the bottom of `supabase/bootstrap.sql`.
+- Make sure your Supabase Auth URL configuration allows redirects back to your local app and production domain.
+
 ## Vercel Environment Variables
 
 Set the same frontend variables in your Vercel project before production deployments:
