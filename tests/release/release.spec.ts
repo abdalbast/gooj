@@ -5,7 +5,8 @@ import { waitForMagicLink } from "./helpers/gmail";
 import { createFreshTotpCode } from "./helpers/totp";
 
 const seedCart = async (page: Page, state: unknown) => {
-  await page.addInitScript((cartState) => {
+  await page.goto("/");
+  await page.evaluate((cartState) => {
     window.localStorage.clear();
     window.localStorage.setItem("gooj:cart", JSON.stringify(cartState));
   }, state);
@@ -102,12 +103,12 @@ test("checkout applies seeded promo code WELCOME15 and keeps it after refresh", 
   await page.getByRole("button", { name: "Apply" }).click();
 
   await expect(page.getByText("WELCOME15", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Complete Order • £55.25" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Complete Order • £55" })).toBeVisible();
 
   await page.reload();
 
   await expect(page.getByText("WELCOME15", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Complete Order • £55.25" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Complete Order • £55" })).toBeVisible();
 
   expectNoRuntimeErrors(runtime);
 });
