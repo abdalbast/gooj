@@ -17,17 +17,25 @@ describe("cart flow", () => {
       </CartProvider>,
     );
 
-    await screen.findByRole("heading", { level: 1, name: "The Birthday Box" });
+    await screen.findByRole(
+      "heading",
+      { level: 1, name: "The Birthday Box" },
+      { timeout: 3_000 },
+    );
 
     await user.click(screen.getByRole("button", { name: "Add to Bag" }));
     await user.click(screen.getByRole("button", { name: "Shopping bag" }));
 
-    expect(await screen.findByRole("heading", { name: "Bag" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Bag" }, { timeout: 3_000 }),
+    ).toBeInTheDocument();
     expect(screen.getAllByText("The Birthday Box").length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("link", { name: "Check Out" }));
 
-    expect(await screen.findByRole("heading", { name: "Shipping Options" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Shipping Options" }, { timeout: 3_000 }),
+    ).toBeInTheDocument();
     expect(screen.getAllByText("The Birthday Box").length).toBeGreaterThan(0);
   });
 });

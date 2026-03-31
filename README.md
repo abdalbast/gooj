@@ -130,6 +130,17 @@ VITE_WEB_VITALS_RELEASE_ID=
 VITE_WEB_VITALS_DEBUG=
 ```
 
+Release verification variables:
+
+```bash
+DEPLOYMENT_URL=https://gooj.vercel.app
+E2E_ADMIN_EMAIL=
+E2E_ADMIN_TOTP_SECRET=
+E2E_GMAIL_CLIENT_ID=
+E2E_GMAIL_CLIENT_SECRET=
+E2E_GMAIL_REFRESH_TOKEN=
+```
+
 Notes:
 
 - The app will render fallback setup states if these variables are missing.
@@ -137,6 +148,7 @@ Notes:
 - Use the Supabase project URL and publishable anon key from your project settings.
 - Core Web Vitals reporting derives its default endpoint from `VITE_SUPABASE_URL` and the `report-web-vitals` Edge Function path. Override `VITE_WEB_VITALS_ENDPOINT` only if you need to point at a different ingress URL.
 - `VITE_WEB_VITALS_ENABLED` defaults to production-only reporting. Local development stays quiet unless you explicitly enable it or turn on debug logging.
+- The release gate uses the non-`VITE_` variables above to verify the live production deployment before tagging.
 
 ## Supabase Setup
 
@@ -206,8 +218,11 @@ npm run lint
 npm run preview
 npm run test:e2e:install
 npm run test:e2e
+npm run test:release
 npm run test:perf
 npm run test:ci
+npm run release:notes -- 2026-03-31
+npm run release:verify
 ```
 
 ## Testing And Quality Gates
@@ -220,11 +235,15 @@ Playwright coverage lives under [`tests/e2e`](/Users/abdalbastkhdhir/development
 - Bundle size budget checks against built assets
 - Version-sync behavior against `version.json`
 
+Formal release verification uses [`playwright.release.config.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/playwright.release.config.ts) plus [`tests/release/release.spec.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/tests/release/release.spec.ts) to target the deployed production site directly.
+
 Recommended verification flow before shipping:
 
 ```bash
 npm run lint
 npm run build
+npm run test:app
+npm run test:release
 npm run test:e2e
 npm run test:perf
 ```
@@ -244,6 +263,7 @@ The repository is configured for Vercel.
 - `vercel.json` rewrites all application routes to `index.html` for SPA routing.
 - `index.html` and `version.json` are served with `no-cache` headers.
 - hashed asset files under `/assets` are served as immutable.
+- Formal releases should set `VITE_WEB_VITALS_RELEASE_ID` to the release tag before the production deploy.
 
 ### Required Vercel Environment Variables
 
@@ -258,6 +278,8 @@ If you manage env values with the Vercel CLI:
 ```bash
 vercel env pull .env.local
 ```
+
+For the full tag-and-release workflow, use [`RELEASE.md`](/Users/abdalbastkhdhir/development/Business Projects/gooj/RELEASE.md).
 
 ## Operational Notes
 

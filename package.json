@@ -1,7 +1,7 @@
 {
   "name": "gooj",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,8 +15,11 @@
     "test:app": "npm run test:unit && npm run test:integration",
     "test:e2e:install": "playwright install chromium firefox webkit",
     "test:e2e": "playwright test --grep-invert @perf",
+    "test:release": "playwright test -c playwright.release.config.ts",
     "test:perf": "playwright test --project=chromium --grep @perf",
-    "test:ci": "playwright test"
+    "test:ci": "playwright test",
+    "release:notes": "node ./scripts/extract-changelog-section.mjs",
+    "release:verify": "npm run lint && npm run build && npm run test:app && npm run test:release"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.11",
