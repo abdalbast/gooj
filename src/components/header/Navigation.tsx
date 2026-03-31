@@ -1,5 +1,4 @@
-import { ArrowRight, X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   useBodyScrollLock,
@@ -7,98 +6,18 @@ import {
   useFocusRestore,
   useInitialFocus,
 } from "@/hooks/use-overlay-accessibility";
-import { buildVersionedUrl } from "@/lib/versionSync";
-import ShoppingBag from "./ShoppingBag";
-import pantheonImage from "@/assets/pantheon.webp";
-import eclipseImage from "@/assets/eclipse.webp";
-import haloImage from "@/assets/halo.webp";
+import { useCart } from "@/contexts/CartContext";
+import { NavigationFavoritesPanel } from "./NavigationFavoritesPanel";
+import { NavigationMegaMenu } from "./NavigationMegaMenu";
+import { NavigationMobileMenu } from "./NavigationMobileMenu";
+import { NavigationSearchPanel } from "./NavigationSearchPanel";
+import { navItems } from "./navigationData";
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  quantity: number;
-  category: string;
-}
-
-const popularSearches = [
-  "Birthday Gift",
-  "Anniversary Box",
-  "Gift for Mum",
-  "Personalised Box",
-  "Luxury Gift Set",
-  "Last Minute Gift",
-];
-
-const navItems = [
-  {
-    name: "Shop",
-    href: "/category/shop",
-    submenuItems: [
-      "For Her Birthday",
-      "For Mum",
-      "For Partner",
-      "Anniversary",
-      "Just Because",
-    ],
-    images: [
-      {
-        src: buildVersionedUrl("/rings-collection.webp"),
-        alt: "Birthday Gift Box",
-        label: "Birthday Boxes",
-      },
-      {
-        src: buildVersionedUrl("/earrings-collection.webp"),
-        alt: "Anniversary Gift Box",
-        label: "Anniversary Boxes",
-      },
-    ],
-  },
-  {
-    name: "New in",
-    href: "/category/new-in",
-    submenuItems: [
-      "This Week's Boxes",
-      "Seasonal Collection",
-      "Limited Edition",
-      "Personalised",
-      "Best Sellers",
-    ],
-    images: [
-      {
-        src: buildVersionedUrl("/arcus-bracelet.webp"),
-        alt: "New Gift Box",
-        label: "Spring Collection",
-      },
-      {
-        src: buildVersionedUrl("/span-bracelet.webp"),
-        alt: "Limited Edition Box",
-        label: "Limited Edition",
-      },
-    ],
-  },
-  {
-    name: "About",
-    href: "/about/our-story",
-    submenuItems: [
-      "Our Story",
-      "Sustainability",
-      "Gift Guide",
-      "Customer Care",
-      "Store Locator",
-    ],
-    images: [
-      {
-        src: buildVersionedUrl("/founders.webp"),
-        alt: "The GOOJ Story",
-        label: "Read our story",
-      },
-    ],
-  },
-] as const;
+const loadShoppingBag = () => import("./ShoppingBag");
+const ShoppingBag = lazy(loadShoppingBag);
 
 const Navigation = () => {
+  const { itemCount: totalItems } = useCart();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [offCanvasType, setOffCanvasType] = useState<"favorites" | null>(null);
@@ -123,35 +42,6 @@ const Navigation = () => {
   const favoritesPanelId = useId();
   const favoritesTitleId = useId();
   const favoritesOpen = offCanvasType === "favorites";
-
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "The Birthday Box",
-      price: "£65",
-      image: pantheonImage,
-      quantity: 1,
-      category: "Gift Boxes",
-    },
-    {
-      id: 2,
-      name: "The Anniversary Box",
-      price: "£85",
-      image: eclipseImage,
-      quantity: 1,
-      category: "Gift Boxes",
-    },
-    {
-      id: 3,
-      name: "The Just Because Box",
-      price: "£45",
-      image: haloImage,
-      quantity: 1,
-      category: "Gift Boxes",
-    },
-  ]);
-
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const activeNavItem = navItems.find((item) => item.name === activeDropdown) ?? null;
   const isAnyOverlayOpen =
     activeDropdown !== null ||
@@ -190,6 +80,10 @@ const Navigation = () => {
     setOffCanvasType(null);
   };
 
+  const preloadShoppingBag = () => {
+    void loadShoppingBag();
+  };
+
   const openDropdown = (itemName: string) => {
     closeSearch();
     closeMobileMenu();
@@ -215,6 +109,7 @@ const Navigation = () => {
   };
 
   const openShoppingBag = () => {
+    preloadShoppingBag();
     closeDropdown();
     closeSearch();
     closeMobileMenu();
@@ -256,18 +151,6 @@ const Navigation = () => {
       closeDropdown();
     }
   });
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      setCartItems((items) => items.filter((item) => item.id !== id));
-    } else {
-      setCartItems((items) =>
-        items.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item,
-        ),
-      );
-    }
-  };
 
   useEffect(() => {
     if (!activeNavItem) {
@@ -399,6 +282,12 @@ const Navigation = () => {
             aria-expanded={isShoppingBagOpen}
             aria-controls={shoppingBagId}
             onClick={openShoppingBag}
+            onFocus={() => {
+              preloadShoppingBag();
+            }}
+            onMouseEnter={() => {
+              preloadShoppingBag();
+            }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -421,71 +310,12 @@ const Navigation = () => {
       )}
 
       {activeNavItem ? (
-        <div
-          id={megaMenuId}
-          role="menu"
-          aria-label={`${activeNavItem.name} menu`}
-          className="absolute top-full left-0 right-0 bg-white/90 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
-          onMouseEnter={() => openDropdown(activeNavItem.name)}
-          onMouseLeave={closeDropdown}
-        >
-          <div className="px-6 py-8 max-w-7xl mx-auto">
-            <div className="flex justify-between w-full">
-              <div className="flex-1">
-                <ul className="space-y-2">
-                  {activeNavItem.submenuItems.map((subItem, index) => (
-                      <li
-                        key={index}
-                        style={{ transitionDelay: "50ms" }}
-                        className="transform transition-all duration-300 translate-y-0 opacity-100 starting:-translate-y-2 starting:opacity-0"
-                      >
-                        <Link
-                          to={activeNavItem.name === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, "-")}` : `/category/${subItem.toLowerCase().replace(/\s+/g, "-")}`}
-                          className="text-gray-600 hover:text-black transition-colors duration-200 text-[15px] font-medium block py-2"
-                          role="menuitem"
-                          onClick={closeDropdown}
-                        >
-                          {subItem}
-                        </Link>
-                      </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex space-x-6">
-                {activeNavItem.images.map((image, index) => {
-                    let linkTo = "/";
-                    if (activeNavItem.name === "Shop") {
-                      linkTo = "/category/shop";
-                    } else if (activeNavItem.name === "New in") {
-                      linkTo = "/category/new-in";
-                    } else if (activeNavItem.name === "About") {
-                      linkTo = "/about/our-story";
-                    }
-
-                    return (
-                      <Link key={index} to={linkTo} className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden block rounded-2xl transform transition-all duration-500 delay-100 translate-y-0 opacity-100 starting:translate-y-4 starting:opacity-0 bg-gray-100">
-                        <img
-                          src={image.src}
-                          alt={image.alt}
-                          loading="eager"
-                          decoding="async"
-                          sizes="400px"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
-                        />
-                        {(activeNavItem.name === "Shop" || activeNavItem.name === "New in" || activeNavItem.name === "About") && (
-                          <div className="absolute bottom-2 left-2 text-white text-xs font-light flex items-center gap-1">
-                            <span>{image.label}</span>
-                            <ArrowRight size={12} />
-                          </div>
-                        )}
-                      </Link>
-                    );
-                  })}
-              </div>
-            </div>
-          </div>
-        </div>
+        <NavigationMegaMenu
+          activeItem={activeNavItem}
+          megaMenuId={megaMenuId}
+          onClose={closeDropdown}
+          onOpen={openDropdown}
+        />
       ) : null}
 
       {/* Search backdrop */}
@@ -497,49 +327,11 @@ const Navigation = () => {
       )}
 
       {isSearchOpen && (
-        <div
-          id={searchDialogId}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={searchTitleId}
-          className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
-        >
-          <div className="px-6 py-10">
-            <div className="max-w-2xl mx-auto">
-              <h2 id={searchTitleId} className="sr-only">
-                Search gift boxes
-              </h2>
-              <div className="relative mb-10 transform transition-all duration-300 delay-75 translate-y-0 opacity-100 starting:-translate-y-4 starting:opacity-0">
-                <div className="flex items-center border-b border-gray-200 pb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-gray-400 mr-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                  </svg>
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder="Search for gift boxes..."
-                    className="flex-1 bg-transparent text-gray-900 placeholder:text-gray-400 outline-none text-2xl font-light"
-                  />
-                </div>
-              </div>
-
-              <div className="transform transition-all duration-300 delay-150 translate-y-0 opacity-100 starting:translate-y-4 starting:opacity-0">
-                <h3 className="text-gray-500 text-sm font-medium mb-4 uppercase tracking-wider">Popular Searches</h3>
-                <div className="flex flex-wrap gap-2">
-                  {popularSearches.map((search, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      className="min-h-11 text-gray-800 bg-gray-100 hover:bg-gray-200 text-[15px] font-medium py-2.5 px-5 rounded-full transition-colors duration-200"
-                    >
-                      {search}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <NavigationSearchPanel
+          searchDialogId={searchDialogId}
+          searchInputRef={searchInputRef}
+          searchTitleId={searchTitleId}
+        />
       )}
 
       {/* Mobile menu backdrop */}
@@ -551,105 +343,36 @@ const Navigation = () => {
       )}
 
       {isMobileMenuOpen && (
-        <div
-          id={mobileMenuId}
-          ref={mobileMenuPanelRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile menu"
-          tabIndex={-1}
-          className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
-        >
-          <div className="px-6 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
-            <div className="space-y-6">
-              {navItems.map((item) => (
-                <div key={item.name}>
-                  <Link
-                    to={item.href}
-                    className="flex min-h-11 items-center text-nav-foreground transition-colors duration-200 hover:text-nav-hover text-lg font-light py-2"
-                    onClick={closeMobileMenu}
-                  >
-                    {item.name}
-                  </Link>
-                  <div className="mt-3 pl-4 space-y-2">
-                    {item.submenuItems.map((subItem, subIndex) => (
-                      <Link
-                        key={subIndex}
-                        to={item.name === "About" ? `/about/${subItem.toLowerCase().replace(/\s+/g, "-")}` : `/category/${subItem.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="flex min-h-11 items-center text-nav-foreground/70 hover:text-nav-hover text-sm font-light py-1"
-                        onClick={closeMobileMenu}
-                      >
-                        {subItem}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              <div className="border-t border-black/5 pt-6">
-                <Link
-                  to="/admin"
-                  className="flex min-h-11 items-center text-nav-foreground transition-colors duration-200 hover:text-nav-hover text-lg font-light py-2"
-                  onClick={closeMobileMenu}
-                >
-                  Admin
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+        <NavigationMobileMenu
+          mobileMenuId={mobileMenuId}
+          mobileMenuPanelRef={mobileMenuPanelRef}
+          onClose={closeMobileMenu}
+        />
       )}
       
-      <ShoppingBag
-        isOpen={isShoppingBagOpen}
-        onClose={closeShoppingBag}
-        cartItems={cartItems}
-        updateQuantity={updateQuantity}
-        panelId={shoppingBagId}
-        titleId={shoppingBagTitleId}
-        initialFocusRef={shoppingBagCloseButtonRef}
-        onViewFavorites={() => {
-          openFavorites(shoppingBagButtonRef.current);
-        }}
-      />
-
-      {favoritesOpen && (
-        <div className="fixed inset-0 z-50 h-screen">
-          <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm h-screen transition-opacity duration-300"
-            onClick={closeFavorites}
+      <Suspense fallback={null}>
+        {isShoppingBagOpen ? (
+          <ShoppingBag
+            isOpen={isShoppingBagOpen}
+            onClose={closeShoppingBag}
+            panelId={shoppingBagId}
+            titleId={shoppingBagTitleId}
+            initialFocusRef={shoppingBagCloseButtonRef}
+            onViewFavorites={() => {
+              openFavorites(shoppingBagButtonRef.current);
+            }}
           />
+        ) : null}
+      </Suspense>
 
-          <div
-            id={favoritesPanelId}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={favoritesTitleId}
-            className="absolute right-0 top-0 h-screen w-full max-w-96 bg-background border-l border-border animate-slide-in-right flex flex-col"
-          >
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h2 id={favoritesTitleId} className="text-lg font-light text-foreground">
-                Your Favorites
-              </h2>
-              <button
-                ref={favoritesCloseButtonRef}
-                type="button"
-                onClick={closeFavorites}
-                className="flex h-11 w-11 items-center justify-center text-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Close"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-6">
-              <p className="text-muted-foreground text-sm mb-6">
-                You haven't added any favorites yet. Browse our gift boxes and click the heart icon to save ones you love.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {favoritesOpen ? (
+        <NavigationFavoritesPanel
+          favoritesCloseButtonRef={favoritesCloseButtonRef}
+          favoritesPanelId={favoritesPanelId}
+          favoritesTitleId={favoritesTitleId}
+          onClose={closeFavorites}
+        />
+      ) : null}
     </nav>
   );
 };

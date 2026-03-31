@@ -1,5 +1,11 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { expectNoRuntimeErrors, trackRuntimeErrors } from "./helpers/runtime";
+
+const seedCart = async (page: Page, state: unknown) => {
+  await page.addInitScript((cartState) => {
+    window.localStorage.setItem("gooj:cart", JSON.stringify(cartState));
+  }, state);
+};
 
 const expectMinimumTouchTarget = async (
   locator: Parameters<typeof expect>[0],
@@ -89,6 +95,20 @@ test("mobile primary actions meet minimum touch targets", async ({ page }, testI
   await expectMinimumTouchTarget(page.getByRole("button", { name: "Search" }), "search button");
   await expectMinimumTouchTarget(page.getByRole("button", { name: "Shopping bag" }), "shopping bag button");
 
+  await seedCart(page, {
+    appliedPromotion: null,
+    items: [
+      {
+        hasPhoto: false,
+        handwrittenNote: false,
+        id: "1::::printed::no-photo",
+        message: "",
+        productId: "1",
+        quantity: 1,
+      },
+    ],
+    shippingOption: "standard",
+  });
   await page.goto("/checkout");
 
   await expectMinimumTouchTarget(

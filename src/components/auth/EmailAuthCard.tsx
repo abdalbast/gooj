@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/useAuth";
 
 interface EmailAuthCardProps {
   body: string;
+  mode?: "admin" | "customer";
   redirectPath: string;
   submitLabel: string;
   title: string;
@@ -14,6 +15,7 @@ interface EmailAuthCardProps {
 
 const EmailAuthCard = ({
   body,
+  mode = "customer",
   redirectPath,
   submitLabel,
   title,
@@ -36,7 +38,9 @@ const EmailAuthCard = ({
     }
 
     setSubmitting(true);
-    const { error } = await signInWithMagicLink(email.trim(), redirectPath);
+    const { error } = await signInWithMagicLink(email.trim(), redirectPath, {
+      admin: mode === "admin",
+    });
     setSubmitting(false);
 
     if (error) {

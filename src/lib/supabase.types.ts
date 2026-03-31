@@ -231,6 +231,170 @@ export interface Database {
           user_id?: string;
         };
       };
+      web_vitals_events: {
+        Row: {
+          app_version: string;
+          captured_at: string;
+          device_class: string;
+          environment: string;
+          id: number;
+          metric_delta: number;
+          metric_id: string;
+          metric_name: string;
+          metric_value: number;
+          navigation_type: string;
+          network_type: string | null;
+          page_type: string;
+          rating: string;
+          received_at: string;
+          referrer_category: string;
+          route_key: string;
+          route_path: string;
+          sample_rate: number;
+          save_data: boolean | null;
+          schema_version: number;
+          viewport_bucket: string;
+          was_restored_from_bfcache: boolean;
+        };
+        Insert: {
+          app_version: string;
+          captured_at: string;
+          device_class: string;
+          environment: string;
+          id?: number;
+          metric_delta: number;
+          metric_id: string;
+          metric_name: string;
+          metric_value: number;
+          navigation_type: string;
+          network_type?: string | null;
+          page_type: string;
+          rating: string;
+          received_at?: string;
+          referrer_category: string;
+          route_key: string;
+          route_path: string;
+          sample_rate: number;
+          save_data?: boolean | null;
+          schema_version?: number;
+          viewport_bucket: string;
+          was_restored_from_bfcache?: boolean;
+        };
+        Update: {
+          app_version?: string;
+          captured_at?: string;
+          device_class?: string;
+          environment?: string;
+          id?: number;
+          metric_delta?: number;
+          metric_id?: string;
+          metric_name?: string;
+          metric_value?: number;
+          navigation_type?: string;
+          network_type?: string | null;
+          page_type?: string;
+          rating?: string;
+          received_at?: string;
+          referrer_category?: string;
+          route_key?: string;
+          route_path?: string;
+          sample_rate?: number;
+          save_data?: boolean | null;
+          schema_version?: number;
+          viewport_bucket?: string;
+          was_restored_from_bfcache?: boolean;
+        };
+      };
+    };
+    Functions: {
+      get_web_vitals_daily_trends: {
+        Args: {
+          environment_filter?: string | null;
+          release_filter?: string | null;
+          window_days?: number;
+        };
+        Returns: {
+          bucket_date: string;
+          metric_name: string;
+          p75_value: number;
+          rating: string;
+          sample_count: number;
+        }[];
+      };
+      get_web_vitals_device_summary: {
+        Args: {
+          environment_filter?: string | null;
+          release_filter?: string | null;
+          window_days?: number;
+        };
+        Returns: {
+          device_class: string;
+          metric_name: string;
+          p75_value: number;
+          rating: string;
+          sample_count: number;
+        }[];
+      };
+      get_web_vitals_overview: {
+        Args: {
+          environment_filter?: string | null;
+          release_filter?: string | null;
+          window_days?: number;
+        };
+        Returns: {
+          good_count: number;
+          metric_name: string;
+          needs_improvement_count: number;
+          p75_value: number;
+          poor_count: number;
+          rating: string;
+          sample_count: number;
+        }[];
+      };
+      get_web_vitals_release_summary: {
+        Args: {
+          environment_filter?: string | null;
+          release_limit?: number;
+          window_days?: number;
+        };
+        Returns: {
+          app_version: string;
+          last_received_at: string;
+          metric_name: string;
+          p75_value: number;
+          rating: string;
+          sample_count: number;
+        }[];
+      };
+      get_web_vitals_route_summary: {
+        Args: {
+          environment_filter?: string | null;
+          limit_count?: number;
+          release_filter?: string | null;
+          window_days?: number;
+        };
+        Returns: {
+          metric_name: string;
+          p75_value: number;
+          page_type: string;
+          poor_count: number;
+          poor_rate: number;
+          rating: string;
+          route_key: string;
+          sample_count: number;
+        }[];
+      };
+      lookup_active_promotion: {
+        Args: {
+          code_input: string;
+        };
+        Returns: {
+          code: string;
+          discount_label: string;
+          expires_at: string;
+          promo_type: string;
+        }[];
+      };
     };
   };
 }

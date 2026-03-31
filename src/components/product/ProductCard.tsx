@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import ResponsivePicture from "@/components/ui/ResponsivePicture";
 
 export interface ProductCardProduct {
   id: number;
   name: string;
   category: string;
   price: string;
+  imageAvif?: string;
   image: string;
   isNew?: boolean;
 }
@@ -38,11 +40,13 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
       <Card className="border-none bg-transparent shadow-none">
         <CardContent className="p-0">
           <div className="relative mb-3 aspect-square overflow-hidden bg-muted/10">
-            <img
+            <ResponsivePicture
+              avifSrc={product.imageAvif}
               src={product.image}
               alt={product.name}
               loading={eager ? "eager" : "lazy"}
               decoding="async"
+              pictureClassName="block h-full w-full"
               sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               {...loadingPriority}
               className={`h-full w-full object-cover transition-all duration-300 ${

@@ -1,3 +1,5 @@
+import ResponsivePicture from "@/components/ui/ResponsivePicture";
+import foundersAvif from "@/assets/founders.avif";
 import founders from "@/assets/founders.webp";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -21,11 +23,13 @@ const EditorialSection = () => {
         
         <div className="order-first md:order-last">
           <div className="w-full aspect-square overflow-hidden">
-            <img
+            <ResponsivePicture
+              avifSrc={foundersAvif}
               src={founders}
               alt="The GOOJ team curating gift boxes"
               loading="lazy"
               decoding="async"
+              pictureClassName="block h-full w-full"
               className="w-full h-full object-cover"
             />
           </div>

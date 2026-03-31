@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
+  Activity,
   FileText,
   LayoutDashboard,
   Menu,
@@ -10,6 +11,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import AdminMfaCard from "@/components/auth/AdminMfaCard";
 import EmailAuthCard from "@/components/auth/EmailAuthCard";
 import SupabaseSetupCard from "@/components/auth/SupabaseSetupCard";
 import { Button } from "@/components/ui/button";
@@ -18,28 +20,33 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 const adminLinks = [
-  { icon: LayoutDashboard, name: "Dashboard", path: "/admin" },
-  { icon: Package, name: "Products", path: "/admin/products" },
-  { icon: Tag, name: "Promotions", path: "/admin/promotions" },
-  { icon: FileText, name: "Content", path: "/admin/content" },
-  { icon: ShoppingCart, name: "Orders", path: "/admin/orders" },
-  { icon: Users, name: "Customers", path: "/admin/customers" },
+  { icon: LayoutDashboard, name: "Dashboard", path: "/admin", permission: "dashboard" as const },
+  { icon: Activity, name: "Performance", path: "/admin/performance", permission: "dashboard" as const },
+  { icon: Package, name: "Products", path: "/admin/products", permission: "products" as const },
+  { icon: Tag, name: "Promotions", path: "/admin/promotions", permission: "promotions" as const },
+  { icon: FileText, name: "Content", path: "/admin/content", permission: "content" as const },
+  { icon: ShoppingCart, name: "Orders", path: "/admin/orders", permission: "orders" as const },
+  { icon: Users, name: "Customers", path: "/admin/customers", permission: "customers" as const },
 ];
 
 const AdminLayout = () => {
   const location = useLocation();
   const { toast } = useToast();
   const {
+    adminPermissions,
     adminCheckError,
     adminMembership,
     hasConfig,
     isAdmin,
     isAdminLoading,
+    isAdminMfaVerified,
     isAuthLoading,
     signOut,
     user,
   } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const activeAdminLink = adminLinks.find((link) => link.path === location.pathname) ?? adminLinks[0];
+  const visibleAdminLinks = adminLinks.filter((link) => adminPermissions[link.permission]);
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -87,6 +94,7 @@ const AdminLayout = () => {
         <div className="max-w-xl mx-auto">
           <EmailAuthCard
             body="Sign in with your admin email to load the Supabase-backed admin console. Access is granted only to users listed in the `admin_users` table."
+            mode="admin"
             redirectPath={redirectPath}
             submitLabel="Email me an admin sign-in link"
             title="Admin Sign In"
@@ -124,6 +132,50 @@ const AdminLayout = () => {
     );
   }
 
+  if (!isAdminMfaVerified) {
+    return (
+      <div className="min-h-screen bg-background px-6 py-16">
+        <div className="space-y-6">
+          <AdminMfaCard />
+          <div className="max-w-xl mx-auto flex gap-3">
+            <Button asChild className="rounded-none" variant="outline">
+              <Link to="/">Back to Store</Link>
+            </Button>
+            <Button className="rounded-none bg-foreground text-background hover:bg-foreground/90" onClick={handleSignOut}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!adminPermissions[activeAdminLink.permission]) {
+    return (
+      <div className="min-h-screen bg-background px-6 py-16">
+        <div className="max-w-xl mx-auto border border-border bg-background p-6 space-y-4">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Admin access denied</p>
+            <h1 className="text-2xl font-light text-foreground">Your role cannot access this section.</h1>
+            <p className="text-sm font-light text-muted-foreground">
+              Signed in as {user.email}. Your current admin role is {adminMembership?.role}.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            {visibleAdminLinks[0] ? (
+              <Button asChild className="rounded-none" variant="outline">
+                <Link to={visibleAdminLinks[0].path}>Go to allowed section</Link>
+              </Button>
+            ) : null}
+            <Button className="rounded-none bg-foreground text-background hover:bg-foreground/90" onClick={handleSignOut}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex">
       {sidebarOpen && (
@@ -145,7 +197,7 @@ const AdminLayout = () => {
           </button>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {adminLinks.map((link) => {
+          {visibleAdminLinks.map((link) => {
             const isActive = location.pathname === link.path;
 
             return (
@@ -187,7 +239,7 @@ const AdminLayout = () => {
               <Menu className="h-5 w-5" />
             </button>
             <span className="text-sm font-light text-muted-foreground">
-              {adminLinks.find((link) => link.path === location.pathname)?.name || "Admin"}
+              {activeAdminLink?.name || "Admin"}
             </span>
           </div>
           <p className="hidden sm:block text-xs text-muted-foreground truncate ml-6">{user.email}</p>

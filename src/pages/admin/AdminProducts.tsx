@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,13 +11,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AdminFieldError } from "@/components/admin/AdminFieldError";
+import { AdminPageAlert } from "@/components/admin/AdminPageAlert";
+import { AdminPageLoadingState } from "@/components/admin/AdminPageLoadingState";
+import { AdminResultCount } from "@/components/admin/AdminResultCount";
+import { AdminSearchInput } from "@/components/admin/AdminSearchInput";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminEntityDialog } from "@/hooks/use-admin-entity-dialog";
 import {
   deleteAdminProduct,
   getSupabaseErrorMessage,
@@ -28,27 +33,45 @@ import {
 
 const PAGE_SIZE = 5;
 
-const defaultForm = {
+const createDefaultForm = (): AdminProductInput => ({
   category: "Gift Boxes",
   description: "",
   name: "",
   price: "",
-};
+});
+
+const toProductForm = (product: AdminProductRecord): AdminProductInput => ({
+  category: product.category,
+  description: product.description,
+  name: product.name,
+  price: product.price,
+});
 
 const AdminProducts = () => {
   const { toast } = useToast();
   const [products, setProducts] = useState<AdminProductRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<AdminProductRecord | null>(null);
-  const [form, setForm] = useState(defaultForm);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const {
+    closeDialog,
+    dialogOpen,
+    editingRecord: editingProduct,
+    errors,
+    form,
+    handleDialogOpenChange,
+    openAddDialog,
+    openEditDialog,
+    setErrors,
+    setForm,
+  } = useAdminEntityDialog<AdminProductRecord, AdminProductInput>({
+    createDefaultForm,
+    toForm: toProductForm,
+  });
 
   useEffect(() => {
     let active = true;
@@ -115,23 +138,14 @@ const AdminProducts = () => {
     setPage(1);
   };
 
-  const openAdd = () => {
-    setEditingProduct(null);
-    setForm(defaultForm);
-    setErrors({});
-    setDialogOpen(true);
-  };
-
-  const openEdit = (product: AdminProductRecord) => {
-    setEditingProduct(product);
-    setForm({
-      category: product.category,
-      description: product.description,
-      name: product.name,
-      price: product.price,
-    });
-    setErrors({});
-    setDialogOpen(true);
+  const updateFormField = <Field extends keyof AdminProductInput>(
+    field: Field,
+    value: AdminProductInput[Field],
+  ) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
   };
 
   const validate = () => {
@@ -181,9 +195,7 @@ const AdminProducts = () => {
         title: editingProduct ? "Product updated" : "Product added",
       });
 
-      setDialogOpen(false);
-      setEditingProduct(null);
-      setForm(defaultForm);
+      closeDialog();
     } catch (error) {
       const message = getSupabaseErrorMessage(error, "Could not save the product.");
       setPageError(message);
@@ -225,11 +237,11 @@ const AdminProducts = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-light text-foreground">Products</h1>
-        <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+        <Dialog onOpenChange={handleDialogOpenChange} open={dialogOpen}>
           <DialogTrigger asChild>
             <Button
               className="rounded-none bg-foreground text-background hover:bg-foreground/90"
-              onClick={openAdd}
+              onClick={openAddDialog}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Product
@@ -245,37 +257,35 @@ const AdminProducts = () => {
               <div>
                 <Input
                   className="rounded-none"
-                  onChange={(event) => setForm({ ...form, name: event.target.value })}
+                  onChange={(event) => updateFormField("name", event.target.value)}
                   placeholder="Product name *"
                   value={form.name}
                 />
-                {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
+                <AdminFieldError message={errors.name} />
               </div>
               <Input
                 className="rounded-none"
-                onChange={(event) => setForm({ ...form, category: event.target.value })}
+                onChange={(event) => updateFormField("category", event.target.value)}
                 placeholder="Category"
                 value={form.category}
               />
               <div>
                 <Input
                   className="rounded-none"
-                  onChange={(event) => setForm({ ...form, price: event.target.value })}
+                  onChange={(event) => updateFormField("price", event.target.value)}
                   placeholder="Price (e.g. £65) *"
                   value={form.price}
                 />
-                {errors.price && <p className="text-xs text-destructive mt-1">{errors.price}</p>}
+                <AdminFieldError message={errors.price} />
               </div>
               <div>
                 <Textarea
                   className="rounded-none"
-                  onChange={(event) => setForm({ ...form, description: event.target.value })}
+                  onChange={(event) => updateFormField("description", event.target.value)}
                   placeholder="Description *"
                   value={form.description}
                 />
-                {errors.description && (
-                  <p className="text-xs text-destructive mt-1">{errors.description}</p>
-                )}
+                <AdminFieldError message={errors.description} />
               </div>
               <Button
                 className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90"
@@ -289,23 +299,15 @@ const AdminProducts = () => {
         </Dialog>
       </div>
 
-      {pageError && (
-        <Alert variant="destructive">
-          <AlertTitle>Products query failed</AlertTitle>
-          <AlertDescription>{pageError}</AlertDescription>
-        </Alert>
-      )}
+      {pageError ? <AdminPageAlert title="Products query failed">{pageError}</AdminPageAlert> : null}
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="rounded-none pl-9"
-            onChange={(event) => handleSearch(event.target.value)}
-            placeholder="Search products..."
-            value={search}
-          />
-        </div>
+        <AdminSearchInput
+          className="max-w-sm flex-1"
+          onChange={handleSearch}
+          placeholder="Search products..."
+          value={search}
+        />
         <Select onValueChange={handleCategoryFilter} value={categoryFilter}>
           <SelectTrigger className="rounded-none w-[160px]">
             <SelectValue placeholder="All categories" />
@@ -322,9 +324,7 @@ const AdminProducts = () => {
       </div>
 
       {loading ? (
-        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
-          Loading products from Supabase...
-        </div>
+        <AdminPageLoadingState message="Loading products from Supabase..." />
       ) : (
         <>
           <div className="border border-border overflow-x-auto">
@@ -353,7 +353,7 @@ const AdminProducts = () => {
                       <div className="flex justify-end gap-1">
                         <Button
                           className="h-8 w-8 p-0"
-                          onClick={() => openEdit(product)}
+                          onClick={() => openEditDialog(product)}
                           size="sm"
                           variant="ghost"
                         >
@@ -402,9 +402,7 @@ const AdminProducts = () => {
 
           {filtered.length > PAGE_SIZE && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {filtered.length} product{filtered.length !== 1 ? "s" : ""}
-              </span>
+              <AdminResultCount count={filtered.length} label="product" />
               <div className="flex items-center gap-2">
                 <Button
                   className="rounded-none h-8 w-8 p-0"

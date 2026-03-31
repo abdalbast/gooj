@@ -1,5 +1,4 @@
-import { type KeyboardEvent, useEffect, useState } from "react";
-import ImageZoom from "./ImageZoom";
+import { Suspense, lazy, type KeyboardEvent, useEffect, useState } from "react";
 import pantheonImage from "@/assets/pantheon.webp";
 import eclipseImage from "@/assets/eclipse.webp";
 import haloImage from "@/assets/halo.webp";
@@ -13,6 +12,9 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+
+const loadImageZoom = () => import("./ImageZoom");
+const ImageZoom = lazy(loadImageZoom);
 
 type ProductMediaItem = {
   type: "image" | "video";
@@ -60,6 +62,8 @@ const ProductImageGallery = () => {
       return;
     }
 
+    void loadImageZoom();
+
     const imageIndex = productMedia
       .slice(0, index + 1)
       .filter((media) => media.type === "image").length - 1;
@@ -103,7 +107,7 @@ const ProductImageGallery = () => {
                       alt={media.alt}
                       loading={index === 0 ? "eager" : "lazy"}
                       decoding="async"
-                      fetchPriority={index === 0 ? "high" : "auto"}
+                      fetchpriority={index === 0 ? "high" : "auto"}
                       sizes="(min-width: 1024px) 50vw, 100vw"
                       className="h-full w-full cursor-zoom-in object-cover transition-transform duration-300 group-hover:scale-105 select-none"
                     />
@@ -147,12 +151,16 @@ const ProductImageGallery = () => {
         </div>
       </div>
 
-      <ImageZoom
-        images={imageMedia.map((media) => media.src)}
-        initialIndex={zoomInitialIndex}
-        isOpen={isZoomOpen}
-        onClose={() => setIsZoomOpen(false)}
-      />
+      <Suspense fallback={null}>
+        {isZoomOpen ? (
+          <ImageZoom
+            images={imageMedia.map((media) => media.src)}
+            initialIndex={zoomInitialIndex}
+            isOpen={isZoomOpen}
+            onClose={() => setIsZoomOpen(false)}
+          />
+        ) : null}
+      </Suspense>
     </div>
   );
 };

@@ -3,11 +3,17 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import pantheonImageAvif from "@/assets/pantheon.avif";
 import pantheonImage from "@/assets/pantheon.webp";
+import eclipseImageAvif from "@/assets/eclipse.avif";
 import eclipseImage from "@/assets/eclipse.webp";
+import haloImageAvif from "@/assets/halo.avif";
 import haloImage from "@/assets/halo.webp";
+import obliqueImageAvif from "@/assets/oblique.avif";
 import obliqueImage from "@/assets/oblique.webp";
+import lintelImageAvif from "@/assets/lintel.avif";
 import lintelImage from "@/assets/lintel.webp";
+import shadowlineImageAvif from "@/assets/shadowline.avif";
 import shadowlineImage from "@/assets/shadowline.webp";
 import organicEarring from "@/assets/organic-earring.webp";
 import linkBracelet from "@/assets/link-bracelet.webp";
@@ -23,6 +29,7 @@ const products: ProductCardProduct[] = [
     name: "The Birthday Box",
     category: "Gift Boxes",
     price: "£65",
+    imageAvif: pantheonImageAvif,
     image: pantheonImage,
     isNew: true,
   },
@@ -31,6 +38,7 @@ const products: ProductCardProduct[] = [
     name: "The Anniversary Box",
     category: "Gift Boxes",
     price: "£85",
+    imageAvif: eclipseImageAvif,
     image: eclipseImage,
   },
   {
@@ -38,6 +46,7 @@ const products: ProductCardProduct[] = [
     name: "The Mum Box",
     category: "Gift Boxes",
     price: "£55",
+    imageAvif: haloImageAvif,
     image: haloImage,
     isNew: true,
   },
@@ -46,6 +55,7 @@ const products: ProductCardProduct[] = [
     name: "The Just Because Box",
     category: "Gift Boxes",
     price: "£45",
+    imageAvif: obliqueImageAvif,
     image: obliqueImage,
   },
   {
@@ -53,6 +63,7 @@ const products: ProductCardProduct[] = [
     name: "The Luxury Box",
     category: "Gift Boxes",
     price: "£120",
+    imageAvif: lintelImageAvif,
     image: lintelImage,
   },
   {
@@ -60,6 +71,7 @@ const products: ProductCardProduct[] = [
     name: "The Partner Box",
     category: "Gift Boxes",
     price: "£75",
+    imageAvif: shadowlineImageAvif,
     image: shadowlineImage,
   },
 ];

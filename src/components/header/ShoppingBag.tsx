@@ -1,23 +1,14 @@
-import type { RefObject } from "react";
+import { useEffect, type RefObject } from "react";
 import { X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { formatGBPTwoDecimals, parseGBPValue } from "@/lib/commerce";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  quantity: number;
-  category: string;
-}
+import { useCart } from "@/contexts/CartContext";
+import { selectCartDisplayItems } from "@/lib/cartDerived";
 
 interface ShoppingBagProps {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: CartItem[];
-  updateQuantity: (id: number, newQuantity: number) => void;
   panelId: string;
   titleId: string;
   initialFocusRef?: RefObject<HTMLButtonElement | null>;
@@ -27,13 +18,28 @@ interface ShoppingBagProps {
 const ShoppingBag = ({
   isOpen,
   onClose,
-  cartItems,
-  updateQuantity,
   panelId,
   titleId,
   initialFocusRef,
   onViewFavorites,
 }: ShoppingBagProps) => {
+  const { state, updateQuantity } = useCart();
+  const cartItems = selectCartDisplayItems(state);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      initialFocusRef?.current?.focus();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [initialFocusRef, isOpen]);
+
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((sum, item) => {

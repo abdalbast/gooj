@@ -1,5 +1,11 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { expectNoRuntimeErrors, trackRuntimeErrors } from "./helpers/runtime";
+
+const seedCart = async (page: Page, state: unknown) => {
+  await page.addInitScript((cartState) => {
+    window.localStorage.setItem("gooj:cart", JSON.stringify(cartState));
+  }, state);
+};
 
 test("home page renders primary CTAs without runtime errors", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
@@ -11,6 +17,49 @@ test("home page renders primary CTAs without runtime errors", async ({ page }) =
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "GOOJ" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /The Birthday Box/i }).first()).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});
+
+test("favorites drawer opens without shifting the page horizontally", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile-chromium",
+    "Favorites navbar control is desktop only.",
+  );
+
+  const runtime = trackRuntimeErrors(page);
+
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  const favoritesButton = page.getByRole("button", { name: "Favorites" });
+  const beforeBox = await favoritesButton.boundingBox();
+  const viewportMetrics = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+  }));
+
+  await favoritesButton.click();
+
+  await expect(page.getByRole("dialog", { name: "Your Favorites" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        scrollX: window.scrollX,
+      })),
+    )
+    .toEqual({
+      scrollWidth: viewportMetrics.clientWidth,
+      clientWidth: viewportMetrics.clientWidth,
+      scrollX: 0,
+    });
+
+  const afterBox = await favoritesButton.boundingBox();
+
+  expect(beforeBox).not.toBeNull();
+  expect(afterBox).not.toBeNull();
+  expect(afterBox).toEqual(beforeBox);
 
   expectNoRuntimeErrors(runtime);
 });
@@ -57,6 +106,29 @@ test("product image zoom opens from keyboard and restores focus on close", async
 test("checkout uses canonical GBP shipping labels and totals", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
 
+  await seedCart(page, {
+    appliedPromotion: null,
+    items: [
+      {
+        hasPhoto: true,
+        handwrittenNote: true,
+        id: "1::Happy Birthday::handwritten::photo",
+        message: "Happy Birthday",
+        productId: "1",
+        quantity: 1,
+      },
+      {
+        hasPhoto: false,
+        handwrittenNote: false,
+        id: "2::::printed::no-photo",
+        message: "",
+        productId: "2",
+        quantity: 1,
+      },
+    ],
+    shippingOption: "standard",
+  });
+
   await page.goto("/checkout");
 
   await expect(page.getByText("Free • 3-5 business days")).toBeVisible();
@@ -75,6 +147,45 @@ test("checkout uses canonical GBP shipping labels and totals", async ({ page }) 
   expectNoRuntimeErrors(runtime);
 });
 
+test("checkout promo flow persists across refresh", async ({ page }) => {
+  const runtime = trackRuntimeErrors(page);
+
+  await page.route("**/rest/v1/rpc/lookup_active_promotion", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify([
+        {
+          code: "GOOJIT20",
+          discount_label: "20%",
+          expires_at: "2026-12-31",
+          promo_type: "Percentage",
+        },
+      ]),
+    });
+  });
+
+  await page.goto("/product/1");
+
+  await page.getByRole("button", { name: "Add to Bag" }).click();
+  await page.getByRole("button", { name: "Shopping bag" }).click();
+  await page.getByRole("link", { name: "Check Out" }).click();
+
+  await page.getByRole("button", { name: "Discount code" }).click();
+  await page.getByPlaceholder("Enter discount code").fill("GOOJIT20");
+  await page.getByRole("button", { name: "Apply" }).click();
+
+  await expect(page.getByText("GOOJIT20", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Complete Order • £52" })).toBeVisible();
+
+  await page.reload();
+
+  await expect(page.getByText("GOOJIT20", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Complete Order • £52" })).toBeVisible();
+
+  expectNoRuntimeErrors(runtime);
+});
+
 test("date reminders route renders Supabase auth or setup state without runtime errors", async ({ page }) => {
   const runtime = trackRuntimeErrors(page);
 
@@ -82,7 +193,7 @@ test("date reminders route renders Supabase auth or setup state without runtime 
 
   await expect(
     page.getByRole("heading", {
-      name: /Sign In To Save Reminders|Supabase Configuration Required/i,
+      name: /Welcome back|Supabase Configuration Required/i,
     }),
   ).toBeVisible();
 

@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AdminPageAlert } from "@/components/admin/AdminPageAlert";
+import { AdminPageLoadingState } from "@/components/admin/AdminPageLoadingState";
+import { AdminResultCount } from "@/components/admin/AdminResultCount";
+import { AdminSearchInput } from "@/components/admin/AdminSearchInput";
+import { VirtualizedAdminTable } from "@/components/admin/VirtualizedAdminTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   formatAdminDate,
@@ -17,7 +25,10 @@ import {
   type AdminOrderRecord,
 } from "@/lib/supabaseData";
 
-const PAGE_SIZE = 6;
+const CUSTOMER_ROW_HEIGHT = 72;
+const CUSTOMER_VIEWPORT_HEIGHT = 432;
+const customerGridClassName =
+  "grid grid-cols-[minmax(150px,1.1fr)_auto_auto] sm:grid-cols-[minmax(150px,1.1fr)_minmax(220px,1.4fr)_auto_auto] md:grid-cols-[minmax(150px,1.1fr)_minmax(220px,1.4fr)_auto_auto_minmax(120px,1fr)] lg:grid-cols-[minmax(150px,1.1fr)_minmax(220px,1.4fr)_auto_auto_minmax(120px,1fr)_minmax(120px,1fr)]";
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState<AdminCustomerRecord[]>([]);
@@ -25,7 +36,6 @@ const AdminCustomers = () => {
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomerRecord | null>(null);
 
   useEffect(() => {
@@ -71,13 +81,6 @@ const AdminCustomers = () => {
     );
   }, [customers, search]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  useEffect(() => {
-    setPage((current) => Math.min(current, totalPages));
-  }, [totalPages]);
-
   const selectedCustomerOrders = useMemo(() => {
     if (!selectedCustomer) {
       return [];
@@ -88,110 +91,66 @@ const AdminCustomers = () => {
 
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1);
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-light text-foreground">Customers</h1>
 
-      {pageError && (
-        <Alert variant="destructive">
-          <AlertTitle>Customers query failed</AlertTitle>
-          <AlertDescription>{pageError}</AlertDescription>
-        </Alert>
-      )}
+      {pageError ? (
+        <AdminPageAlert title="Customers query failed">{pageError}</AdminPageAlert>
+      ) : null}
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          className="rounded-none pl-9"
-          onChange={(event) => handleSearch(event.target.value)}
-          placeholder="Search by name or email..."
-          value={search}
-        />
-      </div>
+      <AdminSearchInput
+        onChange={handleSearch}
+        placeholder="Search by name or email..."
+        value={search}
+      />
 
       {loading ? (
-        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
-          Loading customers from Supabase...
-        </div>
+        <AdminPageLoadingState message="Loading customers from Supabase..." />
       ) : (
         <>
-          <div className="border border-border overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-muted/20">
-                  <th className="text-left p-3 text-sm font-normal">Name</th>
-                  <th className="text-left p-3 text-sm font-normal hidden sm:table-cell">Email</th>
-                  <th className="text-left p-3 text-sm font-normal">Orders</th>
-                  <th className="text-left p-3 text-sm font-normal">Total Spent</th>
-                  <th className="text-left p-3 text-sm font-normal hidden md:table-cell">Last Order</th>
-                  <th className="text-left p-3 text-sm font-normal hidden lg:table-cell">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginated.map((customer) => (
-                  <tr
-                    className="border-b border-border last:border-0 hover:bg-muted/10 cursor-pointer"
-                    key={customer.id}
-                    onClick={() => setSelectedCustomer(customer)}
-                  >
-                    <td className="p-3 text-sm font-light">{customer.fullName}</td>
-                    <td className="p-3 text-sm font-light text-muted-foreground hidden sm:table-cell">
-                      {customer.email}
-                    </td>
-                    <td className="p-3 text-sm font-light">{customer.ordersCount}</td>
-                    <td className="p-3 text-sm font-light">{customer.totalSpent}</td>
-                    <td className="p-3 text-sm font-light text-muted-foreground hidden md:table-cell">
-                      {customer.lastOrderAt ? formatAdminDate(customer.lastOrderAt) : "—"}
-                    </td>
-                    <td className="p-3 text-sm font-light text-muted-foreground hidden lg:table-cell">
-                      {formatAdminMonthYear(customer.dateJoined)}
-                    </td>
-                  </tr>
-                ))}
-                {paginated.length === 0 && (
-                  <tr>
-                    <td className="p-6 text-center text-sm text-muted-foreground" colSpan={6}>
-                      No customers found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {filtered.length > PAGE_SIZE && (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {filtered.length} customer{filtered.length !== 1 ? "s" : ""}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  className="rounded-none h-8 w-8 p-0"
-                  disabled={page === 1}
-                  onClick={() => setPage((current) => current - 1)}
-                  size="sm"
-                  variant="outline"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm font-light">
-                  {page} / {totalPages}
-                </span>
-                <Button
-                  className="rounded-none h-8 w-8 p-0"
-                  disabled={page === totalPages}
-                  onClick={() => setPage((current) => current + 1)}
-                  size="sm"
-                  variant="outline"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+          <VirtualizedAdminTable
+            emptyState="No customers found."
+            getItemKey={(customer) => customer.id}
+            header={
+              <div className={`bg-muted/20 ${customerGridClassName}`}>
+                <div className="p-3 text-sm font-normal">Name</div>
+                <div className="hidden p-3 text-sm font-normal sm:block">Email</div>
+                <div className="p-3 text-sm font-normal">Orders</div>
+                <div className="p-3 text-sm font-normal">Total Spent</div>
+                <div className="hidden p-3 text-sm font-normal md:block">Last Order</div>
+                <div className="hidden p-3 text-sm font-normal lg:block">Joined</div>
               </div>
-            </div>
-          )}
+            }
+            items={filtered}
+            renderRow={(customer) => (
+              <button
+                className={`border-b border-border last:border-0 hover:bg-muted/10 text-left w-full ${customerGridClassName}`}
+                onClick={() => setSelectedCustomer(customer)}
+                type="button"
+              >
+                <div className="p-3 text-sm font-light">{customer.fullName}</div>
+                <div className="hidden p-3 text-sm font-light text-muted-foreground sm:block">
+                  {customer.email}
+                </div>
+                <div className="p-3 text-sm font-light">{customer.ordersCount}</div>
+                <div className="p-3 text-sm font-light">{customer.totalSpent}</div>
+                <div className="hidden p-3 text-sm font-light text-muted-foreground md:block">
+                  {customer.lastOrderAt ? formatAdminDate(customer.lastOrderAt) : "—"}
+                </div>
+                <div className="hidden p-3 text-sm font-light text-muted-foreground lg:block">
+                  {formatAdminMonthYear(customer.dateJoined)}
+                </div>
+              </button>
+            )}
+            rowHeight={CUSTOMER_ROW_HEIGHT}
+            viewportHeight={CUSTOMER_VIEWPORT_HEIGHT}
+            viewportTestId="customers-viewport"
+          />
+
+          <AdminResultCount count={filtered.length} label="customer" />
         </>
       )}
 
@@ -199,6 +158,9 @@ const AdminCustomers = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-light">{selectedCustomer?.fullName}</DialogTitle>
+            <DialogDescription>
+              Customer profile details and order history pulled from the admin dataset.
+            </DialogDescription>
           </DialogHeader>
           {selectedCustomer && (
             <div className="space-y-4 mt-2">

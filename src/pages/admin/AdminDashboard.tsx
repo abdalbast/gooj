@@ -12,7 +12,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AdminPageAlert } from "@/components/admin/AdminPageAlert";
+import { AdminPageLoadingState } from "@/components/admin/AdminPageLoadingState";
 import { formatGBP } from "@/lib/commerce";
 import { formatAdminDate, getOrderStatusClasses, parseIsoDateOnly } from "@/lib/adminUi";
 import {
@@ -199,17 +200,10 @@ const AdminDashboard = () => {
     <div className="space-y-8">
       <h1 className="text-2xl font-light text-foreground">Dashboard</h1>
 
-      {error && (
-        <Alert variant="destructive">
-          <AlertTitle>Dashboard query failed</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      {error ? <AdminPageAlert title="Dashboard query failed">{error}</AdminPageAlert> : null}
 
       {loading ? (
-        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
-          Loading dashboard data from Supabase...
-        </div>
+        <AdminPageLoadingState message="Loading dashboard data from Supabase..." />
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

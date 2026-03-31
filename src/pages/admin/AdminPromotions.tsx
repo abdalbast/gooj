@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,12 +11,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AdminFieldError } from "@/components/admin/AdminFieldError";
+import { AdminPageAlert } from "@/components/admin/AdminPageAlert";
+import { AdminPageLoadingState } from "@/components/admin/AdminPageLoadingState";
+import { AdminSearchInput } from "@/components/admin/AdminSearchInput";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminEntityDialog } from "@/hooks/use-admin-entity-dialog";
 import {
   deleteAdminPromotion,
   getSupabaseErrorMessage,
@@ -26,27 +30,45 @@ import {
   type AdminPromotionRecord,
 } from "@/lib/supabaseData";
 
-const defaultForm = {
+const createDefaultForm = (): AdminPromotionInput => ({
   code: "",
   discount: "",
   expiresAt: "",
   type: "Percentage",
-};
+});
+
+const toPromotionForm = (promotion: AdminPromotionRecord): AdminPromotionInput => ({
+  code: promotion.code,
+  discount: promotion.discount,
+  expiresAt: promotion.expiresAt,
+  type: promotion.type,
+});
 
 const AdminPromotions = () => {
   const { toast } = useToast();
   const [promotions, setPromotions] = useState<AdminPromotionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingPromotion, setEditingPromotion] = useState<AdminPromotionRecord | null>(null);
-  const [form, setForm] = useState(defaultForm);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const {
+    closeDialog,
+    dialogOpen,
+    editingRecord: editingPromotion,
+    errors,
+    form,
+    handleDialogOpenChange,
+    openAddDialog,
+    openEditDialog,
+    setErrors,
+    setForm,
+  } = useAdminEntityDialog<AdminPromotionRecord, AdminPromotionInput>({
+    createDefaultForm,
+    toForm: toPromotionForm,
+  });
 
   useEffect(() => {
     let active = true;
@@ -92,23 +114,14 @@ const AdminPromotions = () => {
     });
   }, [promotions, search, statusFilter]);
 
-  const openAdd = () => {
-    setEditingPromotion(null);
-    setForm(defaultForm);
-    setErrors({});
-    setDialogOpen(true);
-  };
-
-  const openEdit = (promotion: AdminPromotionRecord) => {
-    setEditingPromotion(promotion);
-    setForm({
-      code: promotion.code,
-      discount: promotion.discount,
-      expiresAt: promotion.expiresAt,
-      type: promotion.type,
-    });
-    setErrors({});
-    setDialogOpen(true);
+  const updateFormField = <Field extends keyof AdminPromotionInput>(
+    field: Field,
+    value: AdminPromotionInput[Field],
+  ) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
   };
 
   const validate = () => {
@@ -160,9 +173,7 @@ const AdminPromotions = () => {
         title: editingPromotion ? "Promotion updated" : "Promotion created",
       });
 
-      setDialogOpen(false);
-      setEditingPromotion(null);
-      setForm(defaultForm);
+      closeDialog();
     } catch (error) {
       const message = getSupabaseErrorMessage(error, "Could not save the promotion.");
       setPageError(message);
@@ -230,11 +241,11 @@ const AdminPromotions = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-light text-foreground">Promotions</h1>
-        <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+        <Dialog onOpenChange={handleDialogOpenChange} open={dialogOpen}>
           <DialogTrigger asChild>
             <Button
               className="rounded-none bg-foreground text-background hover:bg-foreground/90"
-              onClick={openAdd}
+              onClick={openAddDialog}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Promotion
@@ -251,43 +262,39 @@ const AdminPromotions = () => {
                 <Input
                   className="rounded-none font-mono"
                   onChange={(event) =>
-                    setForm({
-                      ...form,
-                      code: event.target.value.toUpperCase().replace(/\s/g, ""),
-                    })
+                    updateFormField(
+                      "code",
+                      event.target.value.toUpperCase().replace(/\s/g, ""),
+                    )
                   }
                   placeholder="Discount code *"
                   value={form.code}
                 />
-                {errors.code && <p className="text-xs text-destructive mt-1">{errors.code}</p>}
+                <AdminFieldError message={errors.code} />
               </div>
               <div>
                 <Input
                   className="rounded-none"
-                  onChange={(event) => setForm({ ...form, discount: event.target.value })}
+                  onChange={(event) => updateFormField("discount", event.target.value)}
                   placeholder="Discount (e.g. 20% or £10 off) *"
                   value={form.discount}
                 />
-                {errors.discount && (
-                  <p className="text-xs text-destructive mt-1">{errors.discount}</p>
-                )}
+                <AdminFieldError message={errors.discount} />
               </div>
               <Input
                 className="rounded-none"
-                onChange={(event) => setForm({ ...form, type: event.target.value })}
+                onChange={(event) => updateFormField("type", event.target.value)}
                 placeholder="Type (Percentage, Fixed, Shipping)"
                 value={form.type}
               />
               <div>
                 <Input
                   className="rounded-none"
-                  onChange={(event) => setForm({ ...form, expiresAt: event.target.value })}
+                  onChange={(event) => updateFormField("expiresAt", event.target.value)}
                   type="date"
                   value={form.expiresAt}
                 />
-                {errors.expiresAt && (
-                  <p className="text-xs text-destructive mt-1">{errors.expiresAt}</p>
-                )}
+                <AdminFieldError message={errors.expiresAt} />
               </div>
               <Button
                 className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90"
@@ -301,23 +308,17 @@ const AdminPromotions = () => {
         </Dialog>
       </div>
 
-      {pageError && (
-        <Alert variant="destructive">
-          <AlertTitle>Promotions query failed</AlertTitle>
-          <AlertDescription>{pageError}</AlertDescription>
-        </Alert>
-      )}
+      {pageError ? (
+        <AdminPageAlert title="Promotions query failed">{pageError}</AdminPageAlert>
+      ) : null}
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="rounded-none pl-9"
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by code..."
-            value={search}
-          />
-        </div>
+        <AdminSearchInput
+          className="max-w-sm flex-1"
+          onChange={setSearch}
+          placeholder="Search by code..."
+          value={search}
+        />
         <Select onValueChange={setStatusFilter} value={statusFilter}>
           <SelectTrigger className="rounded-none w-[140px]">
             <SelectValue placeholder="All" />
@@ -331,9 +332,7 @@ const AdminPromotions = () => {
       </div>
 
       {loading ? (
-        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
-          Loading promotions from Supabase...
-        </div>
+        <AdminPageLoadingState message="Loading promotions from Supabase..." />
       ) : (
         <div className="border border-border overflow-x-auto">
           <table className="w-full">
@@ -369,7 +368,7 @@ const AdminPromotions = () => {
                     <div className="flex justify-end gap-1">
                       <Button
                         className="h-8 w-8 p-0"
-                        onClick={() => openEdit(promotion)}
+                        onClick={() => openEditDialog(promotion)}
                         size="sm"
                         variant="ghost"
                       >

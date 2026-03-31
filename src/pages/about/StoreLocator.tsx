@@ -1,9 +1,13 @@
+import { Suspense, lazy } from "react";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import { Button } from "../../components/ui/button";
 import AboutSidebar from "../../components/about/AboutSidebar";
+
+const loadStoreMap = () => import("../../components/about/StoreMap");
+const StoreMap = lazy(loadStoreMap);
 
 const StoreLocator = () => {
   return (
@@ -53,6 +57,18 @@ const StoreLocator = () => {
               </div>
             </div>
           </div>
+        </ContentSection>
+
+        <ContentSection title="Visit The Showroom">
+          <Suspense
+            fallback={
+              <div className="h-96 rounded-lg border border-border bg-muted/10 flex items-center justify-center text-sm text-muted-foreground">
+                Loading map…
+              </div>
+            }
+          >
+            <StoreMap />
+          </Suspense>
         </ContentSection>
 
         <ContentSection title="Corporate Gifting">

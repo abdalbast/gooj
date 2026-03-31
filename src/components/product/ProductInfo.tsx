@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator 
 } from "@/components/ui/breadcrumb";
@@ -11,6 +13,8 @@ import { getProduct } from "@/lib/productData";
 const ProductInfo = () => {
   const { productId } = useParams();
   const product = getProduct(productId || "1");
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -33,6 +37,21 @@ const ProductInfo = () => {
       }
     };
   }, [photoPreview]);
+
+  const handleAddToBag = () => {
+    addItem({
+      hasPhoto: Boolean(photo),
+      handwrittenNote,
+      message,
+      productId: productId || "1",
+      quantity,
+    });
+
+    toast({
+      description: `${quantity} × ${product.name} added to your bag.`,
+      title: "Added to bag",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -126,7 +145,10 @@ const ProductInfo = () => {
             </Button>
           </div>
         </div>
-        <Button className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-light rounded-none">
+        <Button
+          className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-light rounded-none"
+          onClick={handleAddToBag}
+        >
           Add to Bag
         </Button>
       </div>

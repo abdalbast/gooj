@@ -1,10 +1,12 @@
-import { useRef, useState } from "react";
+import { Suspense, lazy, useRef, useState } from "react";
 import { Crop, ImagePlus, RefreshCcw, X, PenLine } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import ProductPhotoCropDialog from "./ProductPhotoCropDialog";
+
+const loadProductPhotoCropDialog = () => import("./ProductPhotoCropDialog");
+const ProductPhotoCropDialog = lazy(loadProductPhotoCropDialog);
 
 interface GiftPersonalisationProps {
   photo: File | null;
@@ -33,6 +35,7 @@ const GiftPersonalisation = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      void loadProductPhotoCropDialog();
       setPendingPhoto(file);
       setIsCropOpen(true);
     }
@@ -110,6 +113,7 @@ const GiftPersonalisation = ({
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button type="button" variant="outline" className="rounded-none" onClick={() => {
+                  void loadProductPhotoCropDialog();
                   setPendingPhoto(photo);
                   setIsCropOpen(true);
                 }} disabled={!photo}>
@@ -170,12 +174,16 @@ const GiftPersonalisation = ({
         </Label>
       </div>
 
-      <ProductPhotoCropDialog
-        file={pendingPhoto}
-        open={isCropOpen}
-        onOpenChange={handleCropOpenChange}
-        onApply={handleCropApply}
-      />
+      <Suspense fallback={null}>
+        {isCropOpen ? (
+          <ProductPhotoCropDialog
+            file={pendingPhoto}
+            open={isCropOpen}
+            onOpenChange={handleCropOpenChange}
+            onApply={handleCropApply}
+          />
+        ) : null}
+      </Suspense>
     </div>
   );
 };

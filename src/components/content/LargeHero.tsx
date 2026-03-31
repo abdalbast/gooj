@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import ResponsivePicture from "@/components/ui/ResponsivePicture";
+import heroPosterAvif from "@/assets/hero-poster.avif";
 import heroPoster from "@/assets/hero-poster.webp";
 import heroVideoWebm from "@/assets/hero-video-1.webm";
 
@@ -137,14 +139,16 @@ const LargeHero = () => {
         ref={sectionRef}
         className="relative mb-3 overflow-hidden bg-[#f6f1eb] aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]"
       >
-        <img
+        <ResponsivePicture
+          avifSrc={heroPosterAvif}
           src={heroPoster}
           alt="GOOJ curated gift boxes"
           loading="eager"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
+          pictureClassName="absolute inset-0 block h-full w-full"
           sizes="100vw"
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-linear ${
+          className={`h-full w-full object-cover transition-opacity duration-500 ease-linear ${
             shouldRenderVideo && isVideoReady ? "opacity-0" : "opacity-100"
           }`}
         />

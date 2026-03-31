@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { AdminPageAlert } from "@/components/admin/AdminPageAlert";
+import { AdminPageLoadingState } from "@/components/admin/AdminPageLoadingState";
+import { AdminResultCount } from "@/components/admin/AdminResultCount";
+import { AdminSearchInput } from "@/components/admin/AdminSearchInput";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { VirtualizedAdminTable } from "@/components/admin/VirtualizedAdminTable";
 import { formatAdminDate, getOrderStatusClasses } from "@/lib/adminUi";
 import {
   getSupabaseErrorMessage,
@@ -11,7 +12,10 @@ import {
   type AdminOrderRecord,
 } from "@/lib/supabaseData";
 
-const PAGE_SIZE = 5;
+const ORDER_ROW_HEIGHT = 88;
+const ORDER_VIEWPORT_HEIGHT = 440;
+const orderGridClassName =
+  "grid grid-cols-[minmax(110px,1fr)_minmax(170px,1.2fr)_auto_auto] md:grid-cols-[minmax(110px,0.9fr)_minmax(170px,1.2fr)_minmax(150px,1.1fr)_auto_auto_minmax(110px,0.9fr)] lg:grid-cols-[minmax(110px,0.9fr)_minmax(170px,1.2fr)_minmax(150px,1.1fr)_auto_auto_minmax(110px,0.9fr)_minmax(110px,0.9fr)]";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState<AdminOrderRecord[]>([]);
@@ -19,7 +23,6 @@ const AdminOrders = () => {
   const [pageError, setPageError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     let active = true;
@@ -65,44 +68,27 @@ const AdminOrders = () => {
     });
   }, [orders, search, statusFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  useEffect(() => {
-    setPage((current) => Math.min(current, totalPages));
-  }, [totalPages]);
-
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1);
   };
 
   const handleFilter = (value: string) => {
     setStatusFilter(value);
-    setPage(1);
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-light text-foreground">Orders</h1>
 
-      {pageError && (
-        <Alert variant="destructive">
-          <AlertTitle>Orders query failed</AlertTitle>
-          <AlertDescription>{pageError}</AlertDescription>
-        </Alert>
-      )}
+      {pageError ? <AdminPageAlert title="Orders query failed">{pageError}</AdminPageAlert> : null}
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="rounded-none pl-9"
-            onChange={(event) => handleSearch(event.target.value)}
-            placeholder="Search by order ID or customer..."
-            value={search}
-          />
-        </div>
+        <AdminSearchInput
+          className="max-w-sm flex-1"
+          onChange={handleSearch}
+          placeholder="Search by order ID or customer..."
+          value={search}
+        />
         <Select onValueChange={handleFilter} value={statusFilter}>
           <SelectTrigger className="rounded-none w-[160px]">
             <SelectValue placeholder="All statuses" />
@@ -117,92 +103,56 @@ const AdminOrders = () => {
       </div>
 
       {loading ? (
-        <div className="border border-border p-6 text-sm font-light text-muted-foreground">
-          Loading orders from Supabase...
-        </div>
+        <AdminPageLoadingState message="Loading orders from Supabase..." />
       ) : (
         <>
-          <div className="border border-border overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-muted/20">
-                  <th className="text-left p-3 text-sm font-normal">Order</th>
-                  <th className="text-left p-3 text-sm font-normal">Customer</th>
-                  <th className="text-left p-3 text-sm font-normal hidden md:table-cell">Items</th>
-                  <th className="text-left p-3 text-sm font-normal">Total</th>
-                  <th className="text-left p-3 text-sm font-normal">Status</th>
-                  <th className="text-left p-3 text-sm font-normal hidden lg:table-cell">
-                    Personalised
-                  </th>
-                  <th className="text-left p-3 text-sm font-normal hidden md:table-cell">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginated.map((order) => (
-                  <tr className="border-b border-border last:border-0 hover:bg-muted/10" key={order.id}>
-                    <td className="p-3 text-sm font-light">{order.orderNumber}</td>
-                    <td className="p-3">
-                      <div className="text-sm font-light">{order.customerName}</div>
-                      <div className="text-xs text-muted-foreground">{order.customerEmail}</div>
-                    </td>
-                    <td className="p-3 text-sm font-light text-muted-foreground hidden md:table-cell">
-                      {order.items}
-                    </td>
-                    <td className="p-3 text-sm font-light">{order.total}</td>
-                    <td className="p-3">
-                      <span className={`text-xs px-2 py-1 ${getOrderStatusClasses(order.status)}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="p-3 text-sm font-light hidden lg:table-cell">
-                      {order.personalised ? "Yes" : "No"}
-                    </td>
-                    <td className="p-3 text-sm font-light text-muted-foreground hidden md:table-cell">
-                      {formatAdminDate(order.orderDate)}
-                    </td>
-                  </tr>
-                ))}
-                {paginated.length === 0 && (
-                  <tr>
-                    <td className="p-6 text-center text-sm text-muted-foreground" colSpan={7}>
-                      No orders found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {filtered.length > PAGE_SIZE && (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {filtered.length} order{filtered.length !== 1 ? "s" : ""}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  className="rounded-none h-8 w-8 p-0"
-                  disabled={page === 1}
-                  onClick={() => setPage((current) => current - 1)}
-                  size="sm"
-                  variant="outline"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm font-light">
-                  {page} / {totalPages}
-                </span>
-                <Button
-                  className="rounded-none h-8 w-8 p-0"
-                  disabled={page === totalPages}
-                  onClick={() => setPage((current) => current + 1)}
-                  size="sm"
-                  variant="outline"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+          <VirtualizedAdminTable
+            emptyState="No orders found."
+            getItemKey={(order) => order.id}
+            header={
+              <div className={`bg-muted/20 ${orderGridClassName}`}>
+                <div className="p-3 text-sm font-normal">Order</div>
+                <div className="p-3 text-sm font-normal">Customer</div>
+                <div className="hidden p-3 text-sm font-normal md:block">Items</div>
+                <div className="p-3 text-sm font-normal">Total</div>
+                <div className="p-3 text-sm font-normal">Status</div>
+                <div className="hidden p-3 text-sm font-normal md:block">Date</div>
+                <div className="hidden p-3 text-sm font-normal lg:block">Personalised</div>
               </div>
-            </div>
-          )}
+            }
+            items={filtered}
+            renderRow={(order) => (
+              <div
+                className={`border-b border-border last:border-0 hover:bg-muted/10 ${orderGridClassName}`}
+              >
+                <div className="p-3 text-sm font-light">{order.orderNumber}</div>
+                <div className="p-3">
+                  <div className="text-sm font-light">{order.customerName}</div>
+                  <div className="text-xs text-muted-foreground">{order.customerEmail}</div>
+                </div>
+                <div className="hidden p-3 text-sm font-light text-muted-foreground md:block">
+                  {order.items}
+                </div>
+                <div className="p-3 text-sm font-light">{order.total}</div>
+                <div className="p-3">
+                  <span className={`text-xs px-2 py-1 ${getOrderStatusClasses(order.status)}`}>
+                    {order.status}
+                  </span>
+                </div>
+                <div className="hidden p-3 text-sm font-light text-muted-foreground md:block">
+                  {formatAdminDate(order.orderDate)}
+                </div>
+                <div className="hidden p-3 text-sm font-light lg:block">
+                  {order.personalised ? "Yes" : "No"}
+                </div>
+              </div>
+            )}
+            rowHeight={ORDER_ROW_HEIGHT}
+            viewportHeight={ORDER_VIEWPORT_HEIGHT}
+            viewportTestId="orders-viewport"
+          />
+
+          <AdminResultCount count={filtered.length} label="order" />
         </>
       )}
     </div>
