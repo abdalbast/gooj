@@ -40,7 +40,7 @@ const Pagination = ({ currentPage, onPageChange, totalPages }: PaginationProps) 
         </div>
 
         <Button
-          className="p-2 hover:bg-transparent hover:opacity-50"
+          className="p-2 hover:bg-transparent hover:opacity-50 disabled:opacity-30"
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
           size="sm"

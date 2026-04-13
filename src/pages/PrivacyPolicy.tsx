@@ -122,8 +122,8 @@ const PrivacyPolicy = () => {
               </p>
               <div className="mt-4 text-muted-foreground">
                 <p>Email: privacy@gooj.co.uk</p>
-                <p>Phone: +1 (212) 555-0123</p>
-                <p>Address: 123 Madison Avenue, New York, NY 10016</p>
+                <p>Phone: +44 20 7946 0958</p>
+                <p>Address: 42 Clerkenwell Road, London, EC1M 5PS</p>
               </div>
             </section>
           </div>

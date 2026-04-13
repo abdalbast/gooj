@@ -159,25 +159,25 @@ const CustomerCare = () => {
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">First Name</label>
-                  <Input className="rounded-none" name="firstName" placeholder="Enter your first name" />
+                  <label className="text-sm font-light text-foreground" htmlFor="firstName">First Name</label>
+                  <Input className="rounded-none" id="firstName" name="firstName" placeholder="Enter your first name" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">Last Name</label>
-                  <Input className="rounded-none" name="lastName" placeholder="Enter your last name" />
+                  <label className="text-sm font-light text-foreground" htmlFor="lastName">Last Name</label>
+                  <Input className="rounded-none" id="lastName" name="lastName" placeholder="Enter your last name" />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Email</label>
-                <Input required type="email" className="rounded-none" name="email" placeholder="Enter your email" />
+                <label className="text-sm font-light text-foreground" htmlFor="email">Email</label>
+                <Input required type="email" className="rounded-none" id="email" name="email" placeholder="Enter your email" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Order Number (Optional)</label>
-                <Input className="rounded-none" name="orderNumber" placeholder="Enter your order number if applicable" />
+                <label className="text-sm font-light text-foreground" htmlFor="orderNumber">Order Number (Optional)</label>
+                <Input className="rounded-none" id="orderNumber" name="orderNumber" placeholder="Enter your order number if applicable" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">How can we help you?</label>
-                <Textarea className="rounded-none min-h-[120px]" name="message" placeholder="Please describe your enquiry in detail" required />
+                <label className="text-sm font-light text-foreground" htmlFor="message">How can we help you?</label>
+                <Textarea className="rounded-none min-h-[120px]" id="message" name="message" placeholder="Please describe your enquiry in detail" required />
               </div>
               {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
               {formStatus ? <p className="text-sm text-foreground">{formStatus}</p> : null}
