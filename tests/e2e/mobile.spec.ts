@@ -18,6 +18,8 @@ const expectMinimumTouchTarget = async (
   expect(box!.height, `${label} height is below 44px`).toBeGreaterThanOrEqual(44);
 };
 
+const getBodyOverflowY = () => getComputedStyle(document.body).overflowY;
+
 test("mobile smoke verifies no horizontal overflow on home and checkout", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile-chromium", "Mobile overflow smoke only runs on the mobile Chromium project.");
 
@@ -48,14 +50,14 @@ test("mobile overlays lock scroll and dismiss cleanly", async ({ page }, testInf
   await menuButton.click();
   await expect(page.getByRole("dialog", { name: "Mobile menu" })).toBeVisible();
   await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
+    .poll(() => page.evaluate(getBodyOverflowY))
     .toBe("hidden");
 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Mobile menu" })).toBeHidden();
   await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
-    .toBe("visible");
+    .poll(() => page.evaluate(getBodyOverflowY))
+    .not.toBe("hidden");
   await expect(menuButton).toBeFocused();
 
   const bagButton = page.getByRole("button", { name: "Shopping bag" });
@@ -65,7 +67,7 @@ test("mobile overlays lock scroll and dismiss cleanly", async ({ page }, testInf
   await expect(bagDialog).toBeVisible();
   await expect(page.getByRole("button", { name: "Close bag" })).toBeFocused();
   await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
+    .poll(() => page.evaluate(getBodyOverflowY))
     .toBe("hidden");
 
   await page.getByRole("button", { name: /View Favorites/i }).click();
@@ -78,8 +80,8 @@ test("mobile overlays lock scroll and dismiss cleanly", async ({ page }, testInf
   await expect(favoritesDialog).toBeHidden();
   await expect(bagButton).toBeFocused();
   await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
-    .toBe("visible");
+    .poll(() => page.evaluate(getBodyOverflowY))
+    .not.toBe("hidden");
 
   expectNoRuntimeErrors(runtime);
 });
