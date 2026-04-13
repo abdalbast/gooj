@@ -22,9 +22,14 @@ interface ProductCardProps {
 const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) => {
   const [showHoverImage, setShowHoverImage] = useState(false);
   const loadingPriority = eager ? { fetchpriority: "high" as const } : undefined;
+  const canUseHoverImage =
+    Boolean(hoverImage) &&
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   const revealHoverImage = () => {
-    if (hoverImage) {
+    if (canUseHoverImage) {
       setShowHoverImage(true);
     }
   };
@@ -35,7 +40,6 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
       className="block group"
       onMouseEnter={revealHoverImage}
       onFocus={revealHoverImage}
-      onTouchStart={revealHoverImage}
     >
       <Card className="border-none bg-transparent shadow-none">
         <CardContent className="p-0">
@@ -53,7 +57,7 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
                 showHoverImage ? "group-hover:opacity-0 group-focus-within:opacity-0" : ""
               }`}
             />
-            {showHoverImage && hoverImage ? (
+            {showHoverImage && hoverImage && canUseHoverImage ? (
               <img
                 src={hoverImage}
                 alt={`${product.name} lifestyle`}

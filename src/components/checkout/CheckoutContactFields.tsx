@@ -25,10 +25,17 @@ export const CheckoutContactFields = <T extends CheckoutContactDetails>({
   phonePlaceholder,
   values,
 }: CheckoutContactFieldsProps<T>) => {
+  const fieldScope = emailId.startsWith("billing") ? "billing" : "";
+  const autoCompleteWithScope = (token: string) =>
+    fieldScope ? `${fieldScope} ${token}` : token;
+
   return (
     <>
       <CheckoutFormField
+        autoCapitalize="none"
+        autoComplete={autoCompleteWithScope("email")}
         id={emailId}
+        inputMode="email"
         label="Email Address *"
         onChange={(value) => onChange("email", value)}
         placeholder={emailPlaceholder}
@@ -36,8 +43,9 @@ export const CheckoutContactFields = <T extends CheckoutContactDetails>({
         value={values.email}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <CheckoutFormField
+          autoComplete={autoCompleteWithScope("given-name")}
           id={firstNameId}
           label="First Name *"
           onChange={(value) => onChange("firstName", value)}
@@ -45,6 +53,7 @@ export const CheckoutContactFields = <T extends CheckoutContactDetails>({
           value={values.firstName}
         />
         <CheckoutFormField
+          autoComplete={autoCompleteWithScope("family-name")}
           id={lastNameId}
           label="Last Name *"
           onChange={(value) => onChange("lastName", value)}
@@ -54,7 +63,9 @@ export const CheckoutContactFields = <T extends CheckoutContactDetails>({
       </div>
 
       <CheckoutFormField
+        autoComplete={autoCompleteWithScope("tel")}
         id={phoneId}
+        inputMode="tel"
         label="Phone Number"
         onChange={(value) => onChange("phone", value)}
         placeholder={phonePlaceholder}

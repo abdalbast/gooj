@@ -17,13 +17,13 @@ export const NavigationMobileMenu = ({
     <div
       aria-label="Mobile menu"
       aria-modal="true"
-      className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
+      className="absolute left-0 right-0 top-full z-50 animate-in fade-in border-b border-black/5 bg-white/95 shadow-sm backdrop-blur-2xl slide-in-from-top-2 duration-300 lg:hidden"
       id={mobileMenuId}
       ref={mobileMenuPanelRef}
       role="dialog"
       tabIndex={-1}
     >
-      <div className="px-6 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
+      <div className="custom-scrollbar max-h-[calc(100dvh-4rem-var(--safe-area-top)-var(--safe-area-bottom))] overflow-y-auto px-6 pb-[calc(1.5rem+var(--safe-area-bottom))] pt-6 touch-scroll">
         <div className="space-y-6">
           {navItems.map((item) => (
             <div key={item.name}>

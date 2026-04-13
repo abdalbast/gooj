@@ -39,7 +39,7 @@ export const CheckoutOrderSummary = ({
   updateQuantity,
 }: CheckoutOrderSummaryProps) => {
   return (
-    <CheckoutCard className="sticky top-6">
+    <CheckoutCard className="lg:sticky lg:top-[calc(5.5rem+var(--safe-area-top))]">
       <h2 className="mb-6 text-lg font-light text-foreground">Order Summary</h2>
 
       {cartItems.length === 0 ? (
@@ -53,18 +53,19 @@ export const CheckoutOrderSummary = ({
         </div>
       ) : (
         <div className="space-y-6">
-          {cartItems.map((item) => (
-            <div className="flex gap-4" key={item.id}>
-              <div className="h-20 w-20 overflow-hidden rounded-none bg-muted">
+          {cartItems.map((item, index) => (
+            <div className="flex gap-3 sm:gap-4" key={item.id}>
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-none bg-muted sm:h-20 sm:w-20">
                 <img
                   alt={item.name}
                   className="h-full w-full object-cover"
                   decoding="async"
-                  loading="eager"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  sizes="80px"
                   src={item.image}
                 />
               </div>
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <h3 className="font-light text-foreground">{item.name}</h3>
                 {item.hasPhoto || item.message || item.handwrittenNote ? (
                   <div className="mt-1 space-y-0.5">
@@ -110,7 +111,7 @@ export const CheckoutOrderSummary = ({
                   </Button>
                 </div>
               </div>
-              <div className="font-medium text-foreground">{item.price}</div>
+              <div className="shrink-0 font-medium text-foreground">{item.price}</div>
             </div>
           ))}
         </div>
@@ -125,7 +126,7 @@ export const CheckoutOrderSummary = ({
                 <p className="text-xs text-muted-foreground">{promotion.discountLabel}</p>
               </div>
               <button
-                className="text-sm text-foreground underline transition-all hover:no-underline"
+                className="min-h-11 px-2 text-sm text-foreground underline transition-all hover:no-underline"
                 onClick={onRemovePromotion}
                 type="button"
               >
@@ -140,7 +141,7 @@ export const CheckoutOrderSummary = ({
           </div>
         ) : !showDiscountInput ? (
           <button
-            className="text-sm text-foreground underline transition-all hover:no-underline"
+            className="min-h-11 text-sm text-foreground underline transition-all hover:no-underline"
             onClick={onShowDiscountInput}
             type="button"
           >
@@ -150,14 +151,17 @@ export const CheckoutOrderSummary = ({
           <div className="space-y-3">
             <div className="flex gap-2">
               <Input
+                autoCapitalize="characters"
+                autoComplete="off"
                 className="flex-1 rounded-none"
+                inputMode="text"
                 onChange={(event) => onDiscountCodeChange(event.target.value)}
                 placeholder="Enter discount code"
                 type="text"
                 value={discountCode}
               />
               <button
-                className="px-2 text-sm text-foreground underline transition-all hover:no-underline"
+                className="min-h-11 px-3 text-sm text-foreground underline transition-all hover:no-underline"
                 disabled={isApplyingDiscount}
                 onClick={onDiscountSubmit}
                 type="button"

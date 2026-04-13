@@ -62,10 +62,10 @@ const ShoppingBag = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="absolute top-full right-6 mt-2 w-[min(22rem,calc(100vw-3rem))] bg-white/85 backdrop-blur-2xl border border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 animate-in fade-in slide-in-from-top-4 duration-300 flex flex-col overflow-hidden custom-scrollbar max-h-[calc(100vh-100px)]"
+        className="custom-scrollbar absolute left-4 right-4 top-full z-50 mt-2 flex max-h-[calc(100dvh-5.5rem-var(--safe-area-top)-var(--safe-area-bottom))] w-auto animate-in flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/85 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-2xl fade-in slide-in-from-top-4 duration-300 sm:left-auto sm:right-6 sm:w-[min(22rem,calc(100vw-3rem))]"
       >
         {/* Content */}
-        <div className="flex-1 flex flex-col p-5">
+        <div className="flex flex-1 flex-col p-5 pb-[calc(1.25rem+var(--safe-area-bottom))]">
           <div className="mb-4 flex items-center justify-between">
             <h3 id={titleId} className="text-xl font-medium text-gray-900">
               Bag
@@ -116,7 +116,7 @@ const ShoppingBag = ({
           ) : (
             <>
               {/* Cart items */}
-              <div className="overflow-y-auto space-y-4 mb-5 max-h-[50vh] pr-1">
+              <div className="mb-5 max-h-[min(18rem,45dvh)] space-y-4 overflow-y-auto pr-1 touch-scroll">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-4 group">
                     <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden shrink-0">
@@ -163,7 +163,7 @@ const ShoppingBag = ({
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, 0)}
-                          className="text-[13px] text-blue-600 hover:text-blue-700 font-medium opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                          className="min-h-11 px-2 text-[13px] font-medium text-blue-600 opacity-100 transition-opacity hover:text-blue-700 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
                           aria-label={`Remove ${item.name}`}
                         >
                           Remove

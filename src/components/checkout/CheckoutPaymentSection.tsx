@@ -64,7 +64,7 @@ export const CheckoutPaymentSection = ({
           </div>
 
           <Button
-            className="h-12 w-full rounded-none text-base"
+            className="min-h-12 w-full whitespace-normal rounded-none text-base"
             disabled={isProcessing || cartItemCount === 0}
             onClick={onCompleteOrder}
           >

@@ -190,7 +190,7 @@ const Navigation = () => {
         backdropFilter: "blur(10px)",
       }}
     >
-      <div className="flex items-center justify-between h-16 px-6">
+      <div className="flex h-16 items-center justify-between pl-[max(1.5rem,var(--safe-area-left))] pr-[max(1.5rem,var(--safe-area-right))]">
         <button
           ref={mobileMenuButtonRef}
           type="button"
@@ -244,7 +244,7 @@ const Navigation = () => {
         <div className="flex items-center space-x-2">
           <Link
             to="/admin"
-            className="hidden lg:inline-flex items-center rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-nav-foreground transition-colors duration-200 hover:border-black/20 hover:text-nav-hover"
+            className="hidden min-h-11 items-center rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-nav-foreground transition-colors duration-200 hover:border-black/20 hover:text-nav-hover lg:inline-flex"
           >
             Admin
           </Link>
@@ -304,7 +304,7 @@ const Navigation = () => {
       {/* Dropdown backdrop */}
       {activeDropdown && (
         <div
-          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-300"
+          className="fixed inset-x-0 bottom-0 top-[calc(4rem+var(--safe-area-top))] z-40 animate-in fade-in bg-neutral-900/20 backdrop-blur-sm duration-300"
           onClick={closeDropdown}
         />
       )}
@@ -321,7 +321,7 @@ const Navigation = () => {
       {/* Search backdrop */}
       {isSearchOpen && (
         <div
-          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-300"
+          className="fixed inset-x-0 bottom-0 top-[calc(4rem+var(--safe-area-top))] z-40 animate-in fade-in bg-neutral-900/20 backdrop-blur-sm duration-300"
           onClick={closeSearch}
         />
       )}
@@ -337,7 +337,7 @@ const Navigation = () => {
       {/* Mobile menu backdrop */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 top-16 bg-neutral-900/20 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-300"
+          className="fixed inset-x-0 bottom-0 top-[calc(4rem+var(--safe-area-top))] z-40 animate-in fade-in bg-neutral-900/20 backdrop-blur-sm duration-300 lg:hidden"
           onClick={closeMobileMenu}
         />
       )}
