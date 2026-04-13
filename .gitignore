@@ -29,5 +29,9 @@ test-results
 *.sw?
 .cursor/dev-logs/
 .vercel
+.cursor/
+.env
+.env.*
+!.env.example
 .env*.local
 supabase/.temp/

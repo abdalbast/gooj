@@ -12,7 +12,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { parseStoredReminderDate, sortRemindersByUpcomingDate } from "@/lib/reminders";
+import {
+  REMINDER_NAME_MAX_LENGTH,
+  REMINDER_NOTES_MAX_LENGTH,
+  REMINDER_OCCASION_MAX_LENGTH,
+  parseStoredReminderDate,
+  sortRemindersByUpcomingDate,
+} from "@/lib/reminders";
 import { cn } from "@/lib/utils";
 import {
   deleteReminder,
@@ -98,6 +104,43 @@ const DateReminders = () => {
       return;
     }
 
+    const normalizedName = name.trim();
+    const normalizedOccasion = occasion.trim();
+    const normalizedNotes = notes.trim();
+
+    if (normalizedName.length > REMINDER_NAME_MAX_LENGTH) {
+      const message = `Recipient names must be ${REMINDER_NAME_MAX_LENGTH} characters or fewer.`;
+      setPageError(message);
+      toast({
+        description: message,
+        title: "Validation failed",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (normalizedOccasion.length > REMINDER_OCCASION_MAX_LENGTH) {
+      const message = `Occasions must be ${REMINDER_OCCASION_MAX_LENGTH} characters or fewer.`;
+      setPageError(message);
+      toast({
+        description: message,
+        title: "Validation failed",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (normalizedNotes.length > REMINDER_NOTES_MAX_LENGTH) {
+      const message = `Notes must be ${REMINDER_NOTES_MAX_LENGTH} characters or fewer.`;
+      setPageError(message);
+      toast({
+        description: message,
+        title: "Validation failed",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSaving(true);
     setPageError(null);
 
@@ -105,9 +148,9 @@ const DateReminders = () => {
       const savedReminder = await saveReminder(user.id, {
         date: format(date, "yyyy-MM-dd"),
         id: editingId ?? undefined,
-        name,
-        notes,
-        occasion,
+        name: normalizedName,
+        notes: normalizedNotes,
+        occasion: normalizedOccasion,
       });
 
       setReminders((current) => {
