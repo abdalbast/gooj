@@ -1,6 +1,12 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import DeepLinkHandler from "./components/app/DeepLinkHandler";
+import {
+  OfflineFallback,
+  RouteErrorBoundary,
+  RouteLoadingFallback,
+} from "./components/app/AppShellFallbacks";
 import ScrollToTop from "./components/ScrollToTop";
 
 const Toaster = lazy(() =>
@@ -31,7 +37,78 @@ const AdminContent = lazy(() => import("./pages/admin/AdminContent"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminCustomers = lazy(() => import("./pages/admin/AdminCustomers"));
 
-const routeFallback = <div className="min-h-screen bg-background" aria-hidden="true" />;
+const routeFallback = <RouteLoadingFallback />;
+
+const getInitialOnlineStatus = () => {
+  return typeof navigator === "undefined" ? true : navigator.onLine;
+};
+
+const useOnlineStatus = () => {
+  const [isOnline, setIsOnline] = useState(getInitialOnlineStatus);
+
+  useEffect(() => {
+    const setOnline = () => setIsOnline(true);
+    const setOffline = () => setIsOnline(false);
+
+    setIsOnline(getInitialOnlineStatus());
+    window.addEventListener("online", setOnline);
+    window.addEventListener("offline", setOffline);
+
+    return () => {
+      window.removeEventListener("online", setOnline);
+      window.removeEventListener("offline", setOffline);
+    };
+  }, []);
+
+  return isOnline;
+};
+
+const AppRoutes = () => (
+  <Routes>
+    <Route path="/" element={<Index />} />
+    <Route path="/category/:category" element={<Category />} />
+    <Route path="/product/:productId" element={<ProductDetail />} />
+    <Route path="/checkout" element={<Checkout />} />
+    <Route path="/about/our-story" element={<OurStory />} />
+    <Route path="/about/sustainability" element={<Sustainability />} />
+    <Route path="/about/gift-guide" element={<GiftGuide />} />
+    <Route path="/about/customer-care" element={<CustomerCare />} />
+    <Route path="/about/store-locator" element={<StoreLocator />} />
+    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <Route path="/terms-of-service" element={<TermsOfService />} />
+    <Route element={<AuthLayout />}>
+      <Route path="/reminders" element={<DateReminders />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="performance" element={<AdminPerformance />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="promotions" element={<AdminPromotions />} />
+        <Route path="content" element={<AdminContent />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="customers" element={<AdminCustomers />} />
+      </Route>
+    </Route>
+    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+);
+
+const AppRouteShell = () => {
+  const isOnline = useOnlineStatus();
+  const location = useLocation();
+
+  if (!isOnline) {
+    return <OfflineFallback />;
+  }
+
+  return (
+    <RouteErrorBoundary resetKey={`${location.pathname}${location.search}`}>
+      <Suspense fallback={routeFallback}>
+        <AppRoutes />
+      </Suspense>
+    </RouteErrorBoundary>
+  );
+};
 
 const App = () => (
   <TooltipProvider>
@@ -44,36 +121,9 @@ const App = () => (
         v7_startTransition: true,
       }}
     >
+      <DeepLinkHandler />
       <ScrollToTop />
-      <Suspense fallback={routeFallback}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/category/:category" element={<Category />} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/about/our-story" element={<OurStory />} />
-          <Route path="/about/sustainability" element={<Sustainability />} />
-          <Route path="/about/gift-guide" element={<GiftGuide />} />
-          <Route path="/about/customer-care" element={<CustomerCare />} />
-          <Route path="/about/store-locator" element={<StoreLocator />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route element={<AuthLayout />}>
-            <Route path="/reminders" element={<DateReminders />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="performance" element={<AdminPerformance />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="promotions" element={<AdminPromotions />} />
-              <Route path="content" element={<AdminContent />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="customers" element={<AdminCustomers />} />
-            </Route>
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <AppRouteShell />
     </BrowserRouter>
   </TooltipProvider>
 );
