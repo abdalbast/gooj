@@ -35,3 +35,4 @@ test-results
 !.env.example
 .env*.local
 supabase/.temp/
+temp/
