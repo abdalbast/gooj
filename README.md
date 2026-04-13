@@ -70,7 +70,7 @@ The codebase is structured like a production frontend rather than a throwaway pr
 ### Data
 
 - Date reminders and admin data are stored in Supabase.
-- The public product catalog shown on the storefront is currently sourced from local TypeScript data in [`src/lib/productData.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/productData.ts).
+- The public product catalog shown on the storefront is currently sourced from local TypeScript data in [`src/lib/productData.ts`](/src/lib/productData.ts).
 - Checkout is currently client-side only and simulates payment completion; there is no payment gateway, order API, or server-side order creation in this repository today.
 
 That distinction matters operationally: the admin area is backed by Supabase, but the public catalog and checkout flow are not yet fully integrated into a transactional commerce backend.
@@ -156,7 +156,7 @@ This repository assumes a hosted Supabase project for authentication and data st
 
 ### Bootstrap The Database
 
-Run [`supabase/bootstrap.sql`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/bootstrap.sql) in the Supabase SQL editor, or apply the migrations in [`supabase/migrations/20260326183000_bootstrap.sql`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/migrations/20260326183000_bootstrap.sql) and [`supabase/migrations/20260328090000_harden_admin_access.sql`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/migrations/20260328090000_harden_admin_access.sql).
+Run [`supabase/bootstrap.sql`](/supabase/bootstrap.sql) in the Supabase SQL editor, or apply the migrations in [`supabase/migrations/20260326183000_bootstrap.sql`](/supabase/migrations/20260326183000_bootstrap.sql) and [`supabase/migrations/20260328090000_harden_admin_access.sql`](/supabase/migrations/20260328090000_harden_admin_access.sql).
 
 The bootstrap creates:
 
@@ -227,7 +227,7 @@ npm run release:verify
 
 ## Testing And Quality Gates
 
-Playwright coverage lives under [`tests/e2e`](/Users/abdalbastkhdhir/development/Business Projects/gooj/tests/e2e) and includes:
+Playwright coverage lives under [`tests/e2e`](/tests/e2e) and includes:
 
 - Functional smoke coverage for home, product, checkout, reminders, and admin routes
 - Mobile overflow and interaction checks
@@ -235,7 +235,7 @@ Playwright coverage lives under [`tests/e2e`](/Users/abdalbastkhdhir/development
 - Bundle size budget checks against built assets
 - Version-sync behavior against `version.json`
 
-Formal release verification uses [`playwright.release.config.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/playwright.release.config.ts) plus [`tests/release/release.spec.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/tests/release/release.spec.ts) to target the deployed production site directly.
+Formal release verification uses [`playwright.release.config.ts`](/playwright.release.config.ts) plus [`tests/release/release.spec.ts`](/tests/release/release.spec.ts) to target the deployed production site directly.
 
 Recommended verification flow before shipping:
 
@@ -279,7 +279,7 @@ If you manage env values with the Vercel CLI:
 vercel env pull .env.local
 ```
 
-For the full tag-and-release workflow, use [`RELEASE.md`](/Users/abdalbastkhdhir/development/Business Projects/gooj/RELEASE.md).
+For the full tag-and-release workflow, use [`RELEASE.md`](/RELEASE.md).
 
 ## Operational Notes
 
@@ -300,17 +300,17 @@ This is intentional and should be preserved unless you are also redesigning cach
 ### What Was Implemented
 
 - Real user measurement for `LCP`, `INP`, and `CLS`, with `FCP` and `TTFB` collected as secondary diagnostics
-- A small browser-side performance module under [`src/lib/performance`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance)
-- A public Supabase Edge Function at [`supabase/functions/report-web-vitals/index.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/functions/report-web-vitals/index.ts) for low-overhead beacon ingestion
-- Persistent storage plus percentile-oriented SQL reporting in [`supabase/migrations/20260331103000_web_vitals_reporting.sql`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/migrations/20260331103000_web_vitals_reporting.sql)
-- An internal admin view at [`src/pages/admin/AdminPerformance.tsx`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/pages/admin/AdminPerformance.tsx)
+- A small browser-side performance module under [`src/lib/performance`](/src/lib/performance)
+- A public Supabase Edge Function at [`supabase/functions/report-web-vitals/index.ts`](/supabase/functions/report-web-vitals/index.ts) for low-overhead beacon ingestion
+- Persistent storage plus percentile-oriented SQL reporting in [`supabase/migrations/20260331103000_web_vitals_reporting.sql`](/supabase/migrations/20260331103000_web_vitals_reporting.sql)
+- An internal admin view at [`src/pages/admin/AdminPerformance.tsx`](/src/pages/admin/AdminPerformance.tsx)
 
 ### Browser To Dashboard Flow
 
-1. [`src/main.tsx`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/main.tsx) starts the monitoring bootstrap once per page load.
-2. [`src/lib/performance/webVitals.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance/webVitals.ts) loads `web-vitals` lazily and reports metrics without blocking initial render.
-3. [`src/lib/performance/context.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance/context.ts) adds safe route, release, device, viewport, referrer-category, and navigation context.
-4. [`src/lib/performance/transport.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance/transport.ts) batches modestly, prefers `sendBeacon` on page hide, and falls back to `fetch(..., { keepalive: true })`.
+1. [`src/main.tsx`](/src/main.tsx) starts the monitoring bootstrap once per page load.
+2. [`src/lib/performance/webVitals.ts`](/src/lib/performance/webVitals.ts) loads `web-vitals` lazily and reports metrics without blocking initial render.
+3. [`src/lib/performance/context.ts`](/src/lib/performance/context.ts) adds safe route, release, device, viewport, referrer-category, and navigation context.
+4. [`src/lib/performance/transport.ts`](/src/lib/performance/transport.ts) batches modestly, prefers `sendBeacon` on page hide, and falls back to `fetch(..., { keepalive: true })`.
 5. The Supabase Edge Function validates the payload, upserts into `public.web_vitals_events`, and the admin page queries percentile summaries through SQL RPCs.
 
 ### Setup
@@ -344,8 +344,8 @@ The payload intentionally excludes personal data, raw query strings, emails, and
 
 ### Extending Later
 
-- Add more route-group rules in [`src/lib/performance/context.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance/context.ts) if the router expands
-- Swap the transport endpoint in [`src/lib/performance/config.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/src/lib/performance/config.ts) if reporting moves away from Supabase
+- Add more route-group rules in [`src/lib/performance/context.ts`](/src/lib/performance/context.ts) if the router expands
+- Swap the transport endpoint in [`src/lib/performance/config.ts`](/src/lib/performance/config.ts) if reporting moves away from Supabase
 - Extend the SQL RPCs if you need new cuts such as country, experiment cohort, or page-template-level rollups
 
 ## Current Gaps
@@ -369,8 +369,8 @@ The admin console and reminders flow are already backed by Supabase; the commerc
 
 ## References
 
-- [`package.json`](/Users/abdalbastkhdhir/development/Business Projects/gooj/package.json)
-- [`vite.config.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/vite.config.ts)
-- [`vercel.json`](/Users/abdalbastkhdhir/development/Business Projects/gooj/vercel.json)
-- [`supabase/bootstrap.sql`](/Users/abdalbastkhdhir/development/Business Projects/gooj/supabase/bootstrap.sql)
-- [`playwright.config.ts`](/Users/abdalbastkhdhir/development/Business Projects/gooj/playwright.config.ts)
+- [`package.json`](/package.json)
+- [`vite.config.ts`](/vite.config.ts)
+- [`vercel.json`](/vercel.json)
+- [`supabase/bootstrap.sql`](/supabase/bootstrap.sql)
+- [`playwright.config.ts`](/playwright.config.ts)
