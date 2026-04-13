@@ -45,12 +45,8 @@ const LargeHero = () => {
     }
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isEmbeddedPreview = window.self !== window.top;
-    const isElectronShell = userAgent.includes("electron") || userAgent.includes("cursor");
-
     const updatePreference = (reduceMotion: boolean) => {
-      setPreferStaticMedia(reduceMotion || isEmbeddedPreview || isElectronShell);
+      setPreferStaticMedia(reduceMotion);
     };
 
     updatePreference(motionQuery.matches);
