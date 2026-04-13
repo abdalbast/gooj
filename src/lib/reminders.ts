@@ -1,5 +1,9 @@
 import type { ReminderRecord } from "@/lib/supabaseData";
 
+export const REMINDER_NAME_MAX_LENGTH = 120;
+export const REMINDER_OCCASION_MAX_LENGTH = 60;
+export const REMINDER_NOTES_MAX_LENGTH = 1000;
+
 export const REMINDER_OCCASIONS = [
   "Birthday",
   "Anniversary",

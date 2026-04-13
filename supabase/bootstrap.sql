@@ -84,10 +84,10 @@ grant execute on function public.is_admin_aal2(text[], uuid) to authenticated;
 create table if not exists public.reminders (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
-  recipient_name text not null,
+  recipient_name text not null check (char_length(recipient_name) between 1 and 120),
   reminder_date date not null,
-  occasion text not null,
-  notes text not null default '',
+  occasion text not null check (char_length(occasion) between 1 and 60),
+  notes text not null default '' check (char_length(notes) <= 1000),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
 );

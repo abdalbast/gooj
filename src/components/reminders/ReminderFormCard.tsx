@@ -6,7 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { REMINDER_OCCASIONS } from "@/lib/reminders";
+import {
+  REMINDER_NAME_MAX_LENGTH,
+  REMINDER_NOTES_MAX_LENGTH,
+  REMINDER_OCCASION_MAX_LENGTH,
+  REMINDER_OCCASIONS,
+} from "@/lib/reminders";
 import { cn } from "@/lib/utils";
 
 interface ReminderFormCardProps {
@@ -56,6 +61,7 @@ export const ReminderFormCard = ({
         <Input
           className="rounded-none"
           id="reminder-name"
+          maxLength={REMINDER_NAME_MAX_LENGTH}
           onChange={(event) => onNameChange(event.target.value)}
           placeholder="e.g. Sarah"
           value={name}
@@ -100,7 +106,7 @@ export const ReminderFormCard = ({
           </SelectTrigger>
           <SelectContent>
             {REMINDER_OCCASIONS.map((item) => (
-              <SelectItem key={item} value={item}>
+              <SelectItem key={item} value={item.slice(0, REMINDER_OCCASION_MAX_LENGTH)}>
                 {item}
               </SelectItem>
             ))}
@@ -114,6 +120,7 @@ export const ReminderFormCard = ({
         <Textarea
           className="rounded-none"
           id="reminder-notes"
+          maxLength={REMINDER_NOTES_MAX_LENGTH}
           onChange={(event) => onNotesChange(event.target.value)}
           placeholder="e.g. She likes candles and chocolate"
           value={notes}

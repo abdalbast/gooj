@@ -19,6 +19,13 @@ This project now uses `v0.x.y` tags for formal releases. The first formal releas
 
 The release gate uses a dedicated production admin account plus Gmail API polling.
 
+### Secret Handling Policy
+
+- Store release credentials in CI/hosting secret stores (GitHub Actions Secrets, Vercel env), not in committed files.
+- Do not persist release secrets in shell history or local dotfiles.
+- Rotate release credentials on a fixed schedule and immediately after any suspected exposure.
+- Use least-privilege service accounts dedicated to release automation.
+
 ```bash
 export DEPLOYMENT_URL=https://gooj.vercel.app
 export E2E_ADMIN_EMAIL=
@@ -27,6 +34,14 @@ export E2E_GMAIL_CLIENT_ID=
 export E2E_GMAIL_CLIENT_SECRET=
 export E2E_GMAIL_REFRESH_TOKEN=
 ```
+
+### Secret Rotation Checklist
+
+1. Rotate Gmail OAuth client secret and refresh token.
+2. Rotate the dedicated admin account MFA seed and recovery methods.
+3. Update GitHub Actions and Vercel secret stores.
+4. Re-run `npm run test:release` to verify the updated credentials.
+5. Record rotation timestamp and operator in release notes or internal ops log.
 
 ## Release Procedure
 

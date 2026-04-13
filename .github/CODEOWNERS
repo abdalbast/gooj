@@ -1,0 +1,10 @@
+# Default owners
+* @abdalbast
+
+# Security-sensitive paths
+/supabase/ @abdalbast
+/vercel.json @abdalbast
+/.github/workflows/ @abdalbast
+/src/contexts/AuthContext.tsx @abdalbast
+/src/lib/supabase.ts @abdalbast
+/src/lib/supabase-data/ @abdalbast
