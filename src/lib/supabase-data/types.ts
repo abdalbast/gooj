@@ -31,6 +31,7 @@ export interface AdminProductRecord {
 export interface AdminProductInput {
   category: string;
   description: string;
+  isActive?: boolean;
   name: string;
   price: string;
 }

@@ -17,10 +17,26 @@ export const listAdminProducts = async () => {
 
 export const saveAdminProduct = async (product: AdminProductInput, productId?: string) => {
   const client = getSupabaseClient();
+  let isActive = product.isActive;
+
+  if (productId && isActive === undefined) {
+    const { data: existingRecord, error: existingError } = await client
+      .from("admin_products")
+      .select("is_active")
+      .eq("id", productId)
+      .single();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    isActive = existingRecord?.is_active ?? true;
+  }
+
   const payload = {
     category: product.category.trim(),
     description: product.description.trim(),
-    is_active: true,
+    is_active: isActive ?? true,
     name: product.name.trim(),
     price_pence: toPence(product.price),
   };

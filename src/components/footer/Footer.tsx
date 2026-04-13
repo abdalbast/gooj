@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const socialLinks = [
+    { href: "https://www.instagram.com/goojgifts", label: "Instagram" },
+    { href: "https://www.tiktok.com/@goojgifts", label: "TikTok" },
+    { href: "mailto:hello@gooj.co.uk?subject=Newsletter%20signup", label: "Newsletter" },
+  ];
+
   return (
     <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
       <div className="">
@@ -51,10 +57,18 @@ const Footer = () => {
             <div>
               <h4 className="text-sm font-normal mb-4">Connect</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">TikTok</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
-                <li><Link to="/admin" className="text-sm font-light text-black/70 hover:text-black transition-colors">Admin Panel</Link></li>
+                {socialLinks.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      className="text-sm font-light text-black/70 hover:text-black transition-colors"
+                      href={link.href}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -64,7 +78,7 @@ const Footer = () => {
       <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2025 GOOJ. All rights reserved.
+            © 2026 GOOJ. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <Link to="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">Privacy Policy</Link>

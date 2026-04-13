@@ -36,6 +36,7 @@ const PAGE_SIZE = 5;
 const createDefaultForm = (): AdminProductInput => ({
   category: "Gift Boxes",
   description: "",
+  isActive: true,
   name: "",
   price: "",
 });
@@ -43,6 +44,7 @@ const createDefaultForm = (): AdminProductInput => ({
 const toProductForm = (product: AdminProductRecord): AdminProductInput => ({
   category: product.category,
   description: product.description,
+  isActive: product.active,
   name: product.name,
   price: product.price,
 });
@@ -159,6 +161,11 @@ const AdminProducts = () => {
       nextErrors.price = "Price is required";
     } else if (!/^£?\d+(\.\d{1,2})?$/.test(form.price.trim())) {
       nextErrors.price = "Price must be a GBP amount such as £65 or 65.00";
+    } else {
+      const parsedPrice = Number.parseFloat(form.price.trim().replace(/^£/, ""));
+      if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+        nextErrors.price = "Price must be greater than zero";
+      }
     }
 
     if (!form.description.trim()) {
@@ -286,6 +293,20 @@ const AdminProducts = () => {
                   value={form.description}
                 />
                 <AdminFieldError message={errors.description} />
+              </div>
+              <div>
+                <Select
+                  onValueChange={(value) => updateFormField("isActive", value === "active")}
+                  value={form.isActive === false ? "inactive" : "active"}
+                >
+                  <SelectTrigger className="rounded-none">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button
                 className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90"
