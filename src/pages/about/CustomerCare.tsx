@@ -1,3 +1,4 @@
+import { type FormEvent, useState } from "react";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
@@ -13,6 +14,65 @@ import {
 } from "@/lib/commerce";
 
 const CustomerCare = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormStatus(null);
+    setFormError(null);
+
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
+    const payload = {
+      firstName: String(formData.get("firstName") ?? "").trim(),
+      lastName: String(formData.get("lastName") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      orderNumber: String(formData.get("orderNumber") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+    };
+
+    if (!payload.email) {
+      setFormError("Email is required.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+      setFormError("Please provide a valid email address.");
+      return;
+    }
+
+    if (!payload.message) {
+      setFormError("Message is required.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Contact request failed with status ${response.status}`);
+      }
+
+      formElement.reset();
+      setFormStatus("Thanks for your message. Our team will get back to you soon.");
+    } catch (error) {
+      console.error("Contact request failed", error);
+      setFormError("We could not send your message right now. Please try again shortly.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -96,30 +156,34 @@ const CustomerCare = () => {
 
         <ContentSection title="Contact Form">
           <div>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-light text-foreground">First Name</label>
-                  <Input className="rounded-none" placeholder="Enter your first name" />
+                  <Input className="rounded-none" name="firstName" placeholder="Enter your first name" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-light text-foreground">Last Name</label>
-                  <Input className="rounded-none" placeholder="Enter your last name" />
+                  <Input className="rounded-none" name="lastName" placeholder="Enter your last name" />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-light text-foreground">Email</label>
-                <Input type="email" className="rounded-none" placeholder="Enter your email" />
+                <Input required type="email" className="rounded-none" name="email" placeholder="Enter your email" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-light text-foreground">Order Number (Optional)</label>
-                <Input className="rounded-none" placeholder="Enter your order number if applicable" />
+                <Input className="rounded-none" name="orderNumber" placeholder="Enter your order number if applicable" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-light text-foreground">How can we help you?</label>
-                <Textarea className="rounded-none min-h-[120px]" placeholder="Please describe your enquiry in detail" />
+                <Textarea className="rounded-none min-h-[120px]" name="message" placeholder="Please describe your enquiry in detail" required />
               </div>
-              <Button type="submit" className="w-full rounded-none">Send Message</Button>
+              {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+              {formStatus ? <p className="text-sm text-foreground">{formStatus}</p> : null}
+              <Button disabled={isSubmitting} type="submit" className="w-full rounded-none">
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
             </form>
           </div>
         </ContentSection>
