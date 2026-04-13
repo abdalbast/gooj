@@ -3,7 +3,7 @@ import Navigation from "./Navigation";
 
 const Header = () => {
   return (
-    <header className="w-full sticky top-0 z-50">
+    <header className="sticky top-0 z-50 w-full bg-background/90 pt-[var(--safe-area-top)] backdrop-blur">
       {/* <StatusBar /> */}
       <Navigation />
     </header>

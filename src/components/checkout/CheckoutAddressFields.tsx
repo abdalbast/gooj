@@ -18,9 +18,13 @@ export const CheckoutAddressFields = <T extends CheckoutAddress>({
   postalCodeId,
   values,
 }: CheckoutAddressFieldsProps<T>) => {
+  const fieldScope = addressId.startsWith("billing") ? "billing" : "shipping";
+  const autoCompleteWithScope = (token: string) => `${fieldScope} ${token}`;
+
   return (
     <div className="space-y-4">
       <CheckoutFormField
+        autoComplete={autoCompleteWithScope("street-address")}
         id={addressId}
         label="Address *"
         onChange={(value) => onChange("address", value)}
@@ -28,8 +32,9 @@ export const CheckoutAddressFields = <T extends CheckoutAddress>({
         value={values.address}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <CheckoutFormField
+          autoComplete={autoCompleteWithScope("address-level2")}
           id={cityId}
           label="City *"
           onChange={(value) => onChange("city", value)}
@@ -37,7 +42,10 @@ export const CheckoutAddressFields = <T extends CheckoutAddress>({
           value={values.city}
         />
         <CheckoutFormField
+          autoCapitalize="characters"
+          autoComplete={autoCompleteWithScope("postal-code")}
           id={postalCodeId}
+          inputMode="text"
           label="Postal Code *"
           onChange={(value) => onChange("postalCode", value)}
           placeholder="Postal code"
@@ -46,6 +54,7 @@ export const CheckoutAddressFields = <T extends CheckoutAddress>({
       </div>
 
       <CheckoutFormField
+        autoComplete={autoCompleteWithScope("country-name")}
         id={countryId}
         label="Country *"
         onChange={(value) => onChange("country", value)}

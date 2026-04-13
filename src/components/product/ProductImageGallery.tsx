@@ -125,8 +125,8 @@ const ProductImageGallery = () => {
           </CarouselContent>
           {productMedia.length > 1 ? (
             <>
-              <CarouselPrevious className="left-4 top-1/2 h-9 w-9 -translate-y-1/2 border-0 bg-background/85 shadow-sm hover:bg-background" />
-              <CarouselNext className="right-4 top-1/2 h-9 w-9 -translate-y-1/2 border-0 bg-background/85 shadow-sm hover:bg-background" />
+              <CarouselPrevious className="left-4 top-1/2 h-11 w-11 -translate-y-1/2 border-0 bg-background/85 shadow-sm hover:bg-background md:h-9 md:w-9" />
+              <CarouselNext className="right-4 top-1/2 h-11 w-11 -translate-y-1/2 border-0 bg-background/85 shadow-sm hover:bg-background md:h-9 md:w-9" />
             </>
           ) : null}
         </Carousel>

@@ -24,18 +24,21 @@ export const CheckoutShippingOptionsSection = ({
       >
         {SHIPPING_OPTION_ORDER.map((optionId) => (
           <div
-            className="flex items-center justify-between rounded-none border border-muted-foreground/20 p-4"
+            className="flex min-h-14 items-start gap-3 rounded-none border border-muted-foreground/20 p-4"
             key={optionId}
           >
-            <div className="flex items-center space-x-3">
-              <RadioGroupItem id={optionId} value={optionId} />
-              <Label className="font-light text-foreground" htmlFor={optionId}>
+            <RadioGroupItem className="mt-1 h-5 w-5" id={optionId} value={optionId} />
+            <Label
+              className="flex flex-1 cursor-pointer flex-col gap-1 font-light text-foreground sm:flex-row sm:items-center sm:justify-between"
+              htmlFor={optionId}
+            >
+              <span>
                 {SHIPPING_OPTIONS[optionId].label}
-              </Label>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {formatShippingOptionSummary(optionId)}
-            </div>
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {formatShippingOptionSummary(optionId)}
+              </span>
+            </Label>
           </div>
         ))}
       </RadioGroup>

@@ -109,9 +109,9 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <CheckoutHeader />
       
-      <main className="pt-6 pb-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="pb-[calc(3rem+var(--safe-area-bottom))] pt-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
             
             {/* Order Summary - First on mobile, last on desktop */}
             <div className="lg:col-span-1 lg:order-2">
@@ -133,7 +133,7 @@ const Checkout = () => {
             </div>
 
             {/* Left Column - Forms */}
-            <div className="lg:col-span-2 lg:order-1 space-y-8">
+            <div className="space-y-6 lg:order-1 lg:col-span-2 lg:space-y-8">
               <CheckoutCustomerDetailsSection
                 billingDetails={billingDetails}
                 customerDetails={customerDetails}

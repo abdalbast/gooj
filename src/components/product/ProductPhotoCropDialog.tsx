@@ -215,7 +215,7 @@ const ProductPhotoCropDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-[94vw] overflow-y-auto border border-border/80 bg-background p-0 shadow-[0_24px_80px_rgba(0,0,0,0.12)] sm:max-w-4xl !rounded-none">
+      <DialogContent className="max-h-[calc(100dvh-2rem-var(--safe-area-top)-var(--safe-area-bottom))] max-w-[94vw] overflow-y-auto border border-border/80 bg-background p-0 shadow-[0_24px_80px_rgba(0,0,0,0.12)] sm:max-w-4xl !rounded-none">
         <DialogHeader className="border-b border-border px-6 py-5">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 border border-border bg-muted/40 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
@@ -394,7 +394,7 @@ const ProductPhotoCropDialog = ({
           </div>
         </div>
 
-        <DialogFooter className="border-t border-border px-6 py-4 sm:justify-between">
+        <DialogFooter className="border-t border-border px-6 pb-[calc(1rem+var(--safe-area-bottom))] pt-4 sm:justify-between">
           <Button type="button" variant="ghost" className="rounded-none transition-all duration-200 hover:-translate-y-px active:translate-y-0" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>

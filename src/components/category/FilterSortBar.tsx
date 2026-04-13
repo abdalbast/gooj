@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -51,9 +52,15 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
                   Filters
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-background border-none shadow-none">
+              <SheetContent
+                side="right"
+                className="w-80 max-w-[calc(100vw-var(--safe-area-left)-var(--safe-area-right))] border-none bg-background shadow-none"
+              >
                 <SheetHeader className="mb-6 border-b border-border pb-4">
                   <SheetTitle className="text-lg font-light">Filters</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Filter products by category, price, and material.
+                  </SheetDescription>
                 </SheetHeader>
                 
                 <div className="space-y-8">
@@ -62,7 +69,7 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
                     <h3 className="text-sm font-light mb-4 text-foreground">Category</h3>
                     <div className="space-y-3">
                       {categories.map((category) => (
-                        <div key={category} className="flex items-center space-x-3">
+                        <div key={category} className="flex min-h-11 items-center space-x-3">
                           <Checkbox id={category} className="border-border data-[state=checked]:bg-foreground data-[state=checked]:border-foreground" />
                           <Label htmlFor={category} className="text-sm font-light text-foreground cursor-pointer">
                             {category}
@@ -79,7 +86,7 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
                     <h3 className="text-sm font-light mb-4 text-foreground">Price</h3>
                     <div className="space-y-3">
                       {SHOPPER_PRICE_RANGES.map((range) => (
-                        <div key={range} className="flex items-center space-x-3">
+                        <div key={range} className="flex min-h-11 items-center space-x-3">
                           <Checkbox id={range} className="border-border data-[state=checked]:bg-foreground data-[state=checked]:border-foreground" />
                           <Label htmlFor={range} className="text-sm font-light text-foreground cursor-pointer">
                             {range}
@@ -96,7 +103,7 @@ const FilterSortBar = ({ filtersOpen, setFiltersOpen, itemCount }: FilterSortBar
                     <h3 className="text-sm font-light mb-4 text-foreground">Material</h3>
                     <div className="space-y-3">
                       {materials.map((material) => (
-                        <div key={material} className="flex items-center space-x-3">
+                        <div key={material} className="flex min-h-11 items-center space-x-3">
                           <Checkbox id={material} className="border-border data-[state=checked]:bg-foreground data-[state=checked]:border-foreground" />
                           <Label htmlFor={material} className="text-sm font-light text-foreground cursor-pointer">
                             {material}

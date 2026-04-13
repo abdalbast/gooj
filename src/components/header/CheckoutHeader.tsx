@@ -3,13 +3,13 @@ import { ChevronLeft } from "lucide-react";
 
 const CheckoutHeader = () => {
   return (
-    <header className="w-full bg-background border-b border-muted-foreground/20">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <header className="w-full border-b border-muted-foreground/20 bg-background pt-[var(--safe-area-top)]">
+      <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4">
         <div className="relative flex items-center justify-between">
           {/* Left side - Continue Shopping */}
           <Link 
             to="/" 
-            className="flex items-center gap-2 text-foreground hover:text-foreground/80 transition-colors"
+            className="flex min-h-11 items-center gap-2 text-foreground transition-colors hover:text-foreground/80"
           >
             <ChevronLeft className="h-4 w-4" />
             <span className="text-sm font-light hidden sm:inline">Continue Shopping</span>

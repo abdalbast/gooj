@@ -59,14 +59,17 @@ const ImageZoom = ({ images, initialIndex, isOpen, onClose }: ImageZoomProps) =>
         variant="ghost"
         size="sm"
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 flex h-11 w-11 items-center justify-center border-none p-0 text-black hover:bg-transparent"
+        className="absolute right-6 top-[calc(1.5rem+var(--safe-area-top))] z-10 flex h-11 w-11 items-center justify-center border-none p-0 text-white hover:bg-white/10"
         aria-label="Close image gallery"
       >
         <X className="h-8 w-8" />
       </Button>
 
       {/* Scrollable image container */}
-      <div ref={scrollRef} className="relative w-full h-full overflow-y-auto">
+      <div
+        ref={scrollRef}
+        className="relative h-full w-full overflow-y-auto pb-[var(--safe-area-bottom)] pt-[var(--safe-area-top)] touch-scroll"
+      >
         <div className="space-y-4">
           {images.map((image, index) => (
             <div key={index} className="w-full flex justify-center">

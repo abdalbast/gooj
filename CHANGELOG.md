@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-04-13
+
+### Changed
+- Prepared the storefront and checkout UI for iPhone Capacitor wrapping with safe-area-aware viewport handling, 44px shared touch targets, and mobile-safe overlay scrolling.
+- Refined the small-screen checkout flow with stacked form fields, mobile keyboard hints, non-sticky order summary behavior on phones, and safer image loading in order summaries.
+
+### Fixed
+- Prevented mobile menu, search, bag, sheet, popover, and dialog overlays from using brittle `100vh` sizing or allowing background scroll on iPhone.
+- Avoided loading hover-only product imagery on touch devices.
+
+### Verification
+- `npm run lint`
+- `npm run build`
+- Playwright iPhone-width checks for navigation overlays, filter sheet, bag popover, checkout fields, keyboard typing, horizontal overflow, and console warnings.
+
 ## 2026-03-31
 
 ### Added

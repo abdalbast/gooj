@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import ResponsivePicture from "@/components/ui/ResponsivePicture";
@@ -21,10 +21,39 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) => {
   const [showHoverImage, setShowHoverImage] = useState(false);
+  const [canUseHoverImage, setCanUseHoverImage] = useState(false);
   const loadingPriority = eager ? { fetchpriority: "high" as const } : undefined;
 
+  useEffect(() => {
+    if (!hoverImage || typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      setCanUseHoverImage(false);
+      setShowHoverImage(false);
+      return;
+    }
+
+    const hoverMediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const updateHoverPreference = () => {
+      const supportsHoverImage = hoverMediaQuery.matches;
+      setCanUseHoverImage(supportsHoverImage);
+
+      if (!supportsHoverImage) {
+        setShowHoverImage(false);
+      }
+    };
+
+    updateHoverPreference();
+
+    if (typeof hoverMediaQuery.addEventListener === "function") {
+      hoverMediaQuery.addEventListener("change", updateHoverPreference);
+      return () => hoverMediaQuery.removeEventListener("change", updateHoverPreference);
+    }
+
+    hoverMediaQuery.addListener(updateHoverPreference);
+    return () => hoverMediaQuery.removeListener(updateHoverPreference);
+  }, [hoverImage]);
+
   const revealHoverImage = () => {
-    if (hoverImage) {
+    if (canUseHoverImage) {
       setShowHoverImage(true);
     }
   };
@@ -35,7 +64,6 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
       className="block group"
       onMouseEnter={revealHoverImage}
       onFocus={revealHoverImage}
-      onTouchStart={revealHoverImage}
     >
       <Card className="border-none bg-transparent shadow-none">
         <CardContent className="p-0">
@@ -53,7 +81,7 @@ const ProductCard = ({ product, hoverImage, eager = false }: ProductCardProps) =
                 showHoverImage ? "group-hover:opacity-0 group-focus-within:opacity-0" : ""
               }`}
             />
-            {showHoverImage && hoverImage ? (
+            {showHoverImage && hoverImage && canUseHoverImage ? (
               <img
                 src={hoverImage}
                 alt={`${product.name} lifestyle`}

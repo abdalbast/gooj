@@ -17,14 +17,14 @@ export const NavigationFavoritesPanel = ({
   return (
     <div className="fixed inset-0 z-50 h-screen overflow-hidden">
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm h-screen transition-opacity duration-300"
+        className="absolute inset-0 h-full bg-black/30 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
 
       <div
         aria-labelledby={favoritesTitleId}
         aria-modal="true"
-        className="absolute right-0 top-0 h-full w-full max-w-96 bg-background border-l border-border animate-slide-in-right flex flex-col"
+        className="absolute right-0 top-0 flex h-full w-full max-w-96 animate-slide-in-right flex-col border-l border-border bg-background pb-[var(--safe-area-bottom)] pt-[var(--safe-area-top)]"
         id={favoritesPanelId}
         role="dialog"
       >
@@ -43,7 +43,7 @@ export const NavigationFavoritesPanel = ({
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="flex-1 overflow-y-auto p-6 touch-scroll">
           <p className="text-muted-foreground text-sm mb-6">
             You haven't added any favorites yet. Browse our gift boxes and click the heart icon to
             save ones you love.

@@ -16,11 +16,11 @@ export const NavigationSearchPanel = ({
     <div
       aria-labelledby={searchTitleId}
       aria-modal="true"
-      className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-black/5 shadow-sm z-50 animate-in fade-in slide-in-from-top-2 duration-300"
+      className="absolute left-0 right-0 top-full z-50 max-h-[calc(100dvh-4rem-var(--safe-area-top)-var(--safe-area-bottom))] animate-in fade-in overflow-y-auto border-b border-black/5 bg-white/95 shadow-sm backdrop-blur-2xl slide-in-from-top-2 touch-scroll duration-300"
       id={searchDialogId}
       role="dialog"
     >
-      <div className="px-6 py-10">
+      <div className="px-6 pb-[calc(2rem+var(--safe-area-bottom))] pt-8 sm:py-10">
         <div className="max-w-2xl mx-auto">
           <h2 className="sr-only" id={searchTitleId}>
             Search gift boxes
@@ -42,7 +42,7 @@ export const NavigationSearchPanel = ({
                 />
               </svg>
               <input
-                className="flex-1 bg-transparent text-gray-900 placeholder:text-gray-400 outline-none text-2xl font-light"
+                className="min-h-11 flex-1 bg-transparent text-xl font-light text-gray-900 outline-none placeholder:text-gray-400 sm:text-2xl"
                 placeholder="Search for gift boxes..."
                 ref={searchInputRef}
                 type="text"
